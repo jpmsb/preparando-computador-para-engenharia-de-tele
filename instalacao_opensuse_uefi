@@ -1,0 +1,231 @@
+#!/bin/bash
+
+destino=/mnt
+
+particao_raiz=$1
+particao_EFI=$2
+usuario=$3
+senha=$4
+nome_completo=$5
+
+ajuda(){
+    echo -e "Seu comando não possui todos os argumentos necessários. Veja o uso e exemplo abaixo:\n"
+    echo -e "Uso:\n"
+    echo "    ./$0 \"partição onde o sistema será instalado\" \"partição EFI\" \"nome de usuário\" \"seu nome completo\""
+    echo -e "\nEXEMPLO:\n"
+    echo "    ./$0 /mnt /dev/sda1 joao \"João Pedro\""
+    echo
+}
+
+if [ "$#" -lt "5" ]; then
+   # ajuda
+   read -p "Partição onde o sistema será instalado [ex.: /dev/sda2]: " particao_raiz
+   read -p "Partição de inicialização EFI [ex.: /dev/sda1]: " particao_EFI
+
+   echo -e "\n### Criação do seu usuário ###"
+   read -p "Nome de usuário a ser criado: [ex.: joao]: " usuario
+
+   while [[ "$senha" != "$senha_redigitada" ]] || [[ -z "$senha" ]]
+   do
+       read -sp "Senha para esse novo usuário (ficará oculta enquanto digitar): " senha
+       echo
+       read -sp "Confirme a senha: " senha_redigitada
+       echo
+
+       if [ "$senha" != "$senha_redigitada" ]; then
+           echo -e "\nAs senhas digitadas são diferentes! Tente novamente.\n"
+       fi
+   done
+
+   read -p "Nome completo para o novo usuário [ex.: João Pedro]: " nome_completo
+   read -p "Nome do computador (não pode conter espaços) [ex.: meupc]: " nome_computador
+fi
+
+mount $particao_raiz $destino
+
+### Instalação do sistema base ###
+zypper -n --installroot $destino install -y --no-recommends zypper-needs-restarting systemd-lang systemd-container ca-certificates ca-certificates-mozilla efitools efivar fwupd-efi vim shadow iproute2 iputils openSUSE-release mokutil kernel-default kernel-default-devel NetworkManager-lang NetworkManager-applet-lang NetworkManager-connection-editor sudo curl htop grub2-branding-openSUSE grub2-x86_64-efi-extras gpm nload lightdm-lang lightdm-gtk-greeter-lang lightdm-gtk-greeter-settings-lang xfce4-panel-lang xfce4-panel-profiles xfce4-panel-restore-defaults xfce4-power-manager-lang xfce4-pulseaudio-plugin-lang pavucontrol-lang xfce4-screensaver xfce4-screenshooter-lang xfce4-session-lang xfce4-settings-lang xfce4-terminal-lang xfce4-datetime-plugin-lang xfce4-genmon-plugin-lang xfce4-kbdleds-plugin-lang xfce4-notifyd-lang xfce4-panel-lang xfce4-pulseaudio-plugin-lang xfce4-systemload-plugin-lang xorg-x11-driver-video xorg-x11-server-extra pipewire-lang pipewire-pulseaudio okular-lang nomacs-lang flatpak git vlc-lang vlc-codec-gstreamer ffmpeg-4 plymouth-lang gparted-lang pluma-lang engrampa-lang unzip zip 7zip bzip2 gzip unrar libreoffice libreoffice-branding-openSUSE libreoffice-l10n-pt_BR libreoffice-l10n-en metatheme-adapta-common gtk3-metatheme-adapta gtk4-metatheme-adapta xfce4-notifyd-theme-adapta xfwm4-theme-adapta MozillaFirefox MozillaFirefox-branding-openSUSE MozillaFirefox-translations-common MozillaFirefox-translations-other fish yt-dlp-fish-completion tealdeer-fish-completion tealdeer yt-dlp gnome-calculator-lang kcolorchooser-lang gnome-disk-utility-lang virt-manager btop baobab-lang qt5ct kolourpaint blueman-lang bluez NetworkManager-bluetooth thunar-lang thunar-sendto-blueman thunar-plugin-media-tags-lang thunar-plugin-shares-lang thunar-volman-branding-openSUSE thunar-volman-lang thunar-plugin-archive-lang thunar-font-manager kernel-firmware-all yast2 yast2-bootloader yast2-control-center yast2-sudo yast2-trans-pt_BR yast2-sysconfig yast2-update yast2-services-manager yast2-security yast2-qt-branding-openSUSE yast2-online-update yast2-online-update-configuration yast2-online-update-frontend yast2-installation xkeyboard-config-lang xorg-x11-driver-input xinput xf86-input-joystick wget-lang glibc-locale chrony xfdesktop-lang
+
+
+### Bloqueando o pacote ALSA problemático ###
+zypper --root $destino remove alsa-ucm-conf
+zypper --root $destino addlock alsa-ucm-conf
+
+
+### Preparando o ambiente para a instalação do GRUB ###
+mount --bind /sys $destino/sys
+mount --bind /proc $destino/proc
+mount --bind /dev $destino/dev
+mkdir $destino/boot/efi
+
+mount $particao_EFI $destino/boot/efi
+# chroot $destino
+chroot $destino mount -t efivarfs efivarfs /sys/firmware/efi/efivars
+chroot $destino grub2-install
+chroot $destino dracut -vf --regenerate-all
+chroot $destino grub2-mkconfig -o /boot/grub2/grub.cfg
+
+### Ajustando o servidor de DNS ###
+chroot $destino bash -c 'echo "nameserver 8.8.8.8" > /etc/resolv.conf'
+
+### Ajustando os pontos de montagem no fstab ###
+# echo "$(blkid | grep -v loop | grep ext4 | awk '{print $2}') / ext4 defaults 0 0" > /etc/fstab
+# echo "$(blkid | grep vfat | awk '{print $2}') /boot/efi vfat utf8 0 0" >> /etc/fstab
+
+chroot $destino echo "$(/usr/sbin/blkid | grep -v loop | grep ext4 | awk '{print $2}') / ext4 defaults 0 0" > $destino/etc/fstab
+chroot $destino echo "$(/usr/sbin/blkid | grep vfat | awk '{print $2}') /boot/efi vfat utf8 0 0" >> $destino/etc/fstab
+
+### Adicionando os repositórios necessários ###
+
+chroot $destino bash -c 'echo "[Open Source Software]
+name=Open Source Software
+enabled=1
+autorefresh=0
+baseurl=https://provo-mirror.opensuse.org/tumbleweed/repo/oss/
+path=/
+type=rpm-md
+keeppackages=0" > /etc/zypp/repos.d/Open_Source_Software.repo'
+
+chroot $destino bash -c 'echo "[Non Open Source Software]
+name=Non Open Source Software
+enabled=1
+autorefresh=0
+baseurl=https://provo-mirror.opensuse.org/tumbleweed/repo/non-oss/
+path=/
+type=rpm-md
+keeppackages=0" > /etc/zypp/repos.d/Non_Open_Source_Software.repo'
+
+chroot $destino bash -c 'echo "[Packman Repository]
+name=Packman Repository
+enabled=1
+autorefresh=0
+baseurl=http://ftp.gwdg.de/pub/linux/misc/packman/suse/openSUSE_Tumbleweed/
+path=/
+type=rpm-md
+keeppackages=0" > /etc/zypp/repos.d/Packman_Repository.repo'
+
+chroot $destino bash -c 'echo "[Google Chrome]
+name=Google Chrome
+enabled=1
+autorefresh=0
+baseurl=https://dl.google.com/linux/chrome/rpm/stable/x86_64
+type=rpm-md
+gpgcheck=1
+gpgkey=https://dl.google.com/linux/linux_signing_key.pub
+keeppackages=0" > /etc/zypp/repos.d/Google_Chrome.repo'
+
+chroot $destino bash -c 'echo "[Update]
+name=Update
+enabled=1
+autorefresh=0
+baseurl=http://download.opensuse.org/update/tumbleweed/
+type=rpm-md
+keeppackages=0" > /etc/zypp/repos.d/Update.repo'
+
+chroot $destino bash -c 'echo "[Emuladores]
+name=Emuladores
+enabled=1
+autorefresh=0
+baseurl=http://provo-mirror.opensuse.org/repositories/Emulators/openSUSE_Tumbleweed/
+path=/
+type=rpm-md
+keeppackages=0" > /etc/zypp/repos.d/Emuladores.repo'
+
+chroot $destino bash -c 'echo "[Hardware SDR]
+name=Hardware SDR
+enabled=1
+autorefresh=0
+baseurl=https://provo-mirror.opensuse.org/repositories/hardware:/sdr/openSUSE_Tumbleweed/
+type=rpm-md
+keeppackages=0" > /etc/zypp/repos.d/Hardware_SDR.repo'
+
+chroot $destino bash -c 'echo "[Hardware Tools]
+name=Hardware Tools
+enabled=1
+autorefresh=0
+baseurl=http://provo-mirror.opensuse.org/repositories/hardware/openSUSE_Tumbleweed/
+type=rpm-md
+gpgcheck=1
+gpgkey=http://provo-mirror.opensuse.org/repositories/hardware/openSUSE_Tumbleweed/repodata/repomd.xml.key
+keeppackages=0" > /etc/zypp/repos.d/Hardware_Tools.repo'
+
+chroot $destino bash -c 'echo "[VSCode]
+name=VSCode
+enabled=1
+autorefresh=0
+baseurl=https://packages.microsoft.com/yumrepos/vscode
+type=rpm-md
+keeppackages=0" > /etc/zypp/repos.d/VSCode.repo'
+
+chroot $destino bash -c 'echo "[X2go]
+name=X2Go
+enabled=1
+autorefresh=0
+baseurl=https://provo-mirror.opensuse.org/repositories/X11:/RemoteDesktop:/x2go/openSUSE_Tumbleweed
+type=rpm-md
+keeppackages=0" > /etc/zypp/repos.d/X2Go.repo'
+
+### Atualizando os certificados SSL ###
+chroot $destino update-ca-certificates
+
+### Importando a chave do repositório do Visual Studio Code ###
+chroot $destino rpm --import https://packages.microsoft.com/keys/microsoft.asc
+
+### Atualizando lista de pacotes ###
+zypper -n --root $destino --gpg-auto-import-keys refresh -f
+
+### Aplicando as atualizações ###
+zypper -n --root $destino dist-upgrade -y --download-in-advance --allow-vendor-change --no-recommends
+
+### Instalando codecs para o VLC e o Visual Studio Code ###
+zypper -n --root $destino install -y --download-in-advance --no-recommends vlc-codecs vlc-codec-gstreamer code
+
+### Reinstalando o tema de login LightDM ###
+zypper -n --root $destino install -y --download-in-advance --no-recommends --force lightdm-gtk-greeter
+
+### Limpando pacotes já baixados ###
+zypper -n --root $destino clean
+
+### Criando grupos necessários ###
+groupadd --root $destino --system mail
+groupadd --root $destino --system sudo
+groupadd --root $destino --system wheel
+
+### Criando usuário com poder sudo ###
+useradd --root $destino -m --groups kvm,sudo,video,disk,dialout -c "$nome_completo"  --shell /usr/bin/fish $usuario
+echo "$usuario:$senha" | chpasswd --root $destino
+
+### Habilitando serviço de rede ###
+chroot $destino ln -s /usr/lib/systemd/system/NetworkManager.service /etc/systemd/system/network.service
+chroot $destino ln -s /usr/lib/systemd/system/NetworkManager.service /etc/systemd/system/multi-user.target.wants/NetworkManager.service
+chroot $destino ln -s /usr/lib/systemd/system/NetworkManager-dispatcher.service /etc/systemd/system/dbus-org.freedesktop.nm-dispatcher.service
+chroot $destino ln -s /usr/lib/systemd/system/NetworkManager-wait-online.service /etc/systemd/system/network-online.target.wants/NetworkManager-wait-online.service
+
+### Habilitando General Purpose Mouse ###
+chroot $destino ln -s /usr/lib/systemd/system/gpm.service /etc/systemd/system/multi-user.target.wants/gpm.service
+
+### Ajustando o sudo para respeitar o grupo sudo ###
+sed -e '/Defaults targetpw/ s/^#*/# /' -i $destino/etc/sudoers
+echo "# Allow members of group sudo to execute any command
+%sudo ALL=(ALL) ALL" > $destino/etc/sudoers.d/sudoers-users
+
+### Criando entrada no boot ###
+# chroot /mnt efibootmgr -c -d ${particao_EFI//[0-9]/} -p ${particao_EFI: -1} -L "openSUSE" -l '\EFI\opensuse\grubx64.efi'
+
+### Ajustando o nome do computador ###
+echo "$nome_computador" > $destino/etc/hostname
+
+### Ajustando idioma e fuso ###
+echo "LANG=pt_BR.utf8" > $destino/etc/environment
+sed 's/INSTALLED_LANGUAGES=""/INSTALLED_LANGUAGES="pt_BR"/' -i $destino/etc/sysconfig/language
+echo "LANG=pt_BR.UTF-8" > $destino/etc/locale.conf
+rm $destino/etc/localtime
+ln -s /usr/share/zoneinfo/America/Sao_Paulo $destino/etc/localtime
+
+### Desmontando diretórios ###
+umount $destino/sys/firmware/efi/efivars
+umount $destino/boot/efi
+umount $destino/dev
+umount $destino/proc
+umount $destino/sys
+umount $destino
