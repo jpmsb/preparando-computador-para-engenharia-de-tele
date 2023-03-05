@@ -7,6 +7,7 @@ particao_EFI=$2
 usuario=$3
 senha=$4
 nome_completo=$5
+nome_computador=$6
 
 ajuda(){
     echo -e "Seu comando não possui todos os argumentos necessários. Veja o uso e exemplo abaixo:\n"
@@ -17,7 +18,7 @@ ajuda(){
     echo
 }
 
-if [ "$#" -lt "5" ]; then
+if [ "$#" -lt "6" ]; then
    # ajuda
    read -p "Partição onde o sistema será instalado [ex.: /dev/sda2]: " particao_raiz
    read -p "Partição de inicialização EFI [ex.: /dev/sda1]: " particao_EFI
