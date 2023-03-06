@@ -42,42 +42,36 @@ if [ "$#" -lt "6" ]; then
    read -p "Nome do computador (não pode conter espaços) [ex.: meupc]: " nome_computador
 fi
 
+echo -e "\nInformações coletadas:"
+echo "- Partição onde o sistema será instalado: $particao_raiz"
+echo "- Partição de inicialização EFI: $particao_EFI"
+echo "- Nome de usuário a ser criado: $usuario"
+echo "- Nome completo para o novo usuário: $nome_completo"
+echo "- Nome do computador: $nome_computador"
+echo
+
+read -p "As informações acima estão corretas? [S/N] " resposta
+
+if [ "$resposta" == "N" ] || [ "$resposta" == "n" ]; then
+    echo -e "\nA instalação foi cancelada. Execute-a novamente para recomeçar."
+    exit 0
+fi
+
 mount $particao_raiz $destino
 
 ### Instalação do sistema base ###
-zypper -n --installroot $destino install -y --no-recommends zypper-needs-restarting systemd-lang systemd-container ca-certificates ca-certificates-mozilla efitools efivar fwupd-efi vim shadow iproute2 iputils openSUSE-release mokutil kernel-default kernel-default-devel NetworkManager-lang NetworkManager-applet-lang NetworkManager-connection-editor sudo curl htop grub2-branding-openSUSE grub2-x86_64-efi-extras gpm nload lightdm-lang lightdm-gtk-greeter-lang lightdm-gtk-greeter-settings-lang xfce4-panel-lang xfce4-panel-profiles xfce4-panel-restore-defaults xfce4-power-manager-lang xfce4-pulseaudio-plugin-lang pavucontrol-lang xfce4-screensaver xfce4-screenshooter-lang xfce4-session-lang xfce4-settings-lang xfce4-terminal-lang xfce4-datetime-plugin-lang xfce4-genmon-plugin-lang xfce4-kbdleds-plugin-lang xfce4-notifyd-lang xfce4-panel-lang xfce4-pulseaudio-plugin-lang xfce4-systemload-plugin-lang xorg-x11-driver-video xorg-x11-server-extra pipewire-lang pipewire-pulseaudio okular-lang nomacs-lang flatpak git vlc-lang vlc-codec-gstreamer ffmpeg-4 plymouth-lang gparted-lang pluma-lang engrampa-lang unzip zip 7zip bzip2 gzip unrar libreoffice libreoffice-branding-openSUSE libreoffice-l10n-pt_BR libreoffice-l10n-en metatheme-adapta-common gtk3-metatheme-adapta gtk4-metatheme-adapta xfce4-notifyd-theme-adapta xfwm4-theme-adapta MozillaFirefox MozillaFirefox-branding-openSUSE MozillaFirefox-translations-common MozillaFirefox-translations-other fish yt-dlp-fish-completion tealdeer-fish-completion tealdeer yt-dlp gnome-calculator-lang kcolorchooser-lang gnome-disk-utility-lang virt-manager btop baobab-lang qt5ct kolourpaint blueman-lang bluez NetworkManager-bluetooth thunar-lang thunar-sendto-blueman thunar-plugin-media-tags-lang thunar-plugin-shares-lang thunar-volman-branding-openSUSE thunar-volman-lang thunar-plugin-archive-lang thunar-font-manager kernel-firmware-all yast2 yast2-bootloader yast2-control-center yast2-sudo yast2-trans-pt_BR yast2-sysconfig yast2-update yast2-services-manager yast2-security yast2-qt-branding-openSUSE yast2-online-update yast2-online-update-configuration yast2-online-update-frontend yast2-installation xkeyboard-config-lang xorg-x11-driver-input xinput xf86-input-joystick wget-lang glibc-locale chrony xfdesktop-lang
+zypper -n --installroot $destino install -y --no-recommends zypper-needs-restarting systemd-lang systemd-container ca-certificates ca-certificates-mozilla curl gawk grep sed tar xz
 
-
-### Bloqueando o pacote ALSA problemático ###
-zypper --root $destino remove alsa-ucm-conf
-zypper --root $destino addlock alsa-ucm-conf
-
-
-### Preparando o ambiente para a instalação do GRUB ###
+### Montando diretórios adicionais ###
 mount --bind /sys $destino/sys
 mount --bind /proc $destino/proc
 mount --bind /dev $destino/dev
 mkdir $destino/boot/efi
 
-mount $particao_EFI $destino/boot/efi
-# chroot $destino
-chroot $destino mount -t efivarfs efivarfs /sys/firmware/efi/efivars
-chroot $destino grub2-install
-chroot $destino dracut -vf --regenerate-all
-chroot $destino grub2-mkconfig -o /boot/grub2/grub.cfg
-
-### Ajustando o servidor de DNS ###
-chroot $destino bash -c 'echo "nameserver 8.8.8.8" > /etc/resolv.conf'
-
-### Ajustando os pontos de montagem no fstab ###
-# echo "$(blkid | grep -v loop | grep ext4 | awk '{print $2}') / ext4 defaults 0 0" > /etc/fstab
-# echo "$(blkid | grep vfat | awk '{print $2}') /boot/efi vfat utf8 0 0" >> /etc/fstab
-
-chroot $destino echo "$(/usr/sbin/blkid | grep -v loop | grep ext4 | awk '{print $2}') / ext4 defaults 0 0" > $destino/etc/fstab
-chroot $destino echo "$(/usr/sbin/blkid | grep vfat | awk '{print $2}') /boot/efi vfat utf8 0 0" >> $destino/etc/fstab
+### Atualizando os certificados SSL ###
+chroot $destino update-ca-certificates
 
 ### Adicionando os repositórios necessários ###
-
 chroot $destino bash -c 'echo "[Open Source Software]
 name=Open Source Software
 enabled=1
@@ -166,8 +160,8 @@ baseurl=https://provo-mirror.opensuse.org/repositories/X11:/RemoteDesktop:/x2go/
 type=rpm-md
 keeppackages=0" > /etc/zypp/repos.d/X2Go.repo'
 
-### Atualizando os certificados SSL ###
-chroot $destino update-ca-certificates
+### Ajustando o servidor de DNS ###
+chroot $destino bash -c 'echo "nameserver 8.8.8.8" > /etc/resolv.conf'
 
 ### Importando a chave do repositório do Visual Studio Code ###
 chroot $destino rpm --import https://packages.microsoft.com/keys/microsoft.asc
@@ -178,14 +172,36 @@ zypper -n --root $destino --gpg-auto-import-keys refresh -f
 ### Aplicando as atualizações ###
 zypper -n --root $destino dist-upgrade -y --download-in-advance --allow-vendor-change --no-recommends
 
+### Instalação do restante do sistema base ###
+zypper -n --root $destino install -y --no-recommends efitools efivar fwupd-efi vim iproute2 iputils mokutil kernel-default kernel-default-devel NetworkManager-lang sudo htop grub2-branding-openSUSE grub2-x86_64-efi-extras gpm nload xorg-x11-driver-video xorg-x11-server-extra pipewire-lang pipewire-pulseaudio flatpak git ffmpeg-4 plymouth-lang unzip zip 7zip bzip2 gzip unrar fish yt-dlp-fish-completion tealdeer-fish-completion tealdeer yt-dlp btop NetworkManager-bluetooth kernel-firmware-all yast2 yast2-bootloader yast2-control-center yast2-sudo yast2-trans-pt_BR yast2-sysconfig yast2-update yast2-services-manager yast2-security yast2-online-update yast2-online-update-configuration yast2-online-update-frontend yast2-installation xkeyboard-config-lang xorg-x11-driver-input xinput xf86-input-joystick wget-lang glibc-locale chrony xorg-x11-fonts-core adobe-sourcecodepro-fonts dejavu-fonts mkfontscale myspell-dictionaries myspell-en myspell-en_US myspell-lightproof-en myspell-lightproof-pt_BR myspell-pt_BR apparmor-utils-lang apparmor-parser-lang apparmor-abstractions which
+
+### Bloqueando o pacote ALSA problemático ###
+zypper --root $destino remove alsa-ucm-conf
+zypper --root $destino addlock alsa-ucm-conf
+
+### Instalação do grub ###
+mount $particao_EFI $destino/boot/efi
+# chroot $destino
+chroot $destino mount -t efivarfs efivarfs /sys/firmware/efi/efivars
+chroot $destino grub2-install
+chroot $destino dracut -vf --regenerate-all
+
+sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT=""/GRUB_CMDLINE_LINUX_DEFAULT="quiet splash security=apparmor loglevel=3 nosimplefb=1"/' $destino/etc/default/grub
+
+chroot $destino grub2-mkconfig -o /boot/grub2/grub.cfg
+
+### Ajustando os pontos de montagem no fstab ###
+# echo "$(blkid | grep -v loop | grep ext4 | awk '{print $2}') / ext4 defaults 0 0" > /etc/fstab
+# echo "$(blkid | grep vfat | awk '{print $2}') /boot/efi vfat utf8 0 0" >> /etc/fstab
+
+chroot $destino echo "$(/usr/sbin/blkid | grep -v loop | grep ext4 | awk '{print $2}') / ext4 defaults 0 0" > $destino/etc/fstab
+chroot $destino echo "$(/usr/sbin/blkid | grep vfat | awk '{print $2}') /boot/efi vfat utf8 0 0" >> $destino/etc/fstab
+
+### Instalando pacotes gráficos ###
+zypper -n --root $destino install -y --download-in-advance --no-recommends lightdm-lang lightdm-gtk-greeter-lang lightdm-gtk-greeter-settings-lang xfce4-panel-lang xfce4-panel-profiles xfce4-panel-restore-defaults xfce4-power-manager-lang xfce4-pulseaudio-plugin-lang pavucontrol-lang xfce4-screensaver xfce4-screenshooter-lang xfce4-session-lang xfce4-settings-lang xfce4-terminal-lang xfce4-datetime-plugin-lang xfce4-genmon-plugin-lang xfce4-kbdleds-plugin-lang xfce4-notifyd-lang xfce4-panel-lang xfce4-pulseaudio-plugin-lang xfce4-systemload-plugin-lang okular-lang nomacs-lang vlc-lang vlc-codec-gstreamer gparted-lang pluma-lang engrampa-lang libreoffice libreoffice-branding-openSUSE libreoffice-l10n-pt_BR libreoffice-l10n-en metatheme-adapta-common gtk3-metatheme-adapta gtk4-metatheme-adapta xfce4-notifyd-theme-adapta xfwm4-theme-adapta MozillaFirefox MozillaFirefox-branding-openSUSE MozillaFirefox-translations-common MozillaFirefox-translations-other gnome-calculator-lang kcolorchooser-lang gnome-disk-utility-lang virt-manager qt5ct kolourpaint blueman-lang bluez NetworkManager-applet-lang NetworkManager-connection-editor baobab-lang thunar-lang thunar-sendto-blueman thunar-plugin-media-tags-lang thunar-plugin-shares-lang thunar-volman-branding-openSUSE thunar-volman-lang thunar-plugin-archive-lang thunar-font-manager yast2-qt-branding-openSUSE xfdesktop-lang libreoffice-branding-openSUSE libreoffice-calc libreoffice-draw libreoffice-filters-optional libreoffice-gnome libreoffice-gtk3 libreoffice-icon-themes libreoffice-impress libreoffice-l10n-en libreoffice-l10n-pt_BR libreoffice-mailmerge libreoffice-math libreoffice-pyuno libreoffice-share-linker libreoffice-writer polkit-gnome-lang
+
 ### Instalando codecs para o VLC e o Visual Studio Code ###
 zypper -n --root $destino install -y --download-in-advance --no-recommends vlc-codecs vlc-codec-gstreamer code
-
-### Reinstalando o tema de login LightDM ###
-zypper -n --root $destino install -y --download-in-advance --no-recommends --force lightdm-gtk-greeter
-
-### Limpando pacotes já baixados ###
-zypper -n --root $destino clean
 
 ### Criando grupos necessários ###
 groupadd --root $destino --system mail
@@ -222,6 +238,22 @@ sed 's/INSTALLED_LANGUAGES=""/INSTALLED_LANGUAGES="pt_BR"/' -i $destino/etc/sysc
 echo "LANG=pt_BR.UTF-8" > $destino/etc/locale.conf
 rm $destino/etc/localtime
 ln -s /usr/share/zoneinfo/America/Sao_Paulo $destino/etc/localtime
+
+echo "Section \"InputClass\"
+        Identifier \"system-keyboard\"
+        MatchIsKeyboard \"on\"
+        Option \"XkbLayout\" \"br\"
+        Option \"XkbModel\" \"microsoftpro\"
+        Option \"XkbOptions\" \"terminate:ctrl_alt_bksp\"
+EndSection" > $destino/etc/X11/xorg.conf.d/00-keyboard.conf
+
+echo "KEYMAP=br-abnt2
+FONT=ter-v22b
+FONT_MAP=
+FONT_UNIMAP=" > $destino/etc/vconsole.conf
+
+### Limpando pacotes já baixados ###
+zypper -n --root $destino clean
 
 ### Desmontando diretórios ###
 umount $destino/sys/firmware/efi/efivars
