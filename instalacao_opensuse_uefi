@@ -173,7 +173,7 @@ zypper -n --root $destino --gpg-auto-import-keys refresh -f
 zypper -n --root $destino dist-upgrade -y --download-in-advance --allow-vendor-change --no-recommends
 
 ### Instalação do restante do sistema base ###
-zypper -n --root $destino install -y --no-recommends efitools efivar fwupd-efi vim iproute2 iputils mokutil kernel-default kernel-default-devel NetworkManager-lang sudo htop grub2-branding-openSUSE grub2-x86_64-efi-extras gpm nload xorg-x11-driver-video xorg-x11-server-extra pipewire-lang pipewire-pulseaudio flatpak git ffmpeg-4 plymouth-lang unzip zip 7zip bzip2 gzip unrar fish yt-dlp-fish-completion tealdeer-fish-completion tealdeer yt-dlp btop NetworkManager-bluetooth kernel-firmware-all yast2 yast2-bootloader yast2-control-center yast2-sudo yast2-trans-pt_BR yast2-sysconfig yast2-update yast2-services-manager yast2-security yast2-online-update yast2-online-update-configuration yast2-online-update-frontend yast2-installation xkeyboard-config-lang xorg-x11-driver-input xinput xf86-input-joystick wget-lang glibc-locale chrony xorg-x11-fonts-core adobe-sourcecodepro-fonts dejavu-fonts mkfontscale myspell-dictionaries myspell-en myspell-en_US myspell-lightproof-en myspell-lightproof-pt_BR myspell-pt_BR apparmor-utils-lang apparmor-parser-lang apparmor-abstractions which google-opensans-fonts terminus-bitmap-fonts firewalld
+zypper -n --root $destino install -y --no-recommends --download-in-advance efitools efivar fwupd-efi vim iproute2 iputils mokutil kernel-default kernel-default-devel NetworkManager-lang sudo htop grub2-branding-openSUSE grub2-x86_64-efi-extras gpm nload xorg-x11-driver-video xorg-x11-server-extra pipewire-lang pipewire-pulseaudio flatpak git ffmpeg-4 plymouth-lang unzip zip 7zip bzip2 gzip unrar fish yt-dlp-fish-completion tealdeer-fish-completion tealdeer yt-dlp btop NetworkManager-bluetooth kernel-firmware-all yast2 yast2-bootloader yast2-control-center yast2-sudo yast2-trans-pt_BR yast2-sysconfig yast2-update yast2-services-manager yast2-security yast2-online-update yast2-online-update-configuration yast2-online-update-frontend yast2-installation xkeyboard-config-lang xorg-x11-driver-input xinput xf86-input-joystick wget-lang glibc-locale chrony xorg-x11-fonts-core adobe-sourcecodepro-fonts dejavu-fonts mkfontscale myspell-dictionaries myspell-en myspell-en_US myspell-lightproof-en myspell-lightproof-pt_BR myspell-pt_BR apparmor-utils-lang apparmor-parser-lang apparmor-abstractions which google-opensans-fonts terminus-bitmap-fonts firewalld plymouth-dracut plymouth-theme-opensuse-beat yast2-firewall
 
 ### Bloqueando o pacote ALSA problemático ###
 zypper --root $destino remove alsa-ucm-conf
@@ -190,6 +190,9 @@ sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT=""/GRUB_CMDLINE_LINUX_DEFAULT="quiet splash
 
 chroot $destino grub2-mkconfig -o /boot/grub2/grub.cfg
 
+### Ajustando o tema de início ###
+chroot $destino plymouth-set-default-theme opensuse-beat -R
+
 ### Ajustando os pontos de montagem no fstab ###
 # echo "$(blkid | grep -v loop | grep ext4 | awk '{print $2}') / ext4 defaults 0 0" > /etc/fstab
 # echo "$(blkid | grep vfat | awk '{print $2}') /boot/efi vfat utf8 0 0" >> /etc/fstab
@@ -198,10 +201,10 @@ chroot $destino echo "$(/usr/sbin/blkid | grep -v loop | grep ext4 | awk '{print
 chroot $destino echo "$(/usr/sbin/blkid | grep vfat | awk '{print $2}') /boot/efi vfat utf8 0 0" >> $destino/etc/fstab
 
 ### Instalando pacotes gráficos ###
-zypper -n --root $destino install -y --no-recommends lightdm-lang lightdm-gtk-greeter-lang lightdm-gtk-greeter-settings-lang xfce4-panel-lang xfce4-panel-profiles xfce4-panel-restore-defaults xfce4-power-manager-lang xfce4-pulseaudio-plugin-lang pavucontrol-lang xfce4-screensaver xscreensaver-data xscreensaver-data-extra xfce4-screenshooter-lang xfce4-session-lang xfce4-settings-lang xfce4-terminal-lang xfce4-datetime-plugin-lang xfce4-genmon-plugin-lang xfce4-kbdleds-plugin-lang xfce4-notifyd-lang xfce4-panel-lang xfce4-pulseaudio-plugin-lang xfce4-systemload-plugin-lang okular-lang nomacs-lang vlc-lang vlc-codec-gstreamer gparted-lang pluma-lang engrampa-lang libreoffice libreoffice-branding-openSUSE libreoffice-l10n-pt_BR libreoffice-l10n-en metatheme-adapta-common gtk3-metatheme-adapta gtk4-metatheme-adapta xfce4-notifyd-theme-adapta xfwm4-theme-adapta MozillaFirefox MozillaFirefox-branding-openSUSE MozillaFirefox-translations-common MozillaFirefox-translations-other gnome-calculator-lang kcolorchooser-lang gnome-disk-utility-lang virt-manager qt5ct kolourpaint blueman-lang bluez NetworkManager-applet-lang NetworkManager-connection-editor baobab-lang thunar-lang thunar-sendto-blueman thunar-plugin-media-tags-lang thunar-plugin-shares-lang thunar-volman-branding-openSUSE thunar-volman-lang thunar-plugin-archive-lang thunar-font-manager yast2-qt-branding-openSUSE xfdesktop-lang libreoffice-branding-openSUSE libreoffice-calc libreoffice-draw libreoffice-filters-optional libreoffice-gnome libreoffice-gtk3 libreoffice-icon-themes libreoffice-impress libreoffice-l10n-en libreoffice-l10n-pt_BR libreoffice-mailmerge libreoffice-math libreoffice-pyuno libreoffice-share-linker libreoffice-writer polkit-gnome-lang libgnomesu0 xdg-desktop-portal-gtk-lang xdg-desktop-portal-lang xdg-menu polkit-default-privs xfce4-settings-color xfce4-sensors-plugin-lang xfce4-battery-plugin-lang xfce4-appfinder-lang xfce4-xkb-plugin-lang
+zypper -n --root $destino install -y --no-recommends --download-in-advance lightdm-lang lightdm-gtk-greeter-lang lightdm-gtk-greeter-settings-lang xfce4-panel-lang xfce4-panel-profiles xfce4-panel-restore-defaults xfce4-power-manager-lang xfce4-pulseaudio-plugin-lang pavucontrol-lang xfce4-screensaver xscreensaver-data xscreensaver-data-extra xfce4-screenshooter-lang xfce4-session-lang xfce4-settings-lang xfce4-terminal-lang xfce4-datetime-plugin-lang xfce4-genmon-plugin-lang xfce4-kbdleds-plugin-lang xfce4-notifyd-lang xfce4-panel-lang xfce4-pulseaudio-plugin-lang xfce4-systemload-plugin-lang okular-lang nomacs-lang vlc-lang vlc-codec-gstreamer gparted-lang pluma-lang engrampa-lang libreoffice libreoffice-branding-openSUSE libreoffice-l10n-pt_BR libreoffice-l10n-en metatheme-adapta-common gtk3-metatheme-adapta gtk4-metatheme-adapta xfce4-notifyd-theme-adapta xfwm4-theme-adapta MozillaFirefox MozillaFirefox-branding-openSUSE MozillaFirefox-translations-common MozillaFirefox-translations-other gnome-calculator-lang kcolorchooser-lang gnome-disk-utility-lang virt-manager qt5ct kolourpaint blueman-lang bluez NetworkManager-applet-lang NetworkManager-connection-editor baobab-lang thunar-lang thunar-sendto-blueman thunar-plugin-media-tags-lang thunar-plugin-shares-lang thunar-volman-branding-openSUSE thunar-volman-lang thunar-plugin-archive-lang thunar-font-manager yast2-qt-branding-openSUSE xfdesktop-lang libreoffice-branding-openSUSE libreoffice-calc libreoffice-draw libreoffice-filters-optional libreoffice-gnome libreoffice-gtk3 libreoffice-icon-themes libreoffice-impress libreoffice-l10n-en libreoffice-l10n-pt_BR libreoffice-mailmerge libreoffice-math libreoffice-pyuno libreoffice-share-linker libreoffice-writer polkit-gnome-lang libgnomesu0 xdg-desktop-portal-gtk-lang xdg-desktop-portal-lang xdg-menu polkit-default-privs xfce4-settings-color xfce4-sensors-plugin-lang xfce4-battery-plugin-lang xfce4-appfinder-lang xfce4-xkb-plugin-lang xfce4-weather-plugin-lang yast2-theme-breeze breeze5-icons opensuse-welcome-lang
 
 ### Instalando codecs para o VLC e o Visual Studio Code ###
-zypper -n --root $destino install -y --no-recommends vlc-codecs vlc-codec-gstreamer code
+zypper -n --root $destino install -y --no-recommends --download-in-advance vlc-codecs vlc-codec-gstreamer code
 
 ### Criando grupos necessários ###
 groupadd --root $destino --system mail
@@ -209,8 +212,12 @@ groupadd --root $destino --system sudo
 groupadd --root $destino --system wheel
 
 ### Criando usuário com poder sudo ###
-useradd --root $destino -m --groups kvm,sudo,video,disk,dialout -c "$nome_completo"  --shell /usr/bin/fish $usuario
+useradd --root $destino -m --groups kvm,wheel,users,video,disk,dialout -c "$nome_completo" --shell /usr/bin/fish $usuario
 echo "$usuario:$senha" | chpasswd --root $destino
+
+### Definindo a senha do root para ser a mesma ###
+### do primeiro usuário criado                 ###
+echo "root:$senha" | chpasswd --root $destino
 
 ### Habilitando serviço de rede ###
 chroot $destino ln -s /usr/lib/systemd/system/NetworkManager.service /etc/systemd/system/network.service
@@ -221,10 +228,16 @@ chroot $destino ln -s /usr/lib/systemd/system/NetworkManager-wait-online.service
 ### Habilitando General Purpose Mouse ###
 chroot $destino ln -s /usr/lib/systemd/system/gpm.service /etc/systemd/system/multi-user.target.wants/gpm.service
 
-### Ajustando o sudo para respeitar o grupo sudo ###
+### Ajustando o sudo para respeitar o grupo wheel ###
 sed -e '/Defaults targetpw/ s/^#*/# /' -i $destino/etc/sudoers
-echo "# Allow members of group sudo to execute any command
-%sudo ALL=(ALL) ALL" > $destino/etc/sudoers.d/sudoers-users
+echo "# Allow members of group wheel to execute any command
+%wheel ALL=(ALL) ALL" > $destino/etc/sudoers.d/wheel-users
+
+echo "polkit.addAdminRule(function(action, subject) {
+    return ["unix-group:wheel"];
+});" > $destino/etc/polkit-1/rules.d/40-wheel.rules
+
+chmod +r $destino/etc/polkit-1/rules.d/40-wheel.rules
 
 ### Criando entrada no boot ###
 # chroot /mnt efibootmgr -c -d ${particao_EFI//[0-9]/} -p ${particao_EFI: -1} -L "openSUSE" -l '\EFI\opensuse\grubx64.efi'
@@ -273,8 +286,19 @@ chroot $destino flatpak remote-add --if-not-exists flathub https://flathub.org/r
 ### Limpando pacotes já baixados ###
 zypper -n --root $destino clean
 
-### Ajustando para o que o zypper use --no-recommends por padrão ###
-sed -i 's/# solver.onlyRequires = false/solver.onlyRequires = true/g' /etc/zypp/zypp.conf
+### Ajustando para que o zypper use --no-recommends por padrão ###
+sed -i 's/# solver.onlyRequires = false/solver.onlyRequires = true/g' $destino/etc/zypp/zypp.conf
+
+### Ajustando para que o zypper mude o fornecedor de pacotes por padrão ###
+sed -i 's/solver.dupAllowVendorChange = false/solver.dupAllowVendorChange = true/' $destino/etc/zypp/zypp.conf
+
+### Instalando o tema Adapta ###
+wget https://github.com/jpmsb/preparando-computador-para-engenharia-de-tele/raw/main/tema-adapta.tar.tar -O /tmp/adapta.tar.tar
+mkdir -p $destino/usr/share/themes/Adapta
+tar -xvf /tmp/adapta.tar.tar -C $destino/usr/share/themes
+
+### Habilitando a tela de boas vindas ###
+cp $destino/usr/share/applications/org.opensuse.opensuse_welcome.desktop $destino/etc/xdg/autostart/org.opensuse.opensuse_welcome.desktop
 
 ### Desmontando diretórios ###
 umount $destino/sys/firmware/efi/efivars
