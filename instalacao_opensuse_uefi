@@ -72,7 +72,7 @@ mkdir $destino/boot/efi
 chroot $destino update-ca-certificates
 
 ### Adicionando os repositórios necessários ###
-chroot $destino bash -c 'echo "[Open Source Software]
+chroot $destino bash -c 'echo "[Open_Source_Software]
 name=Open Source Software
 enabled=1
 autorefresh=0
@@ -173,7 +173,7 @@ zypper -n --root $destino --gpg-auto-import-keys refresh -f
 zypper -n --root $destino dist-upgrade -y --download-in-advance --allow-vendor-change --no-recommends
 
 ### Instalação do restante do sistema base ###
-zypper -n --root $destino install -y --no-recommends efitools efivar fwupd-efi vim iproute2 iputils mokutil kernel-default kernel-default-devel NetworkManager-lang sudo htop grub2-branding-openSUSE grub2-x86_64-efi-extras gpm nload xorg-x11-driver-video xorg-x11-server-extra pipewire-lang pipewire-pulseaudio flatpak git ffmpeg-4 plymouth-lang unzip zip 7zip bzip2 gzip unrar fish yt-dlp-fish-completion tealdeer-fish-completion tealdeer yt-dlp btop NetworkManager-bluetooth kernel-firmware-all yast2 yast2-bootloader yast2-control-center yast2-sudo yast2-trans-pt_BR yast2-sysconfig yast2-update yast2-services-manager yast2-security yast2-online-update yast2-online-update-configuration yast2-online-update-frontend yast2-installation xkeyboard-config-lang xorg-x11-driver-input xinput xf86-input-joystick wget-lang glibc-locale chrony xorg-x11-fonts-core adobe-sourcecodepro-fonts dejavu-fonts mkfontscale myspell-dictionaries myspell-en myspell-en_US myspell-lightproof-en myspell-lightproof-pt_BR myspell-pt_BR apparmor-utils-lang apparmor-parser-lang apparmor-abstractions which
+zypper -n --root $destino install -y --no-recommends efitools efivar fwupd-efi vim iproute2 iputils mokutil kernel-default kernel-default-devel NetworkManager-lang sudo htop grub2-branding-openSUSE grub2-x86_64-efi-extras gpm nload xorg-x11-driver-video xorg-x11-server-extra pipewire-lang pipewire-pulseaudio flatpak git ffmpeg-4 plymouth-lang unzip zip 7zip bzip2 gzip unrar fish yt-dlp-fish-completion tealdeer-fish-completion tealdeer yt-dlp btop NetworkManager-bluetooth kernel-firmware-all yast2 yast2-bootloader yast2-control-center yast2-sudo yast2-trans-pt_BR yast2-sysconfig yast2-update yast2-services-manager yast2-security yast2-online-update yast2-online-update-configuration yast2-online-update-frontend yast2-installation xkeyboard-config-lang xorg-x11-driver-input xinput xf86-input-joystick wget-lang glibc-locale chrony xorg-x11-fonts-core adobe-sourcecodepro-fonts dejavu-fonts mkfontscale myspell-dictionaries myspell-en myspell-en_US myspell-lightproof-en myspell-lightproof-pt_BR myspell-pt_BR apparmor-utils-lang apparmor-parser-lang apparmor-abstractions which google-opensans-fonts terminus-bitmap-fonts firewalld
 
 ### Bloqueando o pacote ALSA problemático ###
 zypper --root $destino remove alsa-ucm-conf
@@ -198,10 +198,10 @@ chroot $destino echo "$(/usr/sbin/blkid | grep -v loop | grep ext4 | awk '{print
 chroot $destino echo "$(/usr/sbin/blkid | grep vfat | awk '{print $2}') /boot/efi vfat utf8 0 0" >> $destino/etc/fstab
 
 ### Instalando pacotes gráficos ###
-zypper -n --root $destino install -y --download-in-advance --no-recommends lightdm-lang lightdm-gtk-greeter-lang lightdm-gtk-greeter-settings-lang xfce4-panel-lang xfce4-panel-profiles xfce4-panel-restore-defaults xfce4-power-manager-lang xfce4-pulseaudio-plugin-lang pavucontrol-lang xfce4-screensaver xfce4-screenshooter-lang xfce4-session-lang xfce4-settings-lang xfce4-terminal-lang xfce4-datetime-plugin-lang xfce4-genmon-plugin-lang xfce4-kbdleds-plugin-lang xfce4-notifyd-lang xfce4-panel-lang xfce4-pulseaudio-plugin-lang xfce4-systemload-plugin-lang okular-lang nomacs-lang vlc-lang vlc-codec-gstreamer gparted-lang pluma-lang engrampa-lang libreoffice libreoffice-branding-openSUSE libreoffice-l10n-pt_BR libreoffice-l10n-en metatheme-adapta-common gtk3-metatheme-adapta gtk4-metatheme-adapta xfce4-notifyd-theme-adapta xfwm4-theme-adapta MozillaFirefox MozillaFirefox-branding-openSUSE MozillaFirefox-translations-common MozillaFirefox-translations-other gnome-calculator-lang kcolorchooser-lang gnome-disk-utility-lang virt-manager qt5ct kolourpaint blueman-lang bluez NetworkManager-applet-lang NetworkManager-connection-editor baobab-lang thunar-lang thunar-sendto-blueman thunar-plugin-media-tags-lang thunar-plugin-shares-lang thunar-volman-branding-openSUSE thunar-volman-lang thunar-plugin-archive-lang thunar-font-manager yast2-qt-branding-openSUSE xfdesktop-lang libreoffice-branding-openSUSE libreoffice-calc libreoffice-draw libreoffice-filters-optional libreoffice-gnome libreoffice-gtk3 libreoffice-icon-themes libreoffice-impress libreoffice-l10n-en libreoffice-l10n-pt_BR libreoffice-mailmerge libreoffice-math libreoffice-pyuno libreoffice-share-linker libreoffice-writer polkit-gnome-lang
+zypper -n --root $destino install -y --no-recommends lightdm-lang lightdm-gtk-greeter-lang lightdm-gtk-greeter-settings-lang xfce4-panel-lang xfce4-panel-profiles xfce4-panel-restore-defaults xfce4-power-manager-lang xfce4-pulseaudio-plugin-lang pavucontrol-lang xfce4-screensaver xscreensaver-data xscreensaver-data-extra xfce4-screenshooter-lang xfce4-session-lang xfce4-settings-lang xfce4-terminal-lang xfce4-datetime-plugin-lang xfce4-genmon-plugin-lang xfce4-kbdleds-plugin-lang xfce4-notifyd-lang xfce4-panel-lang xfce4-pulseaudio-plugin-lang xfce4-systemload-plugin-lang okular-lang nomacs-lang vlc-lang vlc-codec-gstreamer gparted-lang pluma-lang engrampa-lang libreoffice libreoffice-branding-openSUSE libreoffice-l10n-pt_BR libreoffice-l10n-en metatheme-adapta-common gtk3-metatheme-adapta gtk4-metatheme-adapta xfce4-notifyd-theme-adapta xfwm4-theme-adapta MozillaFirefox MozillaFirefox-branding-openSUSE MozillaFirefox-translations-common MozillaFirefox-translations-other gnome-calculator-lang kcolorchooser-lang gnome-disk-utility-lang virt-manager qt5ct kolourpaint blueman-lang bluez NetworkManager-applet-lang NetworkManager-connection-editor baobab-lang thunar-lang thunar-sendto-blueman thunar-plugin-media-tags-lang thunar-plugin-shares-lang thunar-volman-branding-openSUSE thunar-volman-lang thunar-plugin-archive-lang thunar-font-manager yast2-qt-branding-openSUSE xfdesktop-lang libreoffice-branding-openSUSE libreoffice-calc libreoffice-draw libreoffice-filters-optional libreoffice-gnome libreoffice-gtk3 libreoffice-icon-themes libreoffice-impress libreoffice-l10n-en libreoffice-l10n-pt_BR libreoffice-mailmerge libreoffice-math libreoffice-pyuno libreoffice-share-linker libreoffice-writer polkit-gnome-lang libgnomesu0 xdg-desktop-portal-gtk-lang xdg-desktop-portal-lang xdg-menu polkit-default-privs xfce4-settings-color xfce4-sensors-plugin-lang xfce4-battery-plugin-lang xfce4-appfinder-lang xfce4-xkb-plugin-lang
 
 ### Instalando codecs para o VLC e o Visual Studio Code ###
-zypper -n --root $destino install -y --download-in-advance --no-recommends vlc-codecs vlc-codec-gstreamer code
+zypper -n --root $destino install -y --no-recommends vlc-codecs vlc-codec-gstreamer code
 
 ### Criando grupos necessários ###
 groupadd --root $destino --system mail
@@ -236,6 +236,7 @@ echo "$nome_computador" > $destino/etc/hostname
 echo "LANG=pt_BR.utf8" > $destino/etc/environment
 sed 's/INSTALLED_LANGUAGES=""/INSTALLED_LANGUAGES="pt_BR"/' -i $destino/etc/sysconfig/language
 echo "LANG=pt_BR.UTF-8" > $destino/etc/locale.conf
+echo "LC_ALL=pt_BR.UTF-8" >> $destino/etc/locale.conf
 rm $destino/etc/localtime
 ln -s /usr/share/zoneinfo/America/Sao_Paulo $destino/etc/localtime
 
@@ -252,8 +253,28 @@ FONT=ter-v22b
 FONT_MAP=
 FONT_UNIMAP=" > $destino/etc/vconsole.conf
 
+### Ajustando o tema do gerenciador de login ###
+echo "[greeter]
+background = /usr/share/wallpapers/openSUSEdefault/contents/images/1600x1200.jpg
+theme-name = Adapta-LightGreen-Nokto
+indicators = ~host;~spacer;~clock;~spacer;~language;~layout;~session;~a11y;~power;
+font-name = Open Sans 16
+icon-theme-name = breeze-dark
+clock-format = %a, %T
+screensaver-timeout = 2
+xft-antialias = true" > $destino/etc/lightdm/lightdm-gtk-greeter.conf
+
+### Ajustando permissão para o LightDM funcionar ###
+chroot $destino chown -R lightdm: /var/lib/lightdm
+
+### Adicionando repositório do Flathub ###
+chroot $destino flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+
 ### Limpando pacotes já baixados ###
 zypper -n --root $destino clean
+
+### Ajustando para o que o zypper use --no-recommends por padrão ###
+sed -i 's/# solver.onlyRequires = false/solver.onlyRequires = true/g' /etc/zypp/zypp.conf
 
 ### Desmontando diretórios ###
 umount $destino/sys/firmware/efi/efivars
