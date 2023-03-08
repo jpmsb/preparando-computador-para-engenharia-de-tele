@@ -81,7 +81,7 @@ path=/
 type=rpm-md
 keeppackages=0" > /etc/zypp/repos.d/Open_Source_Software.repo'
 
-chroot $destino bash -c 'echo "[Non Open Source Software]
+chroot $destino bash -c 'echo "[Non_Open_Source_Software]
 name=Non Open Source Software
 enabled=1
 autorefresh=0
@@ -90,7 +90,7 @@ path=/
 type=rpm-md
 keeppackages=0" > /etc/zypp/repos.d/Non_Open_Source_Software.repo'
 
-chroot $destino bash -c 'echo "[Packman Repository]
+chroot $destino bash -c 'echo "[Packman_Repository]
 name=Packman Repository
 enabled=1
 autorefresh=0
@@ -99,7 +99,7 @@ path=/
 type=rpm-md
 keeppackages=0" > /etc/zypp/repos.d/Packman_Repository.repo'
 
-chroot $destino bash -c 'echo "[Google Chrome]
+chroot $destino bash -c 'echo "[Google_Chrome]
 name=Google Chrome
 enabled=1
 autorefresh=0
@@ -126,7 +126,7 @@ path=/
 type=rpm-md
 keeppackages=0" > /etc/zypp/repos.d/Emuladores.repo'
 
-chroot $destino bash -c 'echo "[Hardware SDR]
+chroot $destino bash -c 'echo "[Hardware_SDR]
 name=Hardware SDR
 enabled=1
 autorefresh=0
@@ -134,7 +134,7 @@ baseurl=https://provo-mirror.opensuse.org/repositories/hardware:/sdr/openSUSE_Tu
 type=rpm-md
 keeppackages=0" > /etc/zypp/repos.d/Hardware_SDR.repo'
 
-chroot $destino bash -c 'echo "[Hardware Tools]
+chroot $destino bash -c 'echo "[Hardware_Tools]
 name=Hardware Tools
 enabled=1
 autorefresh=0
@@ -309,6 +309,7 @@ tar -xvf /tmp/skel.tar.gz -C $destino/etc/skel
 ### Criando usuário com poder sudo ###
 useradd --root $destino -m --groups kvm,wheel,users,video,disk,dialout -c "$nome_completo" --shell /usr/bin/fish $usuario
 echo "$usuario:$senha" | chpasswd --root $destino
+rm -rf $destino/home/$usuario/bin
 
 ### Definindo a senha do root para ser a mesma ###
 ### do primeiro usuário criado                 ###
