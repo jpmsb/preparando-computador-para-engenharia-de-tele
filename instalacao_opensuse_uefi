@@ -304,7 +304,7 @@ chroot $destino fc-cache -rv
 
 ### Instalando um skel ###
 wget https://github.com/jpmsb/preparando-computador-para-engenharia-de-tele/raw/main/skel.tar.gz -O /tmp/skel.tar.gz
-tar -zcvf /tmp/skel.tar.gz -C $destino/etc/skel
+tar -xvf /tmp/skel.tar.gz -C $destino/etc/skel
 
 ### Criando usuário com poder sudo ###
 useradd --root $destino -m --groups kvm,wheel,users,video,disk,dialout -c "$nome_completo" --shell /usr/bin/fish $usuario
