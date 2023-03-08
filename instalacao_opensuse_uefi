@@ -295,7 +295,7 @@ cp $destino/usr/share/applications/org.opensuse.opensuse_welcome.desktop $destin
 
 ### Instalando o Docklike Taskbar ###
 wget https://github.com/jpmsb/preparando-computador-para-engenharia-de-tele/raw/main/xfce4-dockelike.rpm -O $destino/tmp/docklike.rpm
-chroot $destino /tmp/docklike.rpm
+chroot $destino rpm -i /tmp/docklike.rpm
 rm $destino/tmp/docklike.rpm
 
 ### Instalando a fonte Noto Mono Nerd Font ###
