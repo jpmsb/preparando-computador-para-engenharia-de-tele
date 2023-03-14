@@ -286,6 +286,9 @@ chroot $destino ln -s /usr/lib/systemd/system/virtlogd.socket /etc/systemd/syste
 chroot $destino ln -s /usr/lib/systemd/system/libvirtd.socket /etc/systemd/system/sockets.target.wants/libvirtd.socket
 chroot $destino ln -s /usr/lib/systemd/system/libvirtd-ro.socket /etc/systemd/system/sockets.target.wants/libvirtd-ro.socket
 
+### Habilitando Earlyoom ###
+chroot $destino ln -s /usr/lib/systemd/system/earlyoom.service /etc/systemd/system/multi-user.target.wants/earlyoom.service
+
 ### Ajustando o sudo para respeitar o grupo wheel ###
 sed -e '/Defaults targetpw/ s/^#*/# /' -i $destino/etc/sudoers
 echo "# Allow members of group wheel to execute any command
