@@ -1,16 +1,16 @@
 # Preparando o seu computador para a Engenharia de Telecomunicações
 
-Quando se inicia em uma curso de tecnologia, nem sempre as ferramentas que serão utilizadas ao longo do processo já estão prontas para uso. Na Engenharia de Telecomunicações, é comum o uso de diversas aplicações e tê-las disponíveis em seu ambiente de trabalho pode facilitar a realização das tarefas.
+Quando se inicia em um curso de tecnologia, nem sempre as ferramentas que serão utilizadas ao longo do processo já estão prontas para uso. Na Engenharia de Telecomunicações, é comum o uso de diversas aplicações e tê-las disponíveis em seu ambiente de trabalho pode facilitar a realização de várias tarefas.
 
 ## Sistema operacional
 
-O sistema operacional utilizado é o openSUSE Tumbleweed, que é uma distribuição Linux, ou seja, utiliza o núcleo Linux para fazer a comunicação entre as aplicações e o *hardware* do seu computador.
+O sistema operacional escolhido é o openSUSE Tumbleweed, que é uma distribuição Linux, ou seja, utiliza o núcleo Linux para fazer a comunicação entre as aplicações e o *hardware* do seu computador.
 
 Há várias outras distribuições Linux disponíveis e bem famosas, como Ubuntu, Debian, Fedora, Linux Mint, entre outros.
 
 ### Por que openSUSE Tumbleweed?
 
-Abaixo, estão os motivos pela escolha do openSUSE Tumbleweed:
+Abaixo, estão alguns motivos para a escolha do openSUSE Tumbleweed:
 
 - Possui um ciclo de lançamento contínuo de atualizações, ou seja, basta manter o sistema atualizado que nenhuma atualização maior de versão será necessária e o sistema nunca ficará obsoleto;
 - É mantido com o apoio da empresa alemã SUSE, o que dá a segurança de o projeto não ser abandonado de uma hora para outra, como ocorrem com sistemas menores, além de haver um time de desenvolvedores para manter e testar o sistema;
