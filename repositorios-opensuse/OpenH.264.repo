@@ -1,0 +1,8 @@
+[OpenH.264]
+name=OpenH.264
+enabled=1
+autorefresh=0
+baseurl=http://codecs.opensuse.org/openh264/openSUSE_Tumbleweed/
+path=/
+type=rpm-md
+keeppackages=0

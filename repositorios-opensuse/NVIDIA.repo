@@ -1,0 +1,6 @@
+[NVIDIA]
+enabled=1
+autorefresh=0
+baseurl=https://download.nvidia.com/opensuse/tumbleweed
+type=rpm-md
+keeppackages=0

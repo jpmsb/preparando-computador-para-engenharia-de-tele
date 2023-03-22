@@ -1,0 +1,8 @@
+[Non_Open_Source_Software]
+name=Non Open Source Software
+enabled=1
+autorefresh=0
+baseurl=https://provo-mirror.opensuse.org/tumbleweed/repo/non-oss/
+path=/
+type=rpm-md
+keeppackages=0

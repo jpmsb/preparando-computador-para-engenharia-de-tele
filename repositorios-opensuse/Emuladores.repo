@@ -1,0 +1,8 @@
+[Wine]
+name=Emuladores
+enabled=1
+autorefresh=0
+baseurl=http://provo-mirror.opensuse.org/repositories/Emulators/openSUSE_Tumbleweed/
+path=/
+type=rpm-md
+keeppackages=0

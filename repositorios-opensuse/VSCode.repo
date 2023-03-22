@@ -1,0 +1,7 @@
+[VSCode]
+name=VSCode
+enabled=1
+autorefresh=0
+baseurl=https://packages.microsoft.com/yumrepos/vscode
+type=rpm-md
+keeppackages=0

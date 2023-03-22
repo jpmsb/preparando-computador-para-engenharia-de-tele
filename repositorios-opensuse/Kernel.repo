@@ -1,0 +1,7 @@
+[Kernel Stable]
+name=Kernel Stable
+enabled=0
+autorefresh=0
+baseurl=http://provo-mirror.opensuse.org/repositories/Kernel:/stable/standard
+path=/
+keeppackages=0

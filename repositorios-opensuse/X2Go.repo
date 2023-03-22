@@ -1,0 +1,7 @@
+[X2go]
+name=X2Go
+enabled=1
+autorefresh=0
+baseurl=https://provo-mirror.opensuse.org/repositories/X11:/RemoteDesktop:/x2go/openSUSE_Tumbleweed
+type=rpm-md
+keeppackages=0

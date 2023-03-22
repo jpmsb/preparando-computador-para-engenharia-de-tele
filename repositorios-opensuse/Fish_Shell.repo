@@ -1,0 +1,7 @@
+[Fish_Shell]
+name=Fish Shell
+enabled=1
+autorefresh=0
+baseurl=https://provo-mirror.opensuse.org/repositories/shells:/fish:/release:/3/openSUSE_Tumbleweed/
+type=rpm-md
+keeppackages=0

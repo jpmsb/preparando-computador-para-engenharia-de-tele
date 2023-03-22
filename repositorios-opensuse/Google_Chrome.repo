@@ -1,0 +1,9 @@
+[Google_Chrome]
+name=Google Chrome
+enabled=1
+autorefresh=0
+baseurl=https://dl.google.com/linux/chrome/rpm/stable/x86_64
+type=rpm-md
+gpgcheck=1
+gpgkey=https://dl.google.com/linux/linux_signing_key.pub
+keeppackages=0

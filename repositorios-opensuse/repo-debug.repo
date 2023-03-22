@@ -1,0 +1,7 @@
+[repo-debug]
+name=repo-debug
+enabled=0
+autorefresh=0
+baseurl=http://provo-mirror.opensuse.org/tumbleweed/repo/debug/
+path=/
+keeppackages=0

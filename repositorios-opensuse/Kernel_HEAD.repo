@@ -1,0 +1,8 @@
+[Kernel_Head]
+name=Kernel HEAD
+enabled=0
+autorefresh=0
+baseurl=http://provo-mirror.opensuse.org/repositories/Kernel:/HEAD/standard/
+path=/
+type=rpm-md
+keeppackages=0

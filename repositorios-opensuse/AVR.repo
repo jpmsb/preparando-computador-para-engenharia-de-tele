@@ -1,0 +1,8 @@
+[AVR]
+name=AVR
+enabled=0
+autorefresh=0
+baseurl=http://provo-mirror.opensuse.org/repositories/CrossToolchain:/avr/openSUSE_Tumbleweed/
+path=/
+type=rpm-md
+keeppackages=0

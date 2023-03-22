@@ -1,0 +1,8 @@
+[Open_Source_Software]
+name=Open Source Software
+enabled=1
+autorefresh=0
+baseurl=https://provo-mirror.opensuse.org/tumbleweed/repo/oss/
+path=/
+type=rpm-md
+keeppackages=0

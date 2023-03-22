@@ -1,0 +1,7 @@
+[Hardware_SDR]
+name=Hardware SDR
+enabled=1
+autorefresh=0
+baseurl=https://provo-mirror.opensuse.org/repositories/hardware:/sdr/openSUSE_Tumbleweed/
+type=rpm-md
+keeppackages=0
