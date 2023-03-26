@@ -444,6 +444,11 @@ chroot $destino su -c "fish_add_path /home/$usuario/.local/bin" -s /usr/bin/fish
 ### do primeiro usuário criado                 ###
 echo "root:$senha" | chpasswd --root $destino
 
+### Ajustando as permissões dos diretórios do PolicyKit ###
+chroot $destino chown polkitd:root /usr/share/polkit-1/rules.d
+chroot $destino chown polkitd:root /usr/share/polkit-1/rules.d/50-default.rules
+chroot $destino chown polkitd:root /etc/polkit-1/rules.d
+
 ### Desmontando diretórios ###
 desmontar_tudo $destino
 
