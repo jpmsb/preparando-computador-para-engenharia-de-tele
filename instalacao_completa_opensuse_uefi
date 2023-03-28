@@ -173,15 +173,15 @@ type=rpm-md
 priority=99
 keeppackages=0" > /etc/zypp/repos.d/Update.repo'
 
-chroot $destino bash -c 'echo "[Emuladores]
-name=Emuladores
+chroot $destino bash -c 'echo "[Emulators]
+name=Emulators
 enabled=1
 autorefresh=0
 baseurl=http://download.opensuse.org/repositories/Emulators/openSUSE_Tumbleweed/
 path=/
 type=rpm-md
 priority=99
-keeppackages=0" > /etc/zypp/repos.d/Emuladores.repo'
+keeppackages=0" > /etc/zypp/repos.d/Emulators.repo'
 
 chroot $destino bash -c 'echo "[Hardware_SDR]
 name=Hardware SDR
@@ -192,8 +192,8 @@ type=rpm-md
 priority=99
 keeppackages=0" > /etc/zypp/repos.d/Hardware_SDR.repo'
 
-chroot $destino bash -c 'echo "[Hardware_Tools]
-name=Hardware Tools
+chroot $destino bash -c 'echo "[Hardware]
+name=Hardware
 enabled=1
 autorefresh=0
 baseurl=http://download.opensuse.org/repositories/hardware/openSUSE_Tumbleweed/
@@ -201,7 +201,7 @@ type=rpm-md
 gpgcheck=1
 gpgkey=http://download.opensuse.org/repositories/hardware/openSUSE_Tumbleweed/repodata/repomd.xml.key
 priority=99
-keeppackages=0" > /etc/zypp/repos.d/Hardware_Tools.repo'
+keeppackages=0" > /etc/zypp/repos.d/Hardware.repo'
 
 chroot $destino bash -c 'echo "[VSCode]
 name=VSCode
@@ -230,6 +230,15 @@ path=/
 type=rpm-md
 priority=99
 keeppackages=0" > /etc/zypp/repos.d/libdvdcss.repo'
+
+chroot $destino bash -c 'echo "[Education]
+name=Education
+enabled=1
+autorefresh=0
+baseurl=https://download.opensuse.org/repositories/Education/openSUSE_Tumbleweed/
+path=/
+type=rpm-md
+keeppackages=0" > /etc/zypp/repos.d/Education.repo'
 
 ### Ajustando o servidor de DNS ###
 chroot $destino bash -c 'echo "nameserver 8.8.8.8" > /etc/resolv.conf'
