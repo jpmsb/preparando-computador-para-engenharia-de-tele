@@ -280,8 +280,8 @@ chroot $destino plymouth-set-default-theme opensuse-beat -R
 chroot $destino dracut -vf --regenerate-all
 
 ### Ajustando os pontos de montagem no fstab ###
-chroot $destino echo "$(/usr/sbin/blkid | grep -v loop | grep ext4 | awk '{print $2}') / ext4 defaults 0 0" > $destino/etc/fstab
-chroot $destino echo "$(/usr/sbin/blkid | grep vfat | awk '{print $2}') /boot/efi vfat utf8 0 0" >> $destino/etc/fstab
+echo "$(/usr/sbin/blkid | grep "$particao_raiz" | awk '{print $2}') / ext4 defaults 0 0" > $destino/etc/fstab
+echo "$(/usr/sbin/blkid | grep "$particao_EFI" | awk '{print $2}') /boot/efi vfat utf8 0 0" >> $destino/etc/fstab
 
 ### Removendo pacotes conflitantes ###
 zypper -n --root $destino remove -y xscreensaver
@@ -432,7 +432,7 @@ tentar "$comando_1" $tentivas_maximas
 tar -xvf /tmp/skel.tar.gz -C $destino/etc/skel
 
 ### Criando usuário com poder sudo ###
-useradd --root $destino -m --groups kvm,wheel,users,video,disk,dialout -c "$nome_completo" --shell /usr/bin/fish $usuario
+useradd --root $destino -m --groups kvm,libvirt,wheel,users,video,disk,dialout -c "$nome_completo" --shell /usr/bin/fish $usuario
 echo "$usuario:$senha" | chpasswd --root $destino
 rm -rf $destino/home/$usuario/bin
 
