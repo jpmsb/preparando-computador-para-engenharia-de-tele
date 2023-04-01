@@ -3,7 +3,7 @@
 ### Funções auxiliares ###
     desmontar_tudo(){
     local destino=$1
-    
+
     ### Desmontando diretórios ###
     umount $destino/sys/firmware/efi/efivars
     umount $destino/boot/efi
@@ -123,7 +123,7 @@ mkdir $destino/boot/efi
 chroot $destino update-ca-certificates
 
 ### Adicionando os repositórios necessários ###
-chroot $destino bash -c 'echo "[Open_Source_Software]
+echo '[Open_Source_Software]
 name=Open Source Software
 enabled=1
 autorefresh=0
@@ -131,9 +131,9 @@ baseurl=https://download.opensuse.org/tumbleweed/repo/oss/
 path=/
 type=rpm-md
 priority=99
-keeppackages=0" > /etc/zypp/repos.d/Open_Source_Software.repo'
+keeppackages=0' > $destino/etc/zypp/repos.d/Open_Source_Software.repo
 
-chroot $destino bash -c 'echo "[Non_Open_Source_Software]
+echo '[Non_Open_Source_Software]
 name=Non Open Source Software
 enabled=1
 autorefresh=0
@@ -141,39 +141,18 @@ baseurl=https://download.opensuse.org/tumbleweed/repo/non-oss/
 path=/
 type=rpm-md
 priority=99
-keeppackages=0" > /etc/zypp/repos.d/Non_Open_Source_Software.repo'
+keeppackages=0' > $destino/etc/zypp/repos.d/Non_Open_Source_Software.repo
 
-chroot $destino bash -c 'echo "[Packman_Repository]
-name=Packman Repository
-enabled=1
-autorefresh=0
-baseurl=http://ftp.gwdg.de/pub/linux/misc/packman/suse/openSUSE_Tumbleweed/
-path=/
-type=rpm-md
-priority=95
-keeppackages=0" > /etc/zypp/repos.d/Packman_Repository.repo'
-
-chroot $destino bash -c 'echo "[Google_Chrome]
-name=Google Chrome
-enabled=1
-autorefresh=0
-baseurl=https://dl.google.com/linux/chrome/rpm/stable/x86_64
-type=rpm-md
-gpgcheck=1
-gpgkey=https://dl.google.com/linux/linux_signing_key.pub
-priority=99
-keeppackages=0" > /etc/zypp/repos.d/Google_Chrome.repo'
-
-chroot $destino bash -c 'echo "[Update]
+echo '[Update]
 name=Update
 enabled=1
 autorefresh=0
 baseurl=http://download.opensuse.org/update/tumbleweed/
 type=rpm-md
 priority=99
-keeppackages=0" > /etc/zypp/repos.d/Update.repo'
+keeppackages=0' > $destino/etc/zypp/repos.d/Update.repo
 
-chroot $destino bash -c 'echo "[Emulators]
+echo "[Emulators]
 name=Emulators
 enabled=1
 autorefresh=0
@@ -181,18 +160,18 @@ baseurl=http://download.opensuse.org/repositories/Emulators/openSUSE_Tumbleweed/
 path=/
 type=rpm-md
 priority=99
-keeppackages=0" > /etc/zypp/repos.d/Emulators.repo'
+keeppackages=0" > $destino/etc/zypp/repos.d/Emulators.repo
 
-chroot $destino bash -c 'echo "[Hardware_SDR]
+echo '[Hardware_SDR]
 name=Hardware SDR
 enabled=1
 autorefresh=0
 baseurl=https://download.opensuse.org/repositories/hardware:/sdr/openSUSE_Tumbleweed/
 type=rpm-md
 priority=99
-keeppackages=0" > /etc/zypp/repos.d/Hardware_SDR.repo'
+keeppackages=0' > $destino/etc/zypp/repos.d/Hardware_SDR.repo
 
-chroot $destino bash -c 'echo "[Hardware]
+echo '[Hardware]
 name=Hardware
 enabled=1
 autorefresh=0
@@ -201,27 +180,46 @@ type=rpm-md
 gpgcheck=1
 gpgkey=http://download.opensuse.org/repositories/hardware/openSUSE_Tumbleweed/repodata/repomd.xml.key
 priority=99
-keeppackages=0" > /etc/zypp/repos.d/Hardware.repo'
+keeppackages=0' > $destino/etc/zypp/repos.d/Hardware.repo
 
-chroot $destino bash -c 'echo "[VSCode]
+echo '[Education]
+name=Education
+enabled=1
+autorefresh=0
+baseurl=https://download.opensuse.org/repositories/Education/openSUSE_Tumbleweed/
+path=/
+type=rpm-md
+keeppackages=0' > $destino/etc/zypp/repos.d/Education.repo
+
+echo '[Packman_Repository]
+name=Packman Repository
+enabled=1
+autorefresh=0
+baseurl=http://ftp.gwdg.de/pub/linux/misc/packman/suse/openSUSE_Tumbleweed/
+path=/
+type=rpm-md
+priority=95
+keeppackages=0' > $destino/etc/zypp/repos.d/Packman_Repository.repo
+
+echo '[VSCode]
 name=VSCode
 enabled=1
 autorefresh=0
 baseurl=https://packages.microsoft.com/yumrepos/vscode
 type=rpm-md
 priority=99
-keeppackages=0" > /etc/zypp/repos.d/VSCode.repo'
+keeppackages=0' > $destino/etc/zypp/repos.d/VSCode.repo
 
-chroot $destino bash -c 'echo "[X2go]
+echo '[X2go]
 name=X2Go
 enabled=1
 autorefresh=0
 baseurl=https://download.opensuse.org/repositories/X11:/RemoteDesktop:/x2go/openSUSE_Tumbleweed
 type=rpm-md
 priority=99
-keeppackages=0" > /etc/zypp/repos.d/X2Go.repo'
+keeppackages=0' > $destino/etc/zypp/repos.d/X2Go.repo
 
-chroot $destino bash -c 'echo "[libdvdcss]
+echo '[libdvdcss]
 name=libdvdcss
 enabled=1
 autorefresh=0
@@ -229,22 +227,57 @@ baseurl=http://opensuse-guide.org/repo/openSUSE_Tumbleweed/
 path=/
 type=rpm-md
 priority=99
-keeppackages=0" > /etc/zypp/repos.d/libdvdcss.repo'
+keeppackages=0' > $destino/etc/zypp/repos.d/libdvdcss.repo
 
-chroot $destino bash -c 'echo "[Education]
-name=Education
+echo '[google-chrome]
+name=google-chrome
 enabled=1
 autorefresh=0
-baseurl=https://download.opensuse.org/repositories/Education/openSUSE_Tumbleweed/
-path=/
+baseurl=https://dl.google.com/linux/chrome/rpm/stable/x86_64
+gpgcheck=1
+gpgkey=https://dl.google.com/linux/linux_signing_key.pub
 type=rpm-md
-keeppackages=0" > /etc/zypp/repos.d/Education.repo'
+keeppackages=0' > $destino/etc/zypp/repos.d/google-chrome.repo
+
+echo '[teamviewer]
+name=TeamViewer - $basearch
+baseurl=https://linux.teamviewer.com/yum/stable/main/binary-$basearch/
+gpgkey=https://linux.teamviewer.com/pubkey/currentkey.asc
+gpgcheck=1
+repo_gpgcheck=1
+enabled=1
+autorefresh=0
+type=rpm-md' > $destino/etc/zypp/repos.d/teamviewer.repo
+
+echo '[geogebra]
+name=geogebra
+enabled=1
+autorefresh=0
+baseurl=http://www.geogebra.net/linux/rpm/x86_64
+type=rpm-md
+repo_gpgcheck=0
+keeppackages=0' > $destino/etc/zypp/repos.d/geogebra.repo
+
+echo '[AnyDesk]
+name=AnyDesk
+enabled=1
+autorefresh=0
+baseurl=http://rpm.anydesk.com/opensuse/x86_64/
+gpgcheck=1
+repo_gpgcheck=1
+gpgkey=https://keys.anydesk.com/repos/RPM-GPG-KEY' > $destino/etc/zypp/repos.d/AnyDesk.repo
+
 
 ### Ajustando o servidor de DNS ###
-chroot $destino bash -c 'echo "nameserver 8.8.8.8" > /etc/resolv.conf'
+echo "nameserver 8.8.8.8" > $destino/etc/resolv.conf
 
 ### Importando a chave do repositório do Visual Studio Code ###
 comando_1="chroot $destino rpm --import https://packages.microsoft.com/keys/microsoft.asc"
+
+tentar "$comando_1" $tentivas_maximas
+
+### Importando a chave do repositório do Geogebra ###
+comando_1="chroot $destino rpm --import https://static.geogebra.org/linux/office@geogebra.org.gpg.key"
 
 tentar "$comando_1" $tentivas_maximas
 
@@ -288,7 +321,7 @@ zypper -n --root $destino remove -y xscreensaver
 
 ### Instalando componentes gráficos e da área de trabalho ###
 comando_1="zypper -n --root $destino refresh -f"
-comando_2="zypper -n --root $destino install -y --download-in-advance lightdm-lang lightdm-gtk-greeter-lang lightdm-gtk-greeter-settings-lang xfce4-panel-lang xfce4-panel-profiles xfce4-panel-restore-defaults xfce4-power-manager-lang xfce4-pulseaudio-plugin-lang pavucontrol-lang xfce4-screensaver xscreensaver-data-extra xfce4-screenshooter-lang xfce4-session-lang xfce4-settings-lang xfce4-terminal-lang xfce4-datetime-plugin-lang xfce4-genmon-plugin-lang xfce4-kbdleds-plugin-lang xfce4-notifyd-lang xfce4-panel-lang xfce4-pulseaudio-plugin-lang xfce4-systemload-plugin-lang okular-lang nomacs-lang vlc-lang vlc-codecs vlc-codec-gstreamer gstreamer-plugins-ugly-codecs gstreamer-plugins-bad-codecs libavcodec56 libavcodec57 gparted-lang pluma-lang engrampa-lang libreoffice libreoffice-branding-openSUSE libreoffice-l10n-pt_BR libreoffice-l10n-en metatheme-adapta-common gtk3-metatheme-adapta gtk4-metatheme-adapta xfce4-notifyd-theme-adapta xfwm4-lang xfwm4-theme-adapta MozillaFirefox MozillaFirefox-branding-openSUSE MozillaFirefox-translations-common MozillaFirefox-translations-other gnome-calculator-lang kcolorchooser-lang gnome-disk-utility-lang virt-manager qt5ct kolourpaint-lang blueman-lang bluez NetworkManager-applet-lang NetworkManager-connection-editor baobab-lang thunar-lang thunar-sendto-blueman thunar-plugin-media-tags-lang thunar-plugin-shares-lang thunar-volman-branding-openSUSE thunar-volman-lang thunar-plugin-archive-lang thunar-font-manager xfdesktop-lang libreoffice-branding-openSUSE libreoffice-calc libreoffice-draw libreoffice-filters-optional libreoffice-gnome libreoffice-gtk3 libreoffice-icon-themes libreoffice-impress libreoffice-l10n-en libreoffice-l10n-pt_BR libreoffice-mailmerge libreoffice-math libreoffice-pyuno libreoffice-share-linker libreoffice-writer polkit-gnome-lang libgnomesu0 xdg-desktop-portal-gtk-lang xdg-desktop-portal-lang xfce4-settings-color xfce4-sensors-plugin-lang xfce4-battery-plugin-lang xfce4-appfinder-lang xfce4-xkb-plugin-lang xfce4-weather-plugin-lang yast2-theme-breeze breeze5-icons opensuse-welcome-lang gvfs-lang libqt5-qtxmlpatterns-imports libQt5WebChannel5-imports vlc-qt vlc tumbler tumbler-lang tumbler-webp-thumbnailer sox transmission-gtk-lang libva-utils xclip xclipboard libgnomesu-lang fontconfig-lang gtk2-lang gtk3-lang gsettings-desktop-schemas-lang gstreamer-lang gstreamer-plugins-bad-lang gstreamer-plugins-base-lang gstreamer-plugins-ugly-lang xfce4-docklike-plugin xfce4-whiskermenu-plugin-lang xfce4-panel-plugin-indicator-lang upower-lang zenity-lang gdk-pixbuf-lang colord-lang xfce4-power-manager-plugin xfce4-power-manager-branding-openSUSE firewall-config xkill mugshot yast2-usbauth yast2-update-FACTORY yast2-testsuite yast2-multipath yast2-devtools autoyast2 yast2-installation-control yast2-configuration-management yast2-support patterns-yast-yast2_desktop patterns-yast-yast2_basis yast2-alternatives yast2-tune yast2-kdump yast2-apparmor yast2-journal libdvdcss2 qsynth-lang gstreamer-plugins-bad-fluidsynth fluidsynth libvulkan_intel libvulkan_radeon simplescreenrecorder google-noto-sans-cjk-fonts simple-scan-lang"
+comando_2="zypper -n --root $destino install -y --download-in-advance lightdm-lang lightdm-gtk-greeter-lang lightdm-gtk-greeter-settings-lang xfce4-panel-lang xfce4-panel-profiles xfce4-panel-restore-defaults xfce4-power-manager-lang xfce4-pulseaudio-plugin-lang pavucontrol-lang xfce4-screensaver xscreensaver-data-extra xfce4-screenshooter-lang xfce4-session-lang xfce4-settings-lang xfce4-terminal-lang xfce4-datetime-plugin-lang xfce4-genmon-plugin-lang xfce4-kbdleds-plugin-lang xfce4-notifyd-lang xfce4-panel-lang xfce4-pulseaudio-plugin-lang xfce4-systemload-plugin-lang okular-lang nomacs-lang vlc-lang vlc-codecs vlc-codec-gstreamer gstreamer-plugins-ugly-codecs gstreamer-plugins-bad-codecs libavcodec56 libavcodec57 gparted-lang pluma-lang engrampa-lang libreoffice libreoffice-branding-openSUSE libreoffice-l10n-pt_BR libreoffice-l10n-en metatheme-adapta-common gtk3-metatheme-adapta gtk4-metatheme-adapta xfce4-notifyd-theme-adapta xfwm4-lang xfwm4-theme-adapta MozillaFirefox MozillaFirefox-branding-openSUSE MozillaFirefox-translations-common MozillaFirefox-translations-other gnome-calculator-lang kcolorchooser-lang gnome-disk-utility-lang virt-manager qt5ct kolourpaint-lang blueman-lang bluez NetworkManager-applet-lang NetworkManager-connection-editor baobab-lang thunar-lang thunar-sendto-blueman thunar-plugin-media-tags-lang thunar-plugin-shares-lang thunar-volman-branding-openSUSE thunar-volman-lang thunar-plugin-archive-lang thunar-font-manager xfdesktop-lang libreoffice-branding-openSUSE libreoffice-calc libreoffice-draw libreoffice-filters-optional libreoffice-gnome libreoffice-gtk3 libreoffice-icon-themes libreoffice-impress libreoffice-l10n-en libreoffice-l10n-pt_BR libreoffice-mailmerge libreoffice-math libreoffice-pyuno libreoffice-share-linker libreoffice-writer polkit-gnome-lang libgnomesu0 xdg-desktop-portal-gtk-lang xdg-desktop-portal-lang xfce4-settings-color xfce4-sensors-plugin-lang xfce4-battery-plugin-lang xfce4-appfinder-lang xfce4-xkb-plugin-lang xfce4-weather-plugin-lang yast2-theme-breeze breeze5-icons opensuse-welcome-lang gvfs-lang libqt5-qtxmlpatterns-imports libQt5WebChannel5-imports vlc-qt vlc tumbler tumbler-lang tumbler-webp-thumbnailer sox transmission-gtk-lang libva-utils xclip xclipboard libgnomesu-lang fontconfig-lang gtk2-lang gtk3-lang gsettings-desktop-schemas-lang gstreamer-lang gstreamer-plugins-bad-lang gstreamer-plugins-base-lang gstreamer-plugins-ugly-lang xfce4-docklike-plugin xfce4-whiskermenu-plugin-lang xfce4-panel-plugin-indicator-lang upower-lang zenity-lang gdk-pixbuf-lang colord-lang xfce4-power-manager-plugin xfce4-power-manager-branding-openSUSE firewall-config xkill mugshot yast2-usbauth yast2-update-FACTORY yast2-testsuite yast2-multipath yast2-devtools autoyast2 yast2-installation-control yast2-configuration-management yast2-support patterns-yast-yast2_desktop patterns-yast-yast2_basis yast2-alternatives yast2-tune yast2-kdump yast2-apparmor yast2-journal libdvdcss2 qsynth-lang gstreamer-plugins-bad-fluidsynth fluidsynth libvulkan_intel libvulkan_radeon simplescreenrecorder google-noto-sans-cjk-fonts simple-scan-lang libgtkglext-x11-1_0-0"
 
 tentar "$comando_1 ; $comando_2" $tentivas_maximas
 
