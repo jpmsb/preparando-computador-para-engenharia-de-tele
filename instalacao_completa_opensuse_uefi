@@ -126,7 +126,7 @@ chroot $destino update-ca-certificates
 echo '[Open_Source_Software]
 name=Open Source Software
 enabled=1
-autorefresh=0
+autorefresh=1
 baseurl=https://download.opensuse.org/tumbleweed/repo/oss/
 path=/
 type=rpm-md
@@ -136,7 +136,7 @@ keeppackages=0' > $destino/etc/zypp/repos.d/Open_Source_Software.repo
 echo '[Non_Open_Source_Software]
 name=Non Open Source Software
 enabled=1
-autorefresh=0
+autorefresh=1
 baseurl=https://download.opensuse.org/tumbleweed/repo/non-oss/
 path=/
 type=rpm-md
@@ -146,7 +146,7 @@ keeppackages=0' > $destino/etc/zypp/repos.d/Non_Open_Source_Software.repo
 echo '[Update]
 name=Update
 enabled=1
-autorefresh=0
+autorefresh=1
 baseurl=http://download.opensuse.org/update/tumbleweed/
 type=rpm-md
 priority=99
@@ -155,7 +155,7 @@ keeppackages=0' > $destino/etc/zypp/repos.d/Update.repo
 echo "[Emulators]
 name=Emulators
 enabled=1
-autorefresh=0
+autorefresh=1
 baseurl=http://download.opensuse.org/repositories/Emulators/openSUSE_Tumbleweed/
 path=/
 type=rpm-md
@@ -165,7 +165,7 @@ keeppackages=0" > $destino/etc/zypp/repos.d/Emulators.repo
 echo '[Hardware_SDR]
 name=Hardware SDR
 enabled=1
-autorefresh=0
+autorefresh=1
 baseurl=https://download.opensuse.org/repositories/hardware:/sdr/openSUSE_Tumbleweed/
 type=rpm-md
 priority=99
@@ -174,7 +174,7 @@ keeppackages=0' > $destino/etc/zypp/repos.d/Hardware_SDR.repo
 echo '[Hardware]
 name=Hardware
 enabled=1
-autorefresh=0
+autorefresh=1
 baseurl=http://download.opensuse.org/repositories/hardware/openSUSE_Tumbleweed/
 type=rpm-md
 gpgcheck=1
@@ -185,7 +185,7 @@ keeppackages=0' > $destino/etc/zypp/repos.d/Hardware.repo
 echo '[Education]
 name=Education
 enabled=1
-autorefresh=0
+autorefresh=1
 baseurl=https://download.opensuse.org/repositories/Education/openSUSE_Tumbleweed/
 path=/
 type=rpm-md
@@ -194,7 +194,7 @@ keeppackages=0' > $destino/etc/zypp/repos.d/Education.repo
 echo '[Packman_Repository]
 name=Packman Repository
 enabled=1
-autorefresh=0
+autorefresh=1
 baseurl=http://ftp.gwdg.de/pub/linux/misc/packman/suse/openSUSE_Tumbleweed/
 path=/
 type=rpm-md
@@ -204,7 +204,7 @@ keeppackages=0' > $destino/etc/zypp/repos.d/Packman_Repository.repo
 echo '[VSCode]
 name=VSCode
 enabled=1
-autorefresh=0
+autorefresh=1
 baseurl=https://packages.microsoft.com/yumrepos/vscode
 type=rpm-md
 priority=99
@@ -213,7 +213,7 @@ keeppackages=0' > $destino/etc/zypp/repos.d/VSCode.repo
 echo '[X2go]
 name=X2Go
 enabled=1
-autorefresh=0
+autorefresh=1
 baseurl=https://download.opensuse.org/repositories/X11:/RemoteDesktop:/x2go/openSUSE_Tumbleweed
 type=rpm-md
 priority=99
@@ -222,7 +222,7 @@ keeppackages=0' > $destino/etc/zypp/repos.d/X2Go.repo
 echo '[libdvdcss]
 name=libdvdcss
 enabled=1
-autorefresh=0
+autorefresh=1
 baseurl=http://opensuse-guide.org/repo/openSUSE_Tumbleweed/
 path=/
 type=rpm-md
@@ -232,7 +232,7 @@ keeppackages=0' > $destino/etc/zypp/repos.d/libdvdcss.repo
 echo '[google-chrome]
 name=google-chrome
 enabled=1
-autorefresh=0
+autorefresh=1
 baseurl=https://dl.google.com/linux/chrome/rpm/stable/x86_64
 gpgcheck=1
 gpgkey=https://dl.google.com/linux/linux_signing_key.pub
@@ -246,13 +246,12 @@ gpgkey=https://linux.teamviewer.com/pubkey/currentkey.asc
 gpgcheck=1
 repo_gpgcheck=1
 enabled=1
-autorefresh=0
 type=rpm-md' > $destino/etc/zypp/repos.d/teamviewer.repo
 
 echo '[geogebra]
 name=geogebra
 enabled=1
-autorefresh=0
+autorefresh=1
 baseurl=http://www.geogebra.net/linux/rpm/x86_64
 type=rpm-md
 repo_gpgcheck=0
@@ -261,7 +260,7 @@ keeppackages=0' > $destino/etc/zypp/repos.d/geogebra.repo
 echo '[AnyDesk]
 name=AnyDesk
 enabled=1
-autorefresh=0
+autorefresh=1
 baseurl=http://rpm.anydesk.com/opensuse/x86_64/
 gpgcheck=1
 repo_gpgcheck=1
@@ -438,6 +437,9 @@ zypper -n --root $destino remove -y --clean-deps java-11-openjdk java-11-openjdk
 
 ### Ajustando para que o zypper mude o fornecedor de pacotes por padrão ###
 sed -i 's/solver.dupAllowVendorChange = false/solver.dupAllowVendorChange = true/' $destino/etc/zypp/zypp.conf
+
+### Ajustando o tempo de atualização automática dos repositórios para 7 dias ###
+sed -i '/# repo.refresh.delay = 10/a repo.refresh.delay = 10080' $destino/etc/zypp/zypp.conf
 
 ### Instalando o tema Adapta ###
 comando_1="wget https://github.com/jpmsb/preparando-computador-para-engenharia-de-tele/raw/main/tema-adapta.tar.tar -O /tmp/adapta.tar.tar"
