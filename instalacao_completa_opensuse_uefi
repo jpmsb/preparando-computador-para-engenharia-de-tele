@@ -191,6 +191,15 @@ path=/
 type=rpm-md
 keeppackages=0' > $destino/etc/zypp/repos.d/Education.repo
 
+echo '[Security_Logging]
+name=Security Logging
+type=rpm-md
+baseurl=https://download.opensuse.org/repositories/security:/logging/openSUSE_Tumbleweed/
+gpgcheck=1
+gpgkey=https://download.opensuse.org/repositories/security:/logging/openSUSE_Tumbleweed/repodata/repomd.xml.key
+enabled=1
+keeppackages=0' > $destino/etc/zypp/repos.d/Security_logging.repo
+
 echo '[Packman_Repository]
 name=Packman Repository
 enabled=1
