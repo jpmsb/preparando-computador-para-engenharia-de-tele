@@ -208,7 +208,7 @@ baseurl=http://ftp.gwdg.de/pub/linux/misc/packman/suse/openSUSE_Tumbleweed/
 path=/
 type=rpm-md
 priority=95
-keeppackages=0' > $destino/etc/zypp/repos.d/Packman_Repository.repo
+keeppackages=0' > $destino/etc/zypp/repos.d/packman.repo
 
 echo '[VSCode]
 name=VSCode
@@ -217,7 +217,7 @@ autorefresh=1
 baseurl=https://packages.microsoft.com/yumrepos/vscode
 type=rpm-md
 priority=99
-keeppackages=0' > $destino/etc/zypp/repos.d/VSCode.repo
+keeppackages=0' > $destino/etc/zypp/repos.d/vscode.repo
 
 echo '[X2go]
 name=X2Go
@@ -273,7 +273,7 @@ autorefresh=1
 baseurl=http://rpm.anydesk.com/opensuse/x86_64/
 gpgcheck=1
 repo_gpgcheck=1
-gpgkey=https://keys.anydesk.com/repos/RPM-GPG-KEY' > $destino/etc/zypp/repos.d/AnyDesk.repo
+gpgkey=https://keys.anydesk.com/repos/RPM-GPG-KEY' > $destino/etc/zypp/repos.d/anydesk.repo
 
 
 ### Ajustando o servidor de DNS ###
