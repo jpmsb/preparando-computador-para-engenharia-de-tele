@@ -493,6 +493,11 @@ echo "[org.gnome.desktop.interface]
 color-scheme='prefer-dark'" > $destino/usr/share/glib-2.0/schemas/10_org.gnome.desktop.interface.gschema.override
 chroot $destino glib-compile-schemas /usr/share/glib-2.0/schemas
 
+### Loja Gnome Software deve preferir o repositório local ao invés de Flatpak ###
+echo "[org.gnome.software]
+packaging-format-preference = [ 'package', 'flatpak' ]" > $destino/usr/share/glib-2.0/schemas/20_org.gnome.software-jpmsb.gschema.override
+chroot $destino glib-compile-schemas /usr/share/glib-2.0/schemas
+
 ### Definindo a senha do root para ser a mesma ###
 ### do primeiro usuário criado                 ###
 echo "root:$senha" | chpasswd --root $destino
