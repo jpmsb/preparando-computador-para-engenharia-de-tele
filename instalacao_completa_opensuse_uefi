@@ -508,6 +508,9 @@ chroot $destino chown polkitd:root /usr/share/polkit-1/rules.d
 chroot $destino chown polkitd:root /usr/share/polkit-1/rules.d/50-default.rules
 chroot $destino chown polkitd:root /etc/polkit-1/rules.d
 
+### Ajustando a zona padrão do Firewalld para 'trusted' ###
+chroot $destino firewall-cmd --set-default-zone=trusted
+
 ### Desmontando diretórios ###
 desmontar_tudo $destino
 
