@@ -462,7 +462,7 @@ tar -xvf /tmp/adapta.tar.tar -C $destino/usr/share/themes
 cp $destino/usr/share/applications/org.opensuse.opensuse_welcome.desktop $destino/etc/xdg/autostart/org.opensuse.opensuse_welcome.desktop
 
 ### Instalando a fonte Noto Mono Nerd Font ###
-comando_1="wget https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Noto/Mono/complete/Noto%20Mono%20Nerd%20Font%20Complete%20Mono.ttf -O \"$destino/usr/share/fonts/Noto Sans Mono Regular Nerd Font Complete.ttf\""
+comando_1="wget https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Noto/Mono/NotoMonoNerdFontMono-Regular.ttf -O $destino/usr/share/fonts/NotoMonoNerdFontMono-Regular.ttf"
 
 tentar "$comando_1" $tentivas_maximas
 
@@ -509,7 +509,7 @@ chroot $destino chown polkitd:root /usr/share/polkit-1/rules.d/50-default.rules
 chroot $destino chown polkitd:root /etc/polkit-1/rules.d
 
 ### Ajustando a zona padrão do Firewalld para 'trusted' ###
-chroot $destino firewall-cmd --set-default-zone=trusted
+chroot $destino firewall-offline-cmd --set-default-zone=trusted
 
 ### Desmontando diretórios ###
 desmontar_tudo $destino
