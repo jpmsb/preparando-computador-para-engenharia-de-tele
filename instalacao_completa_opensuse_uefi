@@ -424,6 +424,7 @@ chroot $destino grub2-install
 chroot $destino dracut -vf --regenerate-all
 
 sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT=""/GRUB_CMDLINE_LINUX_DEFAULT="quiet splash security=apparmor loglevel=3 nosimplefb=1"/' $destino/etc/default/grub
+echo "GRUB_DISABLE_OS_PROBER=\"false\"" >> $destino/etc/default/grub
 
 chroot $destino grub2-mkconfig -o /boot/grub2/grub.cfg
 
@@ -582,9 +583,11 @@ zypper -n --root $destino remove -y --clean-deps java-11-openjdk java-11-openjdk
 # sed -i 's/# solver.onlyRequires = false/solver.onlyRequires = true/g' $destino/etc/zypp/zypp.conf
 
 ### Ajustando para que o zypper mude o fornecedor de pacotes por padrão ###
+echo -e "\nAjustando para que o zypper mude o fornecedor de pacotes por padrão\n"
 sed -i 's/solver.dupAllowVendorChange = false/solver.dupAllowVendorChange = true/' $destino/etc/zypp/zypp.conf
 
 ### Ajustando o tempo de atualização automática dos repositórios para 7 dias ###
+echo -e "\nAjustando o tempo de atualização automática dos repositórios para 7 dias\n"
 sed -i '/# repo.refresh.delay = 10/a repo.refresh.delay = 10080' $destino/etc/zypp/zypp.conf
 
 ### Instalando o tema Adapta ###
