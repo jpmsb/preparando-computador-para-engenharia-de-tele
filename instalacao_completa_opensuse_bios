@@ -604,6 +604,17 @@ tentar "$comando_1" $tentivas_maximas
 
 tar -xvf /tmp/skel.tar.gz -C $destino/etc/skel
 
+### Ajustando o Package Update Indicator para ###
+### utilizar um script customizado            ###
+mkdir -p $destino/etc/skel/.config/package-update-indicator/
+echo "[General]
+refresh-interval=43200
+update-command='/usr/local/bin/atualizar-sistema'" > $destino/etc/skel/.config/package-update-indicator/package-update-indicator.conf
+
+### Script para atualizar o sistema ###
+wget https://raw.githubusercontent.com/jpmsb/preparando-computador-para-engenharia-de-tele/main/atualizar-sistema -O $destino/usr/local/bin/atualizar-sistema
+chmod +x $destino/usr/local/bin/atualizar-sistema
+
 ### Criando usuário com poder sudo ###
 useradd --root $destino -m --groups kvm,libvirt,wheel,users,video,disk,dialout -c "$nome_completo" --shell /usr/bin/fish $usuario
 echo "$usuario:$senha" | chpasswd --root $destino
