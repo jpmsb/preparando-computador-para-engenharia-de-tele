@@ -576,8 +576,8 @@ chroot $destino flatpak remote-add --if-not-exists flathub https://flathub.org/r
 ### Limpando pacotes já baixados ###
 zypper -n --root $destino clean
 
-### Removendo pacotes do Java ###
-zypper -n --root $destino remove -y --clean-deps java-11-openjdk java-11-openjdk-headless javapackages-filesystem javapackages-tools
+### Removendo pacotes desnecessários ###
+zypper -n --root $destino remove -y --clean-deps java-11-openjdk java-11-openjdk-headless javapackages-filesystem javapackages-tools busybox-ed 
 
 ### Ajustando para que o zypper use --no-recommends por padrão ###
 # sed -i 's/# solver.onlyRequires = false/solver.onlyRequires = true/g' $destino/etc/zypp/zypp.conf
