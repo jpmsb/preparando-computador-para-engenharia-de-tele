@@ -520,13 +520,16 @@ chroot $destino ln -s /usr/lib/systemd/system/earlyoom.service /etc/systemd/syst
 ### Ajustando o sudo para respeitar o grupo wheel ###
 sed -e '/Defaults targetpw/ s/^#*/# /' -i $destino/etc/sudoers
 echo "# Allow members of group wheel to execute any command
-%wheel ALL=(ALL) ALL" > $destino/etc/sudoers.d/wheel-users
+%wheel ALL=(ALL) ALL
+
+# Keep environment variables
+Defaults env_keep = \"LANG LC_ADDRESS LC_CTYPE LC_COLLATE LC_IDENTIFICATION LC_MEASUREMENT LC_MESSAGES LC_MONETARY LC_NAME LC_NUMERIC LC_PAPER LC_TELEPHONE LC_TIME LC_ALL LANGUAGE LINGUAS XDG_SESSION_COOKIE DISPLAY XAUTHORITY\"" > $destino/etc/sudoers.d/wheel-users
 
 echo "polkit.addAdminRule(function(action, subject) {
     return [\"unix-user:0\", \"unix-group:wheel\"];
 });" > $destino/etc/polkit-1/rules.d/00-wheel.rules
 
-chmod +r $destino/etc/polkit-1/rules.d/00-wheel.rules
+chmod +r $destino/etc/polkit-1/rules.d/40-wheel.rules
 
 ### Criando entrada no boot ###
 # chroot /mnt efibootmgr -c -d ${particao_EFI//[0-9]/} -p ${particao_EFI: -1} -L "openSUSE" -l '\EFI\opensuse\grubx64.efi'
