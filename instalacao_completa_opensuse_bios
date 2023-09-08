@@ -44,7 +44,7 @@ ajuda(){
 }
 
 ### Mensagem de boas vindas ###
-echo -e "\nOlá!! Este é o script de instalação completa do openSUSE Tumbleweed! Nesse tipo de instalação, serão instalados os pacotes principais e suas dependências, bem como pacotes sugeridos, ou seja, pacotes que não são necessários para o funcionamento das aplicações que serão instaladas mas que podem adicionar recurso extra. Um exemplo disso são os pacotes de tradução. Nesse script, os pacotes de tradução serão instalados explicitamente para evitar que alguma tradução acabe faltando."
+echo -e "\nOlá!! Este é o script de instalação completa do openSUSE Tumbleweed! Nesse tipo de instalação, serão instalados os pacotes principais e suas dependências, bem como pacotes sugeridos, ou seja, pacotes que não são necessários para o funcionamento das aplicações que serão instaladas, mas que podem adicionar recurso extra. Um exemplo disso são os pacotes de tradução. Neste script, os pacotes de tradução serão instalados explicitamente para evitar que alguma tradução acabe faltando."
 echo -e "\nNo mais, aproveite!!"
 
 ### Variáveis preparatórias ###
@@ -475,6 +475,9 @@ if [[ "$laptop" == [sS] ]]; then
         ACTION=="unbind", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x030000", TEST=="power/control", ATTR{power/control}="on"
         ACTION=="unbind", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x030200", TEST=="power/control", ATTR{power/control}="on"' > $destino/etc/udev/rules.d/90-nvidia-udev-pm-G05.rules
     fi
+
+    # Habilitando o TLP para preservação da bateria
+    chroot $destino ln -s /usr/lib/systemd/system/tlp.service /etc/systemd/system/multi-user.target.wants/tlp.service
 fi
 
 ### Criando diretório images ###
