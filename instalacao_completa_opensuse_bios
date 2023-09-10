@@ -296,14 +296,14 @@ type=rpm-md
 gpgcheck=1
 keeppackages=0' > $destino/etc/zypp/repos.d/Graphics.repo
 
-echo '[Xorg]
-name=Xorg
-enabled=1
-autorefresh=1
-baseurl=https://download.opensuse.org/repositories/X11:/XOrg/openSUSE_Tumbleweed/
-type=rpm-md
-gpgcheck=1
-keeppackages=0' > $destino/etc/zypp/repos.d/Xorg.repo
+# echo '[Xorg]
+# name=Xorg
+# enabled=1
+# autorefresh=1
+# baseurl=https://download.opensuse.org/repositories/X11:/XOrg/openSUSE_Tumbleweed/
+# type=rpm-md
+# gpgcheck=1
+# keeppackages=0' > $destino/etc/zypp/repos.d/Xorg.repo
 
 if [[ $instalar_nvidia = [sS] ]]; then
     echo -e '[NVIDIA]\nname=NVIDIA\nenabled=1\nautorefresh=1\nbaseurl=https://download.nvidia.com/opensuse/tumbleweed\ntype=rpm-md\nkeeppackages=0' > $destino/etc/zypp/repos.d/NVIDIA.repo
