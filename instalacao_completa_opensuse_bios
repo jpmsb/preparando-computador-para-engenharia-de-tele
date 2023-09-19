@@ -75,6 +75,33 @@ else
     echo "Dispositivo de boot [ex.: /dev/sda]: $dispositivo_boot"
 fi
 
+if [ -z "$senha_root" ]; then
+    echo ""
+    echo "╔═══════════════════════════════════════════════╗"
+    echo "║                                               ║"
+    echo "║ Definição de senha para o superusuário (root) ║"
+    echo "║                                               ║"
+    echo "╚═══════════════════════════════════════════════╝"
+
+    printf "\n$vermelho Por favor, escolha uma senha segura, pois este   $normal\n"
+    printf "$vermelho usuário pode realizar qualquer ação no sistema!! $normal\n\n"
+
+    while [[ "$senha_root" != "$senha_root_redigitada" ]] || [[ -z "$senha_root" ]]
+    do
+        read -sp "Senha para o superusuário root (ficará oculta enquanto digitar): " senha_root
+        echo
+        read -sp "Confirme a senha: " senha_root_redigitada
+        echo
+
+        if [ "$senha_root" != "$senha_root_redigitada" ]; then
+            echo -e "\nAs senhas digitadas são diferentes! Tente novamente.\n"
+        fi
+    done
+else
+    printf "\n$verde"
+    printf "Senha para o usuário root: Já definida!$normal\n"
+fi
+
 echo -e "\n### Criação do seu usuário ###"
 
 if [ -z "$usuario" ]; then
@@ -190,7 +217,7 @@ autorefresh=1
 baseurl=https://download.opensuse.org/tumbleweed/repo/oss/
 path=/
 type=rpm-md
-priority=99
+priority=80
 keeppackages=0' > $destino/etc/zypp/repos.d/Open_Source_Software.repo
 
 echo '[Non_Open_Source_Software]
@@ -200,7 +227,7 @@ autorefresh=1
 baseurl=https://download.opensuse.org/tumbleweed/repo/non-oss/
 path=/
 type=rpm-md
-priority=99
+priority=80
 keeppackages=0' > $destino/etc/zypp/repos.d/Non_Open_Source_Software.repo
 
 echo '[Update]
@@ -209,7 +236,7 @@ enabled=1
 autorefresh=1
 baseurl=http://download.opensuse.org/update/tumbleweed/
 type=rpm-md
-priority=99
+priority=70
 keeppackages=0' > $destino/etc/zypp/repos.d/Update.repo
 
 echo "[Emulators]
@@ -219,7 +246,7 @@ autorefresh=1
 baseurl=http://download.opensuse.org/repositories/Emulators/openSUSE_Tumbleweed/
 path=/
 type=rpm-md
-priority=99
+priority=60
 keeppackages=0" > $destino/etc/zypp/repos.d/Emulators.repo
 
 echo '[Hardware_SDR]
@@ -296,14 +323,14 @@ type=rpm-md
 gpgcheck=1
 keeppackages=0' > $destino/etc/zypp/repos.d/Graphics.repo
 
-# echo '[Xorg]
-# name=Xorg
-# enabled=1
-# autorefresh=1
-# baseurl=https://download.opensuse.org/repositories/X11:/XOrg/openSUSE_Tumbleweed/
-# type=rpm-md
-# gpgcheck=1
-# keeppackages=0' > $destino/etc/zypp/repos.d/Xorg.repo
+echo '[OpenH.264]
+name=OpenH.264
+enabled=1
+autorefresh=1
+baseurl=http://codecs.opensuse.org/openh264/openSUSE_Tumbleweed/
+path=/
+type=rpm-md
+keeppackages=0' > $destino/etc/zypp/repos.d/OpenH.264.repo
 
 if [[ $instalar_nvidia = [sS] ]]; then
     echo -e '[NVIDIA]\nname=NVIDIA\nenabled=1\nautorefresh=1\nbaseurl=https://download.nvidia.com/opensuse/tumbleweed\ntype=rpm-md\nkeeppackages=0' > $destino/etc/zypp/repos.d/NVIDIA.repo
@@ -316,7 +343,7 @@ autorefresh=1
 baseurl=http://ftp.gwdg.de/pub/linux/misc/packman/suse/openSUSE_Tumbleweed/
 path=/
 type=rpm-md
-priority=95
+priority=50
 keeppackages=0' > $destino/etc/zypp/repos.d/packman.repo
 
 echo '[VSCode]
@@ -458,7 +485,7 @@ if [[ "$laptop" == [sS] ]]; then
     ### Instalando componentes para melhor experiência com laptops ###
     comando_1="zypper -n --root $destino refresh -f"
     comando_2="zypper -n --root $destino install -y --download-in-advance -t pattern laptop"
-    
+
     tentar "$comando_1 ; $comando_2" $tentivas_maximas
 
     if [[ $instalar_nvidia == [sS] ]]; then
@@ -470,7 +497,7 @@ if [[ "$laptop" == [sS] ]]; then
         echo '# Enable runtime PM for NVIDIA VGA/3D controller devices on driver bind
         ACTION=="bind", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x030000", TEST=="power/control", ATTR{power/control}="auto"
         ACTION=="bind", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x030200", TEST=="power/control", ATTR{power/control}="auto"
-        
+
         # Disable runtime PM for NVIDIA VGA/3D controller devices on driver unbind
         ACTION=="unbind", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x030000", TEST=="power/control", ATTR{power/control}="on"
         ACTION=="unbind", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x030200", TEST=="power/control", ATTR{power/control}="on"' > $destino/etc/udev/rules.d/90-nvidia-udev-pm-G05.rules
@@ -629,7 +656,6 @@ rm -rf $destino/home/$usuario/bin
 ### Adicionando caminhos adicionais de binários ###
 chroot $destino su -c "fish_add_path /usr/sbin" -s /usr/bin/fish $usuario
 chroot $destino su -c "fish_add_path /usr/local/sbin" -s /usr/bin/fish $usuario
-chroot $destino su -c "fish_add_path /home/$usuario/.local/bin" -s /usr/bin/fish $usuario
 
 ### Criando o cache do tealdeer ###
 chroot $destino su -c "/usr/bin/tldr --update" -s /usr/bin/fish $usuario
@@ -644,9 +670,8 @@ echo "[org.gnome.software]
 packaging-format-preference = [ 'package', 'flatpak' ]" > $destino/usr/share/glib-2.0/schemas/20_org.gnome.software-jpmsb.gschema.override
 chroot $destino glib-compile-schemas /usr/share/glib-2.0/schemas
 
-### Definindo a senha do root para ser a mesma ###
-### do primeiro usuário criado                 ###
-echo "root:$senha" | chpasswd --root $destino
+### Definindo a senha do root ###
+echo "root:$senha_root" | chpasswd --root $destino
 
 ### Ajustando as permissões dos diretórios do PolicyKit ###
 chroot $destino chown -R root:root /usr/share/polkit-1/

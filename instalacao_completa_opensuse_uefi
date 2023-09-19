@@ -47,23 +47,31 @@ ajuda(){
 
 ### Mensagem de boas vindas ###
 echo -e "\nOlá!! Este é o script de instalação completa do openSUSE Tumbleweed! Nesse tipo de instalação, serão instalados os pacotes principais e suas dependências, bem como pacotes sugeridos, ou seja, pacotes que não são necessários para o funcionamento das aplicações que serão instaladas, mas que podem adicionar recurso extra. Um exemplo disso são os pacotes de tradução. Neste script, os pacotes de tradução serão instalados explicitamente para evitar que alguma tradução acabe faltando."
-echo -e "\nNo mais, aproveite!!"
+echo -e "\nNo mais, aproveite!!\n"
 
 ### Variáveis preparatórias ###
 destino=/mnt
 tentivas_maximas=5
+verde='\033[1;32m'
+magenta='\033[1;35m'
+vermelho='\033[1;31m'
+normal='\033[0m'
 
 particao_raiz=$1
 particao_EFI=$2
-usuario=$3
-senha=$4
-nome_completo=$5
-nome_computador=$6
-instalar_nvidia=$7
-laptop=$8
+senha_root=$3
+usuario=$4
+senha=$5
+nome_completo=$6
+nome_computador=$7
+instalar_nvidia=$8
+laptop=$9
 
 ### Interação com o usuário para coletar os dados iniciais ###
 # ajuda
+
+echo "════════════════════════════════════════════════════════"
+
 if [ -z "$particao_raiz" ]; then
     read -p "Partição onde o sistema será instalado [ex.: /dev/sda2]: " particao_raiz
 else
@@ -74,6 +82,33 @@ if [ -z "$particao_EFI" ]; then
     read -p "Partição de inicialização EFI [ex.: /dev/sda1]: " particao_EFI
 else
     echo "Partição de inicialização EFI [ex.: /dev/sda1]: $particao_EFI"
+fi
+
+if [ -z "$senha_root" ]; then
+    echo ""
+    echo "╔═══════════════════════════════════════════════╗"
+    echo "║                                               ║"
+    echo "║ Definição de senha para o superusuário (root) ║"
+    echo "║                                               ║"
+    echo "╚═══════════════════════════════════════════════╝"
+
+    printf "\n$vermelho Por favor, escolha uma senha segura, pois este   $normal\n"
+    printf "$vermelho usuário pode realizar qualquer ação no sistema!! $normal\n\n"
+
+    while [[ "$senha_root" != "$senha_root_redigitada" ]] || [[ -z "$senha_root" ]]
+    do
+        read -sp "Senha para o superusuário root (ficará oculta enquanto digitar): " senha_root
+        echo
+        read -sp "Confirme a senha: " senha_root_redigitada
+        echo
+
+        if [ "$senha_root" != "$senha_root_redigitada" ]; then
+            echo -e "\nAs senhas digitadas são diferentes! Tente novamente.\n"
+        fi
+    done
+else
+    printf "\n$verde"
+    printf "Senha para o usuário root: Já definida!$normal\n"
 fi
 
 echo -e "\n### Criação do seu usuário ###"
@@ -192,7 +227,7 @@ autorefresh=1
 baseurl=https://download.opensuse.org/tumbleweed/repo/oss/
 path=/
 type=rpm-md
-priority=99
+priority=80
 keeppackages=0' > $destino/etc/zypp/repos.d/Open_Source_Software.repo
 
 echo '[Non_Open_Source_Software]
@@ -202,7 +237,7 @@ autorefresh=1
 baseurl=https://download.opensuse.org/tumbleweed/repo/non-oss/
 path=/
 type=rpm-md
-priority=99
+priority=80
 keeppackages=0' > $destino/etc/zypp/repos.d/Non_Open_Source_Software.repo
 
 echo '[Update]
@@ -211,7 +246,7 @@ enabled=1
 autorefresh=1
 baseurl=http://download.opensuse.org/update/tumbleweed/
 type=rpm-md
-priority=99
+priority=70
 keeppackages=0' > $destino/etc/zypp/repos.d/Update.repo
 
 echo "[Emulators]
@@ -221,7 +256,7 @@ autorefresh=1
 baseurl=http://download.opensuse.org/repositories/Emulators/openSUSE_Tumbleweed/
 path=/
 type=rpm-md
-priority=99
+priority=60
 keeppackages=0" > $destino/etc/zypp/repos.d/Emulators.repo
 
 echo '[Hardware_SDR]
@@ -298,14 +333,14 @@ type=rpm-md
 gpgcheck=1
 keeppackages=0' > $destino/etc/zypp/repos.d/Graphics.repo
 
-# echo '[Xorg]
-# name=Xorg
-# enabled=1
-# autorefresh=1
-# baseurl=https://download.opensuse.org/repositories/X11:/XOrg/openSUSE_Tumbleweed/
-# type=rpm-md
-# gpgcheck=1
-# keeppackages=0' > $destino/etc/zypp/repos.d/Xorg.repo
+echo '[OpenH.264]
+name=OpenH.264
+enabled=1
+autorefresh=1
+baseurl=http://codecs.opensuse.org/openh264/openSUSE_Tumbleweed/
+path=/
+type=rpm-md
+keeppackages=0' > $destino/etc/zypp/repos.d/OpenH.264.repo
 
 if [[ $instalar_nvidia = [sS] ]]; then
     echo -e '[NVIDIA]\nname=NVIDIA\nenabled=1\nautorefresh=1\nbaseurl=https://download.nvidia.com/opensuse/tumbleweed\ntype=rpm-md\nkeeppackages=0' > $destino/etc/zypp/repos.d/NVIDIA.repo
@@ -318,7 +353,7 @@ autorefresh=1
 baseurl=http://ftp.gwdg.de/pub/linux/misc/packman/suse/openSUSE_Tumbleweed/
 path=/
 type=rpm-md
-priority=95
+priority=50
 keeppackages=0' > $destino/etc/zypp/repos.d/packman.repo
 
 echo '[VSCode]
@@ -413,7 +448,7 @@ tentar "$comando_1 ; $comando_2" $tentivas_maximas
 
 ### Instalação do restante do sistema base ###
 comando_1="zypper -n --root $destino refresh -f"
-comando_2="zypper -n --root $destino install -y --download-in-advance efitools efivar fwupd-efi vim mokutil kernel-default kernel-default-devel NetworkManager-lang sudo htop grub2-branding-openSUSE grub2-x86_64-efi-extras gpm nload xorg-x11-driver-video xorg-x11-server-extra pipewire-lang pipewire-pulseaudio pipewire-alsa pipewire-aptx pipewire-module-x11-0_3 flatpak git ffmpeg-6 libvulkan1 plymouth-lang unzip zip 7zip bzip2 unrar fish yt-dlp-fish-completion tealdeer-fish-completion tealdeer yt-dlp btop NetworkManager-bluetooth kernel-firmware-all yast2 yast2-bootloader yast2-control-center yast2-sudo yast2-trans-pt_BR yast2-sysconfig yast2-update yast2-services-manager yast2-security yast2-online-update yast2-online-update-configuration yast2-online-update-frontend yast2-installation xkeyboard-config-lang xorg-x11-driver-input xinput xf86-input-joystick wget-lang glibc-locale glibc-lang glib-networking-lang glib2-lang chrony xorg-x11-fonts-core adobe-sourcecodepro-fonts dejavu-fonts mkfontscale myspell-dictionaries myspell-en myspell-en_US myspell-lightproof-en myspell-lightproof-pt_BR myspell-pt_BR apparmor-utils-lang apparmor-parser-lang apparmor-abstractions which google-opensans-fonts terminus-bitmap-fonts firewalld-lang plymouth-dracut plymouth-theme-opensuse-beat yast2-firewall yast2-ntp-client tree neofetch libvirt avahi sensors scout-command-not-found btop rpmrebuild gcc-c++ gdb gdbm-lang fuse fuse-overlayfs bat bat-extras bat-fish-completion man-pages-pt_BR translation-update-pt_BR make-lang accountsservice-lang dialog-lang net-tools-lang psmisc-lang mlocate-lang findutils-lang exo-lang diffutils-lang cryptsetup-lang cpio-lang coreutils-lang bison-lang udisks2-lang ntfs-3g ntfsprogs-extra libfsntfs-tools ntfsprogs wireless-regdb syslog-ng android-tools android-udev-rules earlyoom net-tools-deprecated v4l2loopback-utils v4l2loopback-kmp-default v4l2loopback-autoload whois nmap tcpdump netavark qemu-kvm libvirt-daemon-qemu qemu-linux-user qemu-linux-user libvirt-daemon-qemu ncdu kexec-tools python311-glances rclone opi rsync libguestfs libguestfs-rsync libguestfs0 libguestfs-rescue update-bootloader-rpm-macros patterns-base-bootloader fwupd-lang susepaste ntfs-3g ntfsprogs-extra libfsntfs1 libfsntfs-tools nvtop"
+comando_2="zypper -n --root $destino install -y --download-in-advance efitools efivar fwupd-efi vim mokutil kernel-default kernel-default-devel NetworkManager-lang sudo htop grub2-branding-openSUSE grub2-x86_64-efi-extras gpm nload xorg-x11-driver-video xorg-x11-server-extra pipewire-lang pipewire-pulseaudio pipewire-alsa pipewire-aptx pipewire-module-x11-0_3 flatpak git ffmpeg-6 libvulkan1 plymouth-lang unzip zip 7zip bzip2 unrar fish yt-dlp-fish-completion tealdeer-fish-completion tealdeer yt-dlp btop NetworkManager-bluetooth kernel-firmware-all yast2 yast2-bootloader yast2-control-center yast2-sudo yast2-trans-pt_BR yast2-sysconfig yast2-update yast2-services-manager yast2-security yast2-online-update yast2-online-update-configuration yast2-online-update-frontend yast2-installation xkeyboard-config-lang xorg-x11-driver-input xinput xf86-input-joystick wget-lang glibc-locale glibc-lang glib-networking-lang glib2-lang chrony xorg-x11-fonts-core adobe-sourcecodepro-fonts dejavu-fonts mkfontscale myspell-dictionaries myspell-en myspell-en_US myspell-lightproof-en myspell-lightproof-pt_BR myspell-pt_BR apparmor-utils-lang apparmor-parser-lang apparmor-abstractions which google-opensans-fonts terminus-bitmap-fonts firewalld-lang plymouth-dracut plymouth-theme-opensuse-beat yast2-firewall yast2-ntp-client tree neofetch libvirt avahi sensors scout-command-not-found btop rpmrebuild gcc-c++ gdb gdbm-lang fuse fuse-overlayfs bat bat-extras bat-fish-completion man-pages-pt_BR translation-update-pt_BR make-lang accountsservice-lang dialog-lang net-tools-lang psmisc-lang mlocate-lang findutils-lang exo-lang diffutils-lang cryptsetup-lang cpio-lang coreutils-lang bison-lang udisks2-lang ntfs-3g ntfsprogs-extra libfsntfs-tools ntfsprogs wireless-regdb syslog-ng android-tools android-udev-rules earlyoom net-tools-deprecated v4l2loopback-utils v4l2loopback-kmp-default v4l2loopback-autoload whois nmap tcpdump netavark qemu-kvm libvirt-daemon-qemu qemu-linux-user qemu-linux-user libvirt-daemon-qemu ncdu kexec-tools python311-glances rclone opi rsync libguestfs libguestfs-rsync libguestfs0 libguestfs-rescue update-bootloader-rpm-macros patterns-base-bootloader fwupd-lang susepaste ntfs-3g ntfsprogs-extra libfsntfs1 libfsntfs-tools nvtop duf"
 
 tentar "$comando_1 ; $comando_2" $tentivas_maximas
 
@@ -464,7 +499,7 @@ if [[ "$laptop" == [sS] ]]; then
     ### Instalando componentes para melhor experiência com laptops ###
     comando_1="zypper -n --root $destino refresh -f"
     comando_2="zypper -n --root $destino install -y --download-in-advance -t pattern laptop"
-    
+
     tentar "$comando_1 ; $comando_2" $tentivas_maximas
 
     if [[ $instalar_nvidia == [sS] ]]; then
@@ -476,7 +511,7 @@ if [[ "$laptop" == [sS] ]]; then
         echo '# Enable runtime PM for NVIDIA VGA/3D controller devices on driver bind
         ACTION=="bind", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x030000", TEST=="power/control", ATTR{power/control}="auto"
         ACTION=="bind", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x030200", TEST=="power/control", ATTR{power/control}="auto"
-        
+
         # Disable runtime PM for NVIDIA VGA/3D controller devices on driver unbind
         ACTION=="unbind", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x030000", TEST=="power/control", ATTR{power/control}="on"
         ACTION=="unbind", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x030200", TEST=="power/control", ATTR{power/control}="on"' > $destino/etc/udev/rules.d/90-nvidia-udev-pm-G05.rules
@@ -583,7 +618,7 @@ chroot $destino flatpak remote-add --if-not-exists flathub https://flathub.org/r
 zypper -n --root $destino clean
 
 ### Removendo pacotes desnecessários ###
-zypper -n --root $destino remove -y --clean-deps java-11-openjdk java-11-openjdk-headless javapackages-filesystem javapackages-tools busybox-ed 
+zypper -n --root $destino remove -y --clean-deps java-11-openjdk java-11-openjdk-headless javapackages-filesystem javapackages-tools busybox-ed
 
 ### Ajustando para que o zypper use --no-recommends por padrão ###
 # sed -i 's/# solver.onlyRequires = false/solver.onlyRequires = true/g' $destino/etc/zypp/zypp.conf
@@ -637,10 +672,12 @@ useradd --root $destino -m --groups kvm,libvirt,wheel,users,video,disk,dialout -
 echo "$usuario:$senha" | chpasswd --root $destino
 rm -rf $destino/home/$usuario/bin
 
-### Adicionando caminhos adicionais de binários ###
-chroot $destino su -c "fish_add_path /usr/sbin" -s /usr/bin/fish $usuario
-chroot $destino su -c "fish_add_path /usr/local/sbin" -s /usr/bin/fish $usuario
-chroot $destino su -c "fish_add_path /home/$usuario/.local/bin" -s /usr/bin/fish $usuario
+### Adicionando caminhos adicionais de binários no FISH ###
+echo "for i in /usr/sbin /usr/local/sbin ~/.local/bin
+    if not contains $i $PATH
+        set PATH $i $PATH
+    end
+end" > $destino/etc/fish/conf.d/extra_paths.fish
 
 ### Criando o cache do tealdeer ###
 chroot $destino su -c "/usr/bin/tldr --update" -s /usr/bin/fish $usuario
@@ -655,9 +692,8 @@ echo "[org.gnome.software]
 packaging-format-preference = [ 'package', 'flatpak' ]" > $destino/usr/share/glib-2.0/schemas/20_org.gnome.software-jpmsb.gschema.override
 chroot $destino glib-compile-schemas /usr/share/glib-2.0/schemas
 
-### Definindo a senha do root para ser a mesma ###
-### do primeiro usuário criado                 ###
-echo "root:$senha" | chpasswd --root $destino
+### Definindo a senha do root ###
+echo "root:$senha_root" | chpasswd --root $destino
 
 ### Ajustando as permissões dos diretórios do PolicyKit ###
 chroot $destino chown -R root:root /usr/share/polkit-1/
