@@ -597,7 +597,7 @@ fi
 if [[ "$laptop" == [sS] ]]; then
     ### Instalando componentes para melhor experiência com laptops ###
     comando_1="zypper -n --root $destino refresh -f"
-    comando_2="zypper -n --root $destino install -y --download-in-advance -t pattern laptop"
+    comando_2="zypper -n --root $destino install -y --download-in-advance -t pattern laptop touchegg"
 
     tentar "$comando_1 ; $comando_2" $tentivas_maximas
 
@@ -618,6 +618,7 @@ if [[ "$laptop" == [sS] ]]; then
 
     # Habilitando o TLP para preservação da bateria
     chroot $destino ln -s /usr/lib/systemd/system/tlp.service /etc/systemd/system/multi-user.target.wants/tlp.service
+    chroot $destino ln -s /usr/lib/systemd/system/touchegg.service /etc/systemd/system/multi-user.target.wants/touchegg.service
 fi
 
 ### Criando diretório images ###
