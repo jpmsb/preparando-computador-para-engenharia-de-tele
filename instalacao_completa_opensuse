@@ -541,10 +541,6 @@ pesquisa=$(curl -sL https://download.opensuse.org/distribution/leap/15.4/repo/os
 wpa_supplicant_2_9_rpm=$(echo "$pesquisa" | grep -oE '>[^<]+<' | sed 's/[^>]*>\([^<]*\)<.*/\1/')
 wpa_supplicant_2_9_url="https://download.opensuse.org/distribution/leap/15.4/repo/oss/x86_64/$wpa_supplicant_2_9_rpm"
 
-pesquisa=$(curl -sL https://download.opensuse.org/distribution/leap/15.4/repo/oss/x86_64/ | grep -Eai "name.*libopenssl1_1-1" | grep -v "32bit")
-libopenssl1_1_rpm=$(echo "$pesquisa" | grep -oE '>[^<]+<' | sed 's/[^>]*>\([^<]*\)<.*/\1/')
-libopenssl1_1_url="https://download.opensuse.org/distribution/leap/15.4/repo/oss/x86_64/$libopenssl1_1_rpm"
-
 comando_1="zypper -n --root $destino refresh -f"
 comando_2="zypper -n --root $destino install --oldpackage -y --allow-vendor-change $wpa_supplicant_2_9_url $libopenssl1_1_url"
 
