@@ -89,8 +89,24 @@ usuario=$4
 senha=$5
 nome_completo=$6
 nome_computador=$7
-instalar_nvidia=$8
-laptop=$9
+laptop=$8
+
+### Identificação das GPUs presentes ###
+gpu_info=$(lspci | grep -E "VGA|3D controller")
+
+if echo "$gpu_info" | grep -qi 'Intel'; then
+    pacotes_intel_gpu="intel-gpu-tools intel-media-driver"
+fi
+
+if echo "$gpu_info" | grep -qi 'AMD'; then
+    pacotes_amd_gpu="radeontop radeontop-lang libvulkan_radeon libvdpau_radeonsi"
+fi
+
+if echo "$gpu_info" | grep -qi 'NVIDIA'; then
+    # Nesse caso, os pacotes vêm de um repositório
+    # próprio que será adicionado adiante
+    instalar_nvidia="Sim"
+fi
 
 
 ### Interação com o usuário para coletar os dados iniciais ###
@@ -203,17 +219,6 @@ else
     printf "$normal\n"
 fi
 
-if [ -z "$instalar_nvidia" ] || [[ "$instalar_nvidia" != [sSnN] ]]; then
-    while [[ "$instalar_nvidia" != [sSnN] ]]; do
-        read -p "Deseja instalar o suporte para placas de vídeo da NVIDIA? [S/N] " instalar_nvidia
-    done
-else
-    printf "Deseja instalar o suporte para placas de vídeo da NVIDIA? [S/N] "
-    printf "$verde"
-    printf "$instalar_nvidia"
-    printf "$normal\n"
-fi
-
 if [ -z "$laptop" ] || [[ "$laptop" != [sSnN] ]]; then
     while [[ "$laptop" != [sSnN] ]]; do
         read -p "A instalação será realizada em um notebook? [S/N] " laptop
@@ -259,10 +264,9 @@ printf "$verde"
 printf "$nome_computador"
 printf "$normal\n"
 
-printf " - Suporte para placas da NVIDIA: "
+printf " - Suporte para placas de vídeo da NVIDIA: "
 
-
-if [[ "$instalar_nvidia" == [sS] ]]; then
+if [[ "$instalar_nvidia" == "Sim" ]]; then
     printf "$verde"
     printf "Sim"
     printf "$normal\n"
@@ -291,7 +295,8 @@ while [[ "$resposta" != [sSnN] ]]; do
 done
 
 if [[ "$resposta" == [nN] ]]; then
-    echo -e "\nA instalação foi cancelada. Execute-a novamente para recomeçar."
+    echo -e "\nA instalação foi cancelada e nada foi alterado no seu computador. Execute-a novamente para recomeçar."
+    echo ""
     exit 0
 fi
 
@@ -441,7 +446,7 @@ path=/
 type=rpm-md
 keeppackages=0' > $destino/etc/zypp/repos.d/OpenH.264.repo
 
-if [[ $instalar_nvidia = [sS] ]]; then
+if [[ $instalar_nvidia = "Sim" ]]; then
     echo -e '[NVIDIA]\nname=NVIDIA\nenabled=1\nautorefresh=1\nbaseurl=https://download.nvidia.com/opensuse/tumbleweed\ntype=rpm-md\nkeeppackages=0' > $destino/etc/zypp/repos.d/NVIDIA.repo
 fi
 
@@ -549,7 +554,7 @@ echo -e "\nInstalando o restante do sistema base.\n"
 
 ### Instalação do restante do sistema base ###
 comando_1="zypper -n --root $destino refresh -f"
-comando_2="zypper -n --root $destino install -y --allow-vendor-change --download-in-advance vim kernel-default kernel-default-devel install-initrd-openSUSE NetworkManager-lang sudo htop gpm nload xorg-x11-driver-video xorg-x11-server-extra pipewire-lang pipewire-pulseaudio pipewire-alsa pipewire-aptx pipewire-module-x11-0_3 flatpak git ffmpeg-6 libvulkan1 plymouth-lang unzip zip 7zip bzip2 unrar fish yt-dlp-fish-completion tealdeer-fish-completion tealdeer yt-dlp btop NetworkManager-bluetooth kernel-firmware-all yast2 yast2-bootloader yast2-control-center yast2-sudo yast2-trans-pt_BR yast2-sysconfig yast2-update yast2-services-manager yast2-security yast2-online-update yast2-online-update-configuration yast2-online-update-frontend yast2-installation xkeyboard-config-lang xorg-x11-driver-input xinput xf86-input-joystick wget-lang glibc-locale glibc-lang glib-networking-lang glib2-lang chrony xorg-x11-fonts-core adobe-sourcecodepro-fonts dejavu-fonts mkfontscale myspell-dictionaries myspell-en myspell-en_US myspell-lightproof-en myspell-lightproof-pt_BR myspell-pt_BR apparmor-utils-lang apparmor-parser-lang apparmor-abstractions which google-opensans-fonts terminus-bitmap-fonts firewalld-lang plymouth-dracut plymouth-theme-opensuse-beat yast2-firewall yast2-ntp-client tree neofetch libvirt avahi sensors cnf-rs cnf-rs-bash cnf-rs-locale btop rpmrebuild gcc-c++ gdb gdbm-lang fuse fuse-overlayfs bat bat-extras bat-fish-completion man-pages-pt_BR translation-update-pt_BR make-lang accountsservice-lang dialog-lang net-tools-lang psmisc-lang mlocate-lang findutils-lang exo-lang diffutils-lang cryptsetup-lang cpio-lang coreutils-lang bison-lang udisks2-lang ntfs-3g ntfsprogs-extra libfsntfs-tools ntfsprogs wireless-regdb syslog-ng android-tools android-udev-rules earlyoom net-tools-deprecated v4l2loopback-utils v4l2loopback-kmp-default v4l2loopback-autoload whois nmap tcpdump netavark qemu-kvm libvirt-daemon-qemu qemu-linux-user qemu-linux-user libvirt-daemon-qemu ncdu kexec-tools python311-Glances rclone opi rsync libguestfs libguestfs-rsync libguestfs0 libguestfs-rescue update-bootloader-rpm-macros patterns-base-bootloader fwupd-lang susepaste ntfs-3g ntfsprogs-extra libfsntfs1 libfsntfs-tools nvtop duf libnvme-mi1 libnvme1 nvme-cli lsd python311-pipx"
+comando_2="zypper -n --root $destino install -y --allow-vendor-change --download-in-advance vim kernel-default kernel-default-devel install-initrd-openSUSE NetworkManager-lang sudo htop gpm nload xorg-x11-driver-video xorg-x11-server-extra pipewire-lang pipewire-pulseaudio pipewire-alsa pipewire-aptx pipewire-module-x11-0_3 flatpak git ffmpeg-6 libvulkan1 plymouth-lang unzip zip 7zip bzip2 unrar fish yt-dlp-fish-completion tealdeer-fish-completion tealdeer yt-dlp btop NetworkManager-bluetooth kernel-firmware-all yast2 yast2-bootloader yast2-control-center yast2-sudo yast2-trans-pt_BR yast2-sysconfig yast2-update yast2-services-manager yast2-security yast2-online-update yast2-online-update-configuration yast2-online-update-frontend yast2-installation xkeyboard-config-lang xorg-x11-driver-input xinput xf86-input-joystick wget-lang glibc-locale glibc-lang glib-networking-lang glib2-lang chrony xorg-x11-fonts-core adobe-sourcecodepro-fonts dejavu-fonts mkfontscale myspell-dictionaries myspell-en myspell-en_US myspell-lightproof-en myspell-lightproof-pt_BR myspell-pt_BR apparmor-utils-lang apparmor-parser-lang apparmor-abstractions which google-opensans-fonts terminus-bitmap-fonts firewalld-lang plymouth-dracut plymouth-theme-opensuse-beat yast2-firewall yast2-ntp-client tree neofetch libvirt avahi sensors cnf-rs cnf-rs-bash cnf-rs-locale btop rpmrebuild gcc-c++ gdb gdbm-lang fuse fuse-overlayfs bat bat-extras bat-fish-completion man-pages-pt_BR translation-update-pt_BR make-lang accountsservice-lang dialog-lang net-tools-lang psmisc-lang mlocate-lang findutils-lang exo-lang diffutils-lang cryptsetup-lang cpio-lang coreutils-lang bison-lang udisks2-lang ntfs-3g ntfsprogs-extra libfsntfs-tools ntfsprogs wireless-regdb syslog-ng android-tools android-udev-rules earlyoom net-tools-deprecated v4l2loopback-utils v4l2loopback-kmp-default v4l2loopback-autoload whois nmap tcpdump netavark qemu-kvm libvirt-daemon-qemu qemu-linux-user qemu-linux-user libvirt-daemon-qemu ncdu kexec-tools python311-Glances rclone opi rsync libguestfs libguestfs-rsync libguestfs0 libguestfs-rescue update-bootloader-rpm-macros patterns-base-bootloader fwupd-lang susepaste ntfs-3g ntfsprogs-extra libfsntfs1 libfsntfs-tools nvtop duf libnvme-mi1 libnvme1 nvme-cli lsd python311-pipx ucode-intel ucode-amd $pacotes_intel_gpu $pacotes_amd_gpu"
 
 tentar "$comando_1 ; $comando_2" $tentivas_maximas
 
@@ -619,7 +624,7 @@ comando_2="zypper -n --root $destino install -y --download-in-advance code"
 tentar "$comando_1 ; $comando_2" $tentivas_maximas
 
 ### Instalando os drivers da NVIDIA ###
-if [[ $instalar_nvidia == [sS] ]]; then
+if [[ $instalar_nvidia == "Sim" ]]; then
     comando_1="zypper -n --root $destino refresh -f"
     comando_2="zypper -n --root $destino install -y --download-in-advance nvidia-compute-G06 nvidia-compute-G06-32bit nvidia-compute-utils-G06 nvidia-driver-G06-kmp-default nvidia-drivers-G06 nvidia-gl-G06 nvidia-gl-G06-32bit nvidia-utils-G06 nvidia-video-G06 nvidia-video-G06-32bit"
 
@@ -630,12 +635,12 @@ fi
 if [[ "$laptop" == [sS] ]]; then
     ### Instalando componentes para melhor experiência com laptops ###
     comando_1="zypper -n --root $destino refresh -f"
-    comando_2="zypper -n --root $destino install -y --download-in-advance -t pattern laptop touchegg"
+    comando_2="zypper -n --root $destino install -y --download-in-advance -t pattern laptop"
     comando_3="zypper -n --root $destino install -y --download-in-advance touchegg"
 
     tentar "$comando_1 ; $comando_2 ; $comando_3" $tentivas_maximas
 
-    if [[ $instalar_nvidia == [sS] ]]; then
+    if [[ $instalar_nvidia == "Sim" ]]; then
         comando_1="zypper -n --root $destino refresh -f"
         comando_2="zypper -n --root $destino install -y --download-in-advance suse-prime suseprime-appindicator"
 
