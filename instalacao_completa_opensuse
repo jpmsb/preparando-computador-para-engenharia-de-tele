@@ -91,6 +91,16 @@ nome_completo=$6
 nome_computador=$7
 laptop=$8
 
+
+### Identificação da CPUs presentes ###
+cpu_info=$(grep -o -m 1 'vendor_id.*' /proc/cpuinfo | cut -d ':' -f 2 | tr -d '[:space:]')
+
+if [ "$cpu_info" == "GenuineIntel" ]; then
+    iGPU="intel"
+elif [ "$cpu_info" == "AuthenticAMD" ]; then
+    iGPU="amd"
+fi
+
 ### Identificação das GPUs presentes ###
 gpu_info=$(lspci | grep -E "VGA|3D controller")
 
@@ -653,7 +663,13 @@ if [[ "$laptop" == [sS] ]]; then
         # Disable runtime PM for NVIDIA VGA/3D controller devices on driver unbind
         ACTION=="unbind", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x030000", TEST=="power/control", ATTR{power/control}="on"
         ACTION=="unbind", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x030200", TEST=="power/control", ATTR{power/control}="on"' > $destino/etc/udev/rules.d/90-nvidia-udev-pm-G05.rules
+
+        # Habilitar o SUSE Prime e realizar as configurações necessárias
         chroot $destino ln -s /usr/lib/systemd/system/prime-select.service /etc/systemd/system/multi-user.target.wants/prime-select.service
+        echo "offload" > $destino/etc/prime/boot
+        echo "offload" > $destino/etc/prime/current_type
+        echo "$iGPU" > $destino/etc/prime/offload_type
+        echo "$usuario" > $destino/etc/prime/user
     fi
 
     # Habilitando o TLP para preservação da bateria
