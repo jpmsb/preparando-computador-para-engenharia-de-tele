@@ -634,7 +634,7 @@ zypper -n --root $destino remove -y xscreensaver
 
 ### Instalando componentes gráficos e da área de trabalho ###
 comando_1="zypper -n --root $destino refresh -f"
-comando_2="zypper -n --root $destino install -y --allow-vendor-change --download-in-advance lightdm-lang lightdm-gtk-greeter-lang lightdm-gtk-greeter-settings-lang xfce4-panel-lang xfce4-panel-profiles xfce4-panel-restore-defaults xfce4-power-manager-lang xfce4-pulseaudio-plugin-lang pavucontrol-lang xfce4-screensaver xscreensaver-data-extra xfce4-screenshooter-lang xfce4-session-lang xfce4-settings-lang xfce4-terminal-lang xfce4-datetime-plugin-lang xfce4-genmon-plugin-lang xfce4-kbdleds-plugin-lang xfce4-notifyd-lang xfce4-panel-lang xfce4-pulseaudio-plugin-lang xfce4-systemload-plugin-lang okular-lang ristretto-lang vlc-lang vlc-codecs vlc-codec-gstreamer gstreamer-plugins-ugly-codecs gstreamer-plugins-bad-codecs libavcodec56 libavcodec57 gparted-lang pluma-lang engrampa-lang libreoffice libreoffice-branding-openSUSE libreoffice-l10n-pt_BR libreoffice-l10n-en metatheme-adapta-common gtk3-metatheme-adapta gtk4-metatheme-adapta xfce4-notifyd-theme-adapta xfwm4-lang xfwm4-theme-adapta MozillaFirefox MozillaFirefox-branding-openSUSE MozillaFirefox-translations-common MozillaFirefox-translations-other gnome-calculator-lang kcolorchooser-lang gnome-disk-utility-lang virt-manager qt5ct kolourpaint-lang blueman-lang bluez NetworkManager-applet NetworkManager-tui NetworkManager-connection-editor NetworkManager-connection-editor-lang baobab-lang thunar-lang thunar-sendto-blueman thunar-plugin-media-tags-lang thunar-plugin-shares-lang thunar-volman-branding-openSUSE thunar-volman-lang thunar-plugin-archive-lang thunar-font-manager xfdesktop-lang libreoffice-branding-openSUSE libreoffice-calc libreoffice-draw libreoffice-filters-optional libreoffice-gnome libreoffice-gtk3 libreoffice-icon-themes libreoffice-impress libreoffice-l10n-en libreoffice-l10n-pt_BR libreoffice-mailmerge libreoffice-math libreoffice-pyuno libreoffice-share-linker libreoffice-writer polkit-gnome-lang libgnomesu0 xdg-desktop-portal-gtk-lang xdg-desktop-portal-lang xdg-terminal-exec xfce4-settings-color xfce4-sensors-plugin-lang xfce4-battery-plugin-lang xfce4-appfinder-lang xfce4-xkb-plugin-lang xfce4-weather-plugin-lang yast2-theme-breeze breeze5-icons opensuse-welcome-lang gvfs-lang libqt5-qtxmlpatterns-imports libQt5WebChannel5-imports vlc-qt vlc tumbler tumbler-lang tumbler-webp-thumbnailer sox transmission-gtk-lang libva-utils xclip xclipboard libgnomesu-lang fontconfig-lang gtk2-lang gtk3-lang gsettings-desktop-schemas-lang gstreamer-lang gstreamer-plugins-bad-lang gstreamer-plugins-base-lang gstreamer-plugins-ugly-lang xfce4-docklike-plugin xfce4-whiskermenu-plugin-lang xfce4-panel-plugin-indicator-lang upower-lang zenity-lang gdk-pixbuf-lang colord-lang xfce4-power-manager-plugin xfce4-power-manager-branding-openSUSE firewall-config xkill mugshot yast2-usbauth yast2-update-FACTORY yast2-testsuite yast2-multipath yast2-devtools autoyast2 yast2-installation-control yast2-configuration-management yast2-support patterns-yast-yast2_desktop patterns-yast-yast2_basis yast2-alternatives yast2-tune yast2-kdump yast2-apparmor yast2-journal libdvdcss2 qsynth-lang gstreamer-plugins-bad-fluidsynth fluidsynth libvulkan_intel libvulkan_radeon simplescreenrecorder google-noto-sans-cjk-fonts simple-scan-lang libgtkglext-x11-1_0-0 xdotool PackageKit-lang gnome-packagekit-lang gnome-packagekit-extras package-update-indicator-lang firewall-applet firewall-config xhost susepaste-screenshot libqt5-qtimageformats distribution-logos-openSUSE-icons distribution-logos-openSUSE wallpapers-openSUSE-extra adobe-sourcesanspro-fonts adobe-sourceserifpro-fonts qpwgraph"
+comando_2="zypper -n --root $destino install -y --allow-vendor-change --download-in-advance lightdm-lang lightdm-gtk-greeter-lang lightdm-gtk-greeter-settings-lang xfce4-panel-lang xfce4-panel-profiles xfce4-panel-restore-defaults xfce4-power-manager-lang xfce4-pulseaudio-plugin-lang pavucontrol-lang xfce4-screensaver xscreensaver-data-extra xfce4-screenshooter-lang xfce4-session-lang xfce4-settings-lang xfce4-terminal-lang xfce4-datetime-plugin-lang xfce4-genmon-plugin-lang xfce4-kbdleds-plugin-lang xfce4-notifyd-lang xfce4-panel-lang xfce4-pulseaudio-plugin-lang xfce4-systemload-plugin-lang okular-lang libKF5XmlGui5-lang libKF5ConfigWidgets5-lang libKF5Bookmarks5-lang libKF5Codecs5-lang libKF5Completion5-lang libKF5ConfigCore5-lang libKF5DBusAddons5-lang libKF5Declarative5-lang libKF5GlobalAccel5-lang libKF5I18n5-lang libKF5IconThemes5-lang libKF5ItemViews5-lang libKF5JobWidgets5-lang libKF5KHtml5-lang libKF5Notifications5-lang libKF5Parts5-lang libKF5Pty5-lang libKF5Solid5-lang libKF5SonnetCore5-lang libKF5SyntaxHighlighting5-lang libKF5TextWidgets5-lang libKF5WidgetsAddons5-lang libKF5WindowSystem5-lang ristretto-lang vlc-lang vlc-codecs vlc-codec-gstreamer gstreamer-plugins-ugly-codecs gstreamer-plugins-bad-codecs libavcodec56 libavcodec57 gparted-lang pluma-lang engrampa-lang libreoffice libreoffice-branding-openSUSE libreoffice-l10n-pt_BR libreoffice-l10n-en metatheme-adapta-common gtk3-metatheme-adapta gtk4-metatheme-adapta xfce4-notifyd-theme-adapta xfwm4-lang xfwm4-theme-adapta MozillaFirefox MozillaFirefox-branding-openSUSE MozillaFirefox-translations-common MozillaFirefox-translations-other gnome-calculator-lang kcolorchooser-lang gnome-disk-utility-lang virt-manager qt5ct kolourpaint-lang blueman-lang bluez NetworkManager-applet NetworkManager-tui NetworkManager-connection-editor NetworkManager-connection-editor-lang baobab-lang thunar-lang thunar-sendto-blueman thunar-plugin-media-tags-lang thunar-plugin-shares-lang thunar-volman-branding-openSUSE thunar-volman-lang thunar-plugin-archive-lang thunar-font-manager xfdesktop-lang libreoffice-branding-openSUSE libreoffice-calc libreoffice-draw libreoffice-filters-optional libreoffice-gnome libreoffice-gtk3 libreoffice-icon-themes libreoffice-impress libreoffice-l10n-en libreoffice-l10n-pt_BR libreoffice-mailmerge libreoffice-math libreoffice-pyuno libreoffice-share-linker libreoffice-writer polkit-gnome-lang libgnomesu0 xdg-desktop-portal-gtk-lang xdg-desktop-portal-lang xdg-terminal-exec xfce4-settings-color xfce4-sensors-plugin-lang xfce4-battery-plugin-lang xfce4-appfinder-lang xfce4-xkb-plugin-lang xfce4-weather-plugin-lang yast2-theme-breeze breeze5-icons opensuse-welcome-lang gvfs-lang libqt5-qtxmlpatterns-imports libQt5WebChannel5-imports vlc-qt vlc tumbler tumbler-lang tumbler-webp-thumbnailer sox transmission-gtk-lang libva-utils xclip xclipboard libgnomesu-lang fontconfig-lang gtk2-lang gtk3-lang gsettings-desktop-schemas-lang gstreamer-lang gstreamer-plugins-bad-lang gstreamer-plugins-base-lang gstreamer-plugins-ugly-lang xfce4-docklike-plugin xfce4-whiskermenu-plugin-lang xfce4-panel-plugin-indicator-lang upower-lang zenity-lang gdk-pixbuf-lang colord-lang xfce4-power-manager-plugin xfce4-power-manager-branding-openSUSE firewall-config xkill mugshot yast2-usbauth yast2-update-FACTORY yast2-testsuite yast2-multipath yast2-devtools autoyast2 yast2-installation-control yast2-configuration-management yast2-support patterns-yast-yast2_desktop patterns-yast-yast2_basis yast2-alternatives yast2-tune yast2-kdump yast2-apparmor yast2-journal libdvdcss2 qsynth-lang gstreamer-plugins-bad-fluidsynth fluidsynth libvulkan_intel libvulkan_radeon simplescreenrecorder google-noto-sans-cjk-fonts simple-scan-lang libgtkglext-x11-1_0-0 xdotool PackageKit-lang gnome-packagekit-lang gnome-packagekit-extras package-update-indicator-lang firewall-applet firewall-config xhost susepaste-screenshot libqt5-qtimageformats distribution-logos-openSUSE-icons distribution-logos-openSUSE wallpapers-openSUSE-extra adobe-sourcesanspro-fonts adobe-sourceserifpro-fonts qpwgraph"
 comando_3="zypper -n --root $destino install -y --allow-vendor-change --download-in-advance -t pattern x11_yast yast2_desktop x11"
 
 tentar "$comando_1 && $comando_2 && $comando_3" $tentivas_maximas
@@ -810,29 +810,32 @@ echo -e "\nAjustando o tempo de atualização automática dos repositórios para
 sed -i '/# repo.refresh.delay = 10/a repo.refresh.delay = 10080' $destino/etc/zypp/zypp.conf
 
 ### Instalando o tema Adapta ###
+echo -e "\nInstalando o tema Adpata\n"
 comando_1="wget https://github.com/jpmsb/preparando-computador-para-engenharia-de-tele/raw/main/tema-adapta.tar.tar -O /tmp/adapta.tar.gz"
 
 tentar "$comando_1" $tentivas_maximas
 
 mkdir -p $destino/usr/share/themes/Adapta
-tar -xvf /tmp/adapta.tar.tar -C $destino/usr/share/themes
+tar -xf /tmp/adapta.tar.gz -C $destino/usr/share/themes
 
 ### Habilitando a tela de boas vindas ###
 cp $destino/usr/share/applications/org.opensuse.opensuse_welcome.desktop $destino/etc/xdg/autostart/org.opensuse.opensuse_welcome.desktop
 
 ### Instalando a fonte Noto Mono Nerd Font ###
+echo -e "\nInstalando a fonte Noto Mono Nerd Font\n"
 comando_1="wget https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Noto/Mono/NotoMonoNerdFontMono-Regular.ttf -O $destino/usr/share/fonts/NotoMonoNerdFontMono-Regular.ttf"
 
 tentar "$comando_1" $tentivas_maximas
 
-chroot $destino fc-cache -rv
+chroot $destino fc-cache -r
 
 ### Instalando um skel ###
+echo -e "\nInstalando um skel\n"
 comando_1="wget https://github.com/jpmsb/preparando-computador-para-engenharia-de-tele/raw/main/skel.tar.gz -O /tmp/skel.tar.gz"
 
 tentar "$comando_1" $tentivas_maximas
 
-tar -xvf /tmp/skel.tar.gz -C $destino/etc/skel
+tar -xf /tmp/skel.tar.gz -C $destino/etc/skel
 
 ### Definindo configurações para o xfce4-terminal ###
 echo '<?xml version="1.0" encoding="UTF-8"?>
@@ -846,12 +849,13 @@ echo '<?xml version="1.0" encoding="UTF-8"?>
 </channel>' > $destino/etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xfce4-terminal.xml
 
 ### Instalando o pacote de ícones Tela (modo standard) ###
+echo -e "\nInstalando o tema de ícones Tela\n"
 comando_1="wget https://github.com/vinceliuice/Tela-icon-theme/archive/refs/heads/master.zip -O /tmp/Tela-icon-theme.zip"
 
 tentar "$comando_1" $tentivas_maximas
 
-unzip /tmp/Tela-icon-theme.zip -d /tmp
-bash /tmp/Tela-icon-theme-master/install.sh -d $destino/usr/share/icons
+unzip /tmp/Tela-icon-theme.zip -d /tmp > /dev/null
+bash /tmp/Tela-icon-theme-master/install.sh -d $destino/usr/share/icons > /dev/null
 
 ### Ajustando o Package Update Indicator para ###
 ### utilizar um script customizado            ###
@@ -861,10 +865,12 @@ refresh-interval=43200
 update-command='/usr/local/bin/atualizar-sistema'" > $destino/etc/skel/.config/package-update-indicator/package-update-indicator.conf
 
 ### Script para atualizar o sistema ###
+echo -e "\nInstalando o script para atualizar o sistema\n"
 wget https://raw.githubusercontent.com/jpmsb/preparando-computador-para-engenharia-de-tele/main/atualizar-sistema -O $destino/usr/local/bin/atualizar-sistema
 chmod +x $destino/usr/local/bin/atualizar-sistema
 
 ### Criando usuário com poder sudo ###
+echo -e "\nCriando usuário \"$usuario\" com poder sudo\n"
 useradd --root $destino -m --groups kvm,libvirt,wheel,users,video,disk,dialout -c "$nome_completo" --shell /bin/bash $usuario
 echo "$usuario:$senha" | chpasswd --root $destino
 rm -rf $destino/home/$usuario/bin
@@ -890,6 +896,7 @@ packaging-format-preference = [ 'package', 'flatpak' ]" > $destino/usr/share/gli
 chroot $destino glib-compile-schemas /usr/share/glib-2.0/schemas
 
 ### Definindo a senha do root ###
+echo -e "\nDefinindo a senha do usuário root\n"
 echo "root:$senha_root" | chpasswd --root $destino
 
 ### Ajustando as permissões dos diretórios do PolicyKit ###
