@@ -633,6 +633,8 @@ fi
 zypper -n --root $destino remove -y xscreensaver
 
 ### Instalando componentes gráficos e da área de trabalho ###
+echo -e "\nInstalando componentes gráficos e da área de trabalho\n"
+
 comando_1="zypper -n --root $destino refresh -f"
 comando_2="zypper -n --root $destino install -y --allow-vendor-change --download-in-advance lightdm-lang lightdm-gtk-greeter-lang lightdm-gtk-greeter-settings-lang xfce4-panel-lang xfce4-panel-profiles xfce4-panel-restore-defaults xfce4-power-manager-lang xfce4-pulseaudio-plugin-lang pavucontrol-lang xfce4-screensaver xscreensaver-data-extra xfce4-screenshooter-lang xfce4-session-lang xfce4-settings-lang xfce4-terminal-lang xfce4-datetime-plugin-lang xfce4-genmon-plugin-lang xfce4-kbdleds-plugin-lang xfce4-notifyd-lang xfce4-panel-lang xfce4-pulseaudio-plugin-lang xfce4-systemload-plugin-lang okular-lang libKF5XmlGui5-lang libKF5ConfigWidgets5-lang libKF5Bookmarks5-lang libKF5Codecs5-lang libKF5Completion5-lang libKF5ConfigCore5-lang libKF5DBusAddons5-lang libKF5Declarative5-lang libKF5GlobalAccel5-lang libKF5I18n5-lang libKF5IconThemes5-lang libKF5ItemViews5-lang libKF5JobWidgets5-lang libKF5KHtml5-lang libKF5Notifications5-lang libKF5Parts5-lang libKF5Pty5-lang libKF5Solid5-lang libKF5SonnetCore5-lang libKF5SyntaxHighlighting5-lang libKF5TextWidgets5-lang libKF5WidgetsAddons5-lang libKF5WindowSystem5-lang ristretto-lang vlc-lang vlc-codecs vlc-codec-gstreamer gstreamer-plugins-ugly-codecs gstreamer-plugins-bad-codecs libavcodec56 libavcodec57 gparted-lang pluma-lang engrampa-lang libreoffice libreoffice-branding-openSUSE libreoffice-l10n-pt_BR libreoffice-l10n-en metatheme-adapta-common gtk3-metatheme-adapta gtk4-metatheme-adapta xfce4-notifyd-theme-adapta xfwm4-lang xfwm4-theme-adapta MozillaFirefox MozillaFirefox-branding-openSUSE MozillaFirefox-translations-common MozillaFirefox-translations-other gnome-calculator-lang kcolorchooser-lang gnome-disk-utility-lang virt-manager qt5ct kolourpaint-lang blueman-lang bluez NetworkManager-applet NetworkManager-connection-editor NetworkManager-connection-editor-lang baobab-lang thunar-lang thunar-sendto-blueman thunar-plugin-media-tags-lang thunar-plugin-shares-lang thunar-volman-branding-openSUSE thunar-volman-lang thunar-plugin-archive-lang thunar-font-manager xfdesktop-lang libreoffice-branding-openSUSE libreoffice-calc libreoffice-draw libreoffice-filters-optional libreoffice-gnome libreoffice-gtk3 libreoffice-icon-themes libreoffice-impress libreoffice-l10n-en libreoffice-l10n-pt_BR libreoffice-mailmerge libreoffice-math libreoffice-pyuno libreoffice-share-linker libreoffice-writer polkit-gnome-lang libgnomesu0 xdg-desktop-portal-gtk-lang xdg-desktop-portal-lang xdg-terminal-exec xfce4-settings-color xfce4-sensors-plugin-lang xfce4-battery-plugin-lang xfce4-appfinder-lang xfce4-xkb-plugin-lang xfce4-weather-plugin-lang yast2-theme-breeze breeze5-icons opensuse-welcome-lang gvfs-lang libqt5-qtxmlpatterns-imports libQt5WebChannel5-imports vlc-qt vlc tumbler tumbler-lang tumbler-webp-thumbnailer sox transmission-gtk-lang libva-utils xclip xclipboard libgnomesu-lang fontconfig-lang gtk3-lang gsettings-desktop-schemas-lang gstreamer-lang gstreamer-plugins-bad-lang gstreamer-plugins-base-lang gstreamer-plugins-ugly-lang xfce4-docklike-plugin xfce4-whiskermenu-plugin-lang xfce4-panel-plugin-indicator-lang upower-lang zenity-lang gdk-pixbuf-lang colord-lang xfce4-power-manager-plugin xfce4-power-manager-branding-openSUSE firewall-config xkill mugshot yast2-usbauth yast2-update-FACTORY yast2-testsuite yast2-multipath yast2-devtools autoyast2 yast2-installation-control yast2-configuration-management yast2-support patterns-yast-yast2_desktop yast2-tune yast2-kdump yast2-journal libdvdcss2 qsynth-lang gstreamer-plugins-bad-fluidsynth fluidsynth libvulkan_intel libvulkan_radeon simplescreenrecorder google-noto-sans-cjk-fonts simple-scan-lang libgtkglext-x11-1_0-0 xdotool PackageKit-lang gnome-packagekit-lang gnome-packagekit-extras package-update-indicator-lang firewall-applet firewall-config xhost susepaste-screenshot libqt5-qtimageformats distribution-logos-openSUSE-icons distribution-logos-openSUSE wallpapers-openSUSE-extra qpwgraph"
 comando_3="zypper -n --root $destino install -y --allow-vendor-change --download-in-advance -t pattern x11_yast x11"
@@ -640,6 +642,7 @@ comando_3="zypper -n --root $destino install -y --allow-vendor-change --download
 tentar "$comando_1 && $comando_2 && $comando_3" $tentivas_maximas
 
 ### Instalando o Visual Studio Code ###
+echo -e "\nInstalando o Visual Studio Code\n"
 comando_1="zypper -n --root $destino refresh -f"
 comando_2="zypper -n --root $destino install -y --download-in-advance code"
 
@@ -647,6 +650,7 @@ tentar "$comando_1 && $comando_2" $tentivas_maximas
 
 ### Instalando os drivers da NVIDIA ###
 if [[ $instalar_nvidia == "Sim" ]]; then
+    echo -e "\nInstalando os drivers da NVIDIA\n"
     comando_1="zypper -n --root $destino refresh -f"
     comando_2="zypper -n --root $destino install -y --download-in-advance nvidia-compute-G06 nvidia-compute-G06-32bit nvidia-compute-utils-G06 nvidia-driver-G06-kmp-default nvidia-drivers-G06 nvidia-gl-G06 nvidia-gl-G06-32bit nvidia-utils-G06 nvidia-video-G06 nvidia-video-G06-32bit"
 
@@ -656,6 +660,7 @@ fi
 ### Instalando o SUSE Prime e ajustando para não desligar o áudio do HDMI ###
 if [[ "$laptop" == [sS] ]]; then
     ### Instalando componentes para melhor experiência com laptops ###
+    echo -e "\nInstalando componentes para melhor experiência com laptops\n"
     comando_1="zypper -n --root $destino refresh -f"
     comando_2="zypper -n --root $destino install -y --download-in-advance -t pattern laptop"
     comando_3="zypper -n --root $destino install -y --download-in-advance touchegg"
@@ -663,6 +668,7 @@ if [[ "$laptop" == [sS] ]]; then
     tentar "$comando_1 && $comando_2 && $comando_3" $tentivas_maximas
 
     if [[ $instalar_nvidia == "Sim" ]]; then
+        echo -e "\nInstalando o SUSE Prime e ajustando para não desligar o áudio do HDMI\n"
         comando_1="zypper -n --root $destino refresh -f"
         comando_2="zypper -n --root $destino install -y --download-in-advance suse-prime suseprime-appindicator"
 
@@ -693,27 +699,33 @@ fi
 mkdir $destino/usr/share/images
 
 ### Criando grupos necessários ###
+echo -e "\nCriando grupos necessários\n"
 groupadd --root $destino --system mail
 groupadd --root $destino --system sudo
 groupadd --root $destino --system wheel
 
 ### Habilitando serviço de rede ###
+echo -e "\nHabilitando serviço de rede\n"
 chroot $destino ln -s /usr/lib/systemd/system/NetworkManager.service /etc/systemd/system/network.service
 chroot $destino ln -s /usr/lib/systemd/system/NetworkManager.service /etc/systemd/system/multi-user.target.wants/NetworkManager.service
 chroot $destino ln -s /usr/lib/systemd/system/NetworkManager-dispatcher.service /etc/systemd/system/dbus-org.freedesktop.nm-dispatcher.service
 chroot $destino ln -s /usr/lib/systemd/system/NetworkManager-wait-online.service /etc/systemd/system/network-online.target.wants/NetworkManager-wait-online.service
 
 ### Habilitando Firewalld ###
+echo -e "\nHabilitando Firewalld\n"
 chroot $destino ln -s /usr/lib/systemd/system/firewalld.service /etc/systemd/system/dbus-org.fedoraproject.FirewallD1.service
 chroot $destino ln -s /usr/lib/systemd/system/firewalld.service /etc/systemd/system/multi-user.target.wants/firewalld.service
 
 ### Habilitando Chronyd ###
+echo -e "\nHabilitando Chronyd\n"
 chroot $destino ln -s /usr/lib/systemd/system/chronyd.service /etc/systemd/system/multi-user.target.wants/chronyd.service
 
 ### Habilitando General Purpose Mouse ###
+echo -e "\nHabilitando General Purpose Mouse\n"
 chroot $destino ln -s /usr/lib/systemd/system/gpm.service /etc/systemd/system/multi-user.target.wants/gpm.service
 
 ### Habilitando Libvirtd ###
+echo -e "\nHabilitando Libvirtd\n"
 chroot $destino ln -s /usr/lib/systemd/system/libvirtd.service /etc/systemd/system/multi-user.target.wants/libvirtd.service
 chroot $destino ln -s /usr/lib/systemd/system/virtlockd.socket /etc/systemd/system/sockets.target.wants/virtlockd.socket
 chroot $destino ln -s /usr/lib/systemd/system/virtlogd.socket /etc/systemd/system/sockets.target.wants/virtlogd.socket
@@ -721,9 +733,11 @@ chroot $destino ln -s /usr/lib/systemd/system/libvirtd.socket /etc/systemd/syste
 chroot $destino ln -s /usr/lib/systemd/system/libvirtd-ro.socket /etc/systemd/system/sockets.target.wants/libvirtd-ro.socket
 
 ### Habilitando Earlyoom ###
+echo -e "\nHabilitando Earlyoom\n"
 chroot $destino ln -s /usr/lib/systemd/system/earlyoom.service /etc/systemd/system/multi-user.target.wants/earlyoom.service
 
 ### Desabilitando a política de nomes de interface de rede ###
+echo -e "\nDesabilitando a política de nomes de interface de rede\n"
 chroot $destino ln -s /dev/null /etc/systemd/network/99-default.link
 
 ### Garantindo o início do nm-applet quando o shell padrão não for o bash ###
