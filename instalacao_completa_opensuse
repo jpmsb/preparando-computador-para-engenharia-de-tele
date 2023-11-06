@@ -354,6 +354,14 @@ type=rpm-md
 priority=80
 keeppackages=0' > $destino/etc/zypp/repos.d/Non_Open_Source_Software.repo
 
+echo '[Debug Packages]
+name=Debug Packages
+enabled=1
+autorefresh=0
+baseurl=http://download.opensuse.org/tumbleweed/repo/debug/
+path=/
+keeppackages=0' > $destino/etc/zypp/repos.d/Debug_Packages.repo
+
 echo '[Open_Source_Software_Leap]
 name=Open Source Software Leap
 enabled=1
