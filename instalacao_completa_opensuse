@@ -315,7 +315,7 @@ mount $particao_raiz $destino
 
 ### Instalação do sistema base ###
 comando_1="zypper refresh -f"
-comando_2="zypper -n --installroot $destino install -y zypper-needs-restarting systemd-lang systemd-container ca-certificates ca-certificates-mozilla curl gawk grep-lang sed-lang tar-lang xz-lang gzip procps-lang procps systemd-presets-branding-openSUSE suse-module-tools suse-module-tools-scriptlets"
+comando_2="zypper -n --installroot $destino install -y zypper-needs-restarting systemd-lang systemd-container ca-certificates ca-certificates-mozilla curl gawk grep-lang sed-lang tar-lang xz-lang gzip procps-lang procps systemd-presets-branding-openSUSE suse-module-tools suse-module-tools-scriptlets diffutils-lang"
 
 tentar "$comando_1 && $comando_2" $tentivas_maximas
 
@@ -641,7 +641,7 @@ chroot $destino grub2-mkconfig -o /boot/grub2/grub.cfg
 
 
 ### Ajustando o tema de inialização do sistema ###
-chroot $destino plymouth-set-default-theme opensuse-beat -R
+chroot $destino plymouth-set-default-theme bgrt -R
 chroot $destino dracut -vf --regenerate-all
 
 ### Ajustando os pontos de montagem no fstab (UEFI ou BIOS) ###
