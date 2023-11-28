@@ -948,7 +948,7 @@ echo "$usuario:$senha" | chpasswd --root $destino
 rm -rf $destino/home/$usuario/bin
 
 ### Adicionando caminhos adicionais de binários no FISH ###
-echo 'for i in /usr/sbin /usr/local/sbin ~/.local/bin
+echo 'for i in /bin /sbin /usr/sbin /usr/local/sbin ~/.local/bin
     if not contains $i $PATH
         set PATH $i $PATH
     end
