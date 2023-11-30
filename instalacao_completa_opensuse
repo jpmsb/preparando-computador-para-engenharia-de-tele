@@ -951,12 +951,15 @@ useradd --root $destino -m --groups kvm,libvirt,wheel,users,video,disk,dialout -
 echo "$usuario:$senha" | chpasswd --root $destino
 rm -rf $destino/home/$usuario/bin
 
-### Adicionando caminhos adicionais de binários no FISH ###
-echo 'for i in /bin /sbin /usr/sbin /usr/local/sbin ~/.local/bin
+### Adicionando caminhos extras de binários no FISH ###
+echo 'for i in /bin /sbin /usr/local/sbin ~/.local/bin
     if not contains $i $PATH
         set PATH $i $PATH
     end
 end' > $destino/etc/fish/conf.d/extra_paths.fish
+
+### Adicionando caminhos extras de binários no BASH ###
+echo 'export PATH="$HOME/.local/bin:/bin:/sbin:/usr/local/sbin:$PATH"' > $destino/etc/profile.d/extra_paths.sh
 
 ### Criando o cache do tealdeer ###
 chroot $destino su -c "/usr/bin/tldr --update" -s /bin/bash $usuario
