@@ -952,14 +952,29 @@ echo "$usuario:$senha" | chpasswd --root $destino
 rm -rf $destino/home/$usuario/bin
 
 ### Adicionando caminhos extras de binários no FISH ###
-echo 'for i in /bin /sbin /usr/local/sbin ~/.local/bin
+echo 'for i in /bin /sbin /usr/local/sbin /usr/local/bin
     if not contains $i $PATH
-        set PATH $i $PATH
-    end
+        set PATH $PATH $i
+    end 
+end
+
+if not contains $HOME/.local/bin $PATH
+    set PATH $HOME/.local/bin $PATH
 end' > $destino/etc/fish/conf.d/extra_paths.fish
 
 ### Adicionando caminhos extras de binários no BASH ###
-echo 'export PATH="$HOME/.local/bin:/bin:/sbin:/usr/local/sbin:$PATH"' > $destino/etc/profile.d/extra_paths.sh
+echo 'new_paths=("/bin" "/sbin" "/usr/local/sbin" "/usr/local/bin")
+
+for new_path in "${new_paths[@]}"
+do  
+    if [[ ":$PATH:" != *":$new_path:"* ]]; then
+        export PATH="$PATH:$new_path"
+    fi
+done
+
+if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
+    export PATH="$HOME/.local/bin:$PATH"
+fi' > $destino/etc/profile.d/extra_paths.sh
 
 ### Criando o cache do tealdeer ###
 chroot $destino su -c "/usr/bin/tldr --update" -s /bin/bash $usuario
