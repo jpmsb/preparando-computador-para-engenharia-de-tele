@@ -976,6 +976,9 @@ if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
     export PATH="$HOME/.local/bin:$PATH"
 fi' > $destino/etc/profile.d/extra_paths.sh
 
+### Definindo o interpretador de comandos FISH na variável SHELL ###
+echo 'export SHELL=/usr/bin/fish' > $destino/etc/profile.d/default_shell.sh
+
 ### Criando o cache do tealdeer ###
 chroot $destino su -c "/usr/bin/tldr --update" -s /bin/bash $usuario
 
