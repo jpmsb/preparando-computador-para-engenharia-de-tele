@@ -544,7 +544,7 @@ baseurl=https://linux.teamviewer.com/yum/stable/main/binary-$basearch/
 gpgkey=https://linux.teamviewer.com/pubkey/currentkey.asc
 gpgcheck=1
 repo_gpgcheck=1
-enabled=1
+enabled=0
 type=rpm-md' > $destino/etc/zypp/repos.d/teamviewer.repo
 
 echo '[geogebra]
@@ -558,7 +558,7 @@ keeppackages=0' > $destino/etc/zypp/repos.d/geogebra.repo
 
 echo '[AnyDesk]
 name=AnyDesk
-enabled=1
+enabled=0
 autorefresh=1
 baseurl=http://rpm.anydesk.com/opensuse/x86_64/
 gpgcheck=1
