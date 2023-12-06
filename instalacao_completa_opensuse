@@ -367,7 +367,7 @@ keeppackages=0' > $destino/etc/zypp/repos.d/Debug_Packages.repo
 echo -e "\nInstalando o restante dos pacotes do sistema base.\n"
 
 comando_1="zypper -n --root $destino --gpg-auto-import-keys refresh -f"
-comando_2="zypper -n --root $destino install --download-in-advance -y -t pattern base enhanced_base minimal_base"
+comando_2="zypper -n --root $destino install --download-in-advance -y -t pattern base enhanced_base minimal_base basesystem"
 
 tentar "$comando_1 && $comando_2" $tentivas_maximas
 
