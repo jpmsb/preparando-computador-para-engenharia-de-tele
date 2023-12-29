@@ -315,9 +315,10 @@ mount $particao_raiz $destino
 
 ### Instalação do sistema base ###
 comando_1="zypper refresh -f"
-comando_2="zypper -n --installroot $destino install -y zypper-needs-restarting systemd-lang systemd-container ca-certificates ca-certificates-mozilla curl gawk grep-lang sed-lang tar-lang xz-lang gzip procps-lang procps systemd-presets-branding-openSUSE suse-module-tools suse-module-tools-scriptlets diffutils-lang"
+comando_2="zypper -n --installroot $destino install -y -t product openSUSE"
+comando_3="zypper -n --installroot $destino install -y zypper-needs-restarting systemd-lang systemd-container ca-certificates ca-certificates-mozilla curl gawk grep-lang sed-lang tar-lang xz-lang gzip procps-lang procps systemd-presets-branding-openSUSE suse-module-tools suse-module-tools-scriptlets diffutils-lang"
 
-tentar "$comando_1 && $comando_2" $tentivas_maximas
+tentar "$comando_1 && $comando_2 && $comando_3" $tentivas_maximas
 
 ### Bloqueando pacote problemático do ALSA ###
 zypper -n --root $destino remove -u -y alsa-ucm-conf
@@ -668,7 +669,7 @@ zypper -n --root $destino remove -y xscreensaver
 echo -e "\nInstalando o ambiente de trabalho XFCE4\n"
 
 comando_1="zypper -n --root $destino refresh -f"
-comando_2="zypper -n --root $destino install -y --allow-vendor-change --download-in-advance xfce4-panel-lang xfce4-panel-profiles xfce4-panel-restore-defaults xfce4-power-manager-lang xfce4-pulseaudio-plugin-lang pavucontrol-lang xfce4-screensaver xfce4-screenshooter-lang xfce4-session-lang xfce4-settings-lang xfce4-terminal-lang xfce4-datetime-plugin-lang xfce4-genmon-plugin-lang xfce4-kbdleds-plugin-lang xfce4-notifyd-lang xfce4-panel-lang xfce4-pulseaudio-plugin-lang xfce4-systemload-plugin-lang xfce4-notifyd-theme-adapta xfwm4-lang xfwm4-theme-adapta thunar-lang thunar-sendto-blueman thunar-plugin-media-tags-lang thunar-plugin-shares-lang thunar-volman-branding-openSUSE thunar-volman-lang thunar-plugin-archive-lang thunar-font-manager xfdesktop-lang xfce4-settings-color xfce4-sensors-plugin-lang xfce4-battery-plugin-lang xfce4-appfinder-lang xfce4-xkb-plugin-lang xfce4-weather-plugin-lang xfce4-docklike-plugin xfce4-whiskermenu-plugin-lang xfce4-panel-plugin-indicator-lang xfce4-power-manager-plugin xfce4-power-manager-branding-openSUSE ristretto-lang"
+comando_2="zypper -n --root $destino install -y --allow-vendor-change --download-in-advance xfce4-panel-lang xfce4-panel-profiles xfce4-panel-restore-defaults xfce4-power-manager-lang xfce4-pulseaudio-plugin-lang pavucontrol-lang xfce4-screensaver xfce4-screenshooter-lang xfce4-session-lang xfce4-settings-lang xfce4-terminal-lang xfce4-datetime-plugin-lang xfce4-genmon-plugin-lang xfce4-kbdleds-plugin-lang xfce4-notifyd-lang xfce4-panel-lang xfce4-pulseaudio-plugin-lang xfce4-systemload-plugin-lang xfce4-notifyd-theme-adapta xfwm4-lang xfwm4-theme-adapta thunar-lang thunar-sendto-blueman thunar-plugin-media-tags-lang thunar-plugin-shares-lang thunar-volman-branding-openSUSE thunar-volman-lang thunar-plugin-archive-lang thunar-font-manager xfdesktop-lang xfce4-settings-color xfce4-sensors-plugin-lang xfce4-battery-plugin-lang xfce4-appfinder-lang xfce4-xkb-plugin-lang xfce4-weather-plugin-lang xfce4-docklike-plugin xfce4-whiskermenu-plugin-lang xfce4-panel-plugin-indicator-lang xfce4-power-manager-plugin xfce4-power-manager-branding-openSUSE ristretto-lang nomacs-lang"
 
 tentar "$comando_1 && $comando_2" $tentivas_maximas
 
@@ -806,6 +807,8 @@ Exec=bash -c "/usr/bin/xhost +si:localuser:$USER"
 Terminal=False' > $destino/etc/xdg/autostart/distrobox-xhost-allower.desktop
 
 ### Ajustando o sudo para respeitar o grupo wheel ###
+cp $destino/usr/etc/sudoers $destino/etc/sudoers
+
 sed -e '/Defaults targetpw/ s/^#*/# /' -i $destino/etc/sudoers
 echo "# Allow members of group wheel to execute any command
 %wheel ALL=(ALL) ALL
@@ -868,11 +871,16 @@ chroot $destino flatpak remote-add --if-not-exists flathub https://flathub.org/r
 zypper -n --root $destino clean
 
 ### Removendo pacotes desnecessários ###
-zypper -n --root $destino remove -y --clean-deps java-11-openjdk java-11-openjdk-headless javapackages-filesystem javapackages-tools busybox-ed
+zypper -n --root $destino remove -y --clean-deps java-11-openjdk java-11-openjdk-headless javapackages-filesystem javapackages-tools busybox-ed hddtemp openssh-askpass xf86-input-keyboard
 
 ### Removendo o repositório do openSUSE Leap ###
 echo -e "\nRemovendo o repositório do openSUSE Leap\n"
 zypper --root $destino removerepo "Open Source Software Leap"
+
+### Atualizando pacotes órfãos ###
+echo -e "\nAtualizando pacotes obsoletos\n"
+pacotes_orfaos="$(zypper -n --root $destino search -s --installed-only | grep -E "\(.*\)" | awk '{print $3}' | grep -v "wpa_supplicant" | tr '\n' ' ')"
+zypper -n --root $destino install -y --download-in-advance --force --repo "Open Source Software" $pacotes_orfaos
 
 ### Ajustando para que o zypper use --no-recommends por padrão ###
 # sed -i 's/# solver.onlyRequires = false/solver.onlyRequires = true/g' $destino/etc/zypp/zypp.conf
