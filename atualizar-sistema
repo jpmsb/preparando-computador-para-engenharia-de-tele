@@ -1,6 +1,10 @@
 #!/bin/bash
 
-contagem=1
+script_temporario=$(mktemp /dev/shm/script_temporario.XXXXXX)
+
+cat > $script_temporario <<\EOF
+#!/bin/bash
+
 export ZYPP_MEDIANETWORK=1
 
 box(){
@@ -27,14 +31,22 @@ box(){
     echo "$leftBottomCornerSymbol$horizontalLine$rightBottomCornerSymbol"
 }
 
+atualizar_repositorios(){
+    local comando="$1"
+    box "Atualizando as informações dos repositórios"
+    box "Executando \"$comando\""
+
+    $comando
+}
+
 atualizar() {
-    comando="$1"
+    local comando="$1"
 
     box "Executando \"$comando\""
     
     box "Verifique o que será realizado antes de prosseguir!!"
     
-    /usr/bin/pkexec $comando
+    $comando
     retorno=$?
     
     if [ $retorno -ne 0 ]; then
@@ -45,14 +57,22 @@ atualizar() {
     pkcon get-updates
 }
 
+atualizar_repositorios "pkcon get-updates"
+atualizar "/usr/bin/zypper dist-upgrade"
+EOF
+
+chmod +x $script_temporario
+
 if [ -z $1 ]; then
     /usr/bin/xfce4-terminal --hide-menubar --hide-toolbar --zoom 1.5 --maximize -e "$0 0" -T "Instalar atualizações"
 else
-    atualizar "/usr/bin/zypper dist-upgrade"
+    /usr/bin/pkexec bash $script_temporario
     killall package-update-indicator
     nohup /usr/bin/package-update-indicator > /dev/null 2>&1 &
 
-    # Sem esta espera, o comando acima não possui
+    # Sem esta espera, o comando acima
     # não possui tempo para se instanciar
     sleep 0.01
 fi
+
+rm -f $script_temporario
