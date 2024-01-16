@@ -42,6 +42,8 @@ atualizar_repositorios(){
 atualizar() {
     local comando="$1"
 
+    box "Prosseguindo para a atualização dos pacotes..."
+
     box "Executando \"$comando\""
     
     box "Verifique o que será realizado antes de prosseguir!!"
