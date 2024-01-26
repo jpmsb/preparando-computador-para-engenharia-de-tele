@@ -1,6 +1,6 @@
 #!/bin/bash
 
-script_temporario=$(mktemp /dev/shm/script_temporario.XXXXXX)
+script_temporario=$(mktemp /dev/shm/atualizar_sistema.XXXXXX)
 
 cat > $script_temporario <<\EOF
 #!/bin/bash
