@@ -1,8 +1,8 @@
 #!/bin/bash
 
-script_temporario=$(mktemp /dev/shm/atualizar_sistema.XXXXXX)
+script_temporario="/dev/shm/atualizar_sistema"
 
-cat > $script_temporario <<\EOF
+cat << \EOF >> $script_temporario
 #!/bin/bash
 
 export ZYPP_MEDIANETWORK=1
