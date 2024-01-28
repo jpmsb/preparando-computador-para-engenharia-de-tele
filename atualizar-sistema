@@ -2,7 +2,7 @@
 
 script_temporario="/dev/shm/atualizar_sistema"
 
-cat << \EOF >> $script_temporario
+cat << \EOF > $script_temporario
 #!/bin/bash
 
 export ZYPP_MEDIANETWORK=1
