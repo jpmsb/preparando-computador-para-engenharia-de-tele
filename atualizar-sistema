@@ -1,6 +1,6 @@
 #!/bin/bash
 
-script_temporario="/dev/shm/atualizar_sistema"
+script_temporario="/tmp/atualizar_sistema"
 
 cat << \EOF > $script_temporario
 #!/bin/bash
@@ -69,6 +69,7 @@ if [ -z $1 ]; then
     /usr/bin/xfce4-terminal --hide-menubar --hide-toolbar --zoom 1.5 --maximize -e "$0 0" -T "Instalar atualizações"
 else
     /usr/bin/pkexec bash $script_temporario
+    rm -f $script_temporario
     killall package-update-indicator
     nohup /usr/bin/package-update-indicator > /dev/null 2>&1 &
 
@@ -76,5 +77,3 @@ else
     # não possui tempo para se instanciar
     sleep 0.01
 fi
-
-rm -f $script_temporario
