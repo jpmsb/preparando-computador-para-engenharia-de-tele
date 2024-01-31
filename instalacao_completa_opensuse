@@ -54,6 +54,99 @@ tentar(){
     done
 }
 
+tipo_particao(){
+    particao="$1"
+    echo "$(/usr/sbin/blkid $particao | awk -F 'TYPE="' '{print $2}' | awk -F '"' '{print $1}')"
+}
+
+tamanho_particao(){
+    particao="$1"
+    echo "$(/usr/bin/lsblk -b $particao --output SIZE | grep -oP '\d+' | awk '{print $1}')"
+}
+
+converte_para_bytes() {
+    entrada="$1"
+    numero=$(echo "$entrada" | sed 's/[KMG]\?$//')
+    unidade=$(echo "$entrada" | sed 's/[0-9]*\([KMG]\?\)$/\1/')
+
+    case "$unidade" in
+        "K") fator=1024 ;;
+        "M") fator=$((1024 * 1024)) ;;
+        "G") fator=$((1024 * 1024 * 1024)) ;;
+        "T") fator=$((1024 * 1024 * 1024 * 1024)) ;;
+        *) fator=1 ;;
+    esac
+
+    valor_em_bytes=$((numero * fator))
+    echo "$valor_em_bytes"
+}
+
+valida_particao(){
+    particao_informada="/dev/$1"
+    tipo_particao_desejado="$2"
+    capacidade_minima="$3"
+    capacidade_minima_em_bytes="$(converte_para_bytes $3)"
+
+    if [[ -b "$particao_informada" ]]; then
+       particao_identificada="$(tipo_particao $particao_informada)"
+ 
+       if [[ "$tipo_particao_desejado" == *"$particao_identificada"* ]]; then
+           capacidade_particao="$(tamanho_particao $particao_informada)"
+  
+           if [[ "$capacidade_particao" -lt "$capacidade_minima_em_bytes" ]]; then
+               printf "$vermelho"
+               printf "\nA partição informada possui capacidade menor do que ${capacidade_minima}B.\n"
+               printf "Por favor, informe uma partição com pelo menos $magenta${capacidade_minima}B$normal$vermelho de capacidade.\n"
+               printf "$normal"
+           else
+               echo "$particao_informada"
+           fi
+       else
+           printf "$vermelho"
+           printf "\nA partição informada não está formatada como ${tipo_particao_desejado// / ou }.\n"
+           printf "Por favor, informe uma partição válida ou formate-a para que fique de acordo.\n"
+           printf "$normal"
+       fi
+    elif [ ! -z "$particao_informada" ]; then
+        printf "$vermelho"
+        printf "\nA partição informada não existe. Por favor, informe uma partição válida.\n"
+        printf "$normal"
+    fi
+}
+
+valida_dispositivo(){
+    dispositivo_informado="/dev/$1"
+
+    if [[ -b "$dispositivo_informado" ]]; then
+        procura=$(ls -1 $dispositivo_informado* 2>/dev/null | wc -l)
+        
+        if [ $procura -gt 1 ]; then
+            echo "$dispositivo_informado"
+        else
+            printf "$vermelho"
+	    echo "\nO dispositivo informado é uma partição. Por favor, informe o dispositivo que contém a partição.\n"
+            printf "$normal"
+	fi
+    else
+        printf "$vermelho"
+        printf "\nO dispositivo informado não existe. Por favor, informe um dispositivo válido.\n"
+        printf "$normal"
+    fi
+}
+
+mostra_preenchido(){
+    valor1="$1"
+    valor2="$2"
+    texto="$3"
+
+    if [ ! -z "$valor1" ] && [ ! -z "$valor2" ]; then
+        printf "$texto"
+        printf "$verde"
+        printf "$valor1"
+        printf "$normal\n"
+    fi
+}
+
 ajuda(){
     echo -e "Seu comando não possui todos os argumentos necessários. Veja o uso e exemplo abaixo:\n"
     echo -e "Uso:\n"
@@ -62,6 +155,16 @@ ajuda(){
     echo "    ./$0 /mnt /dev/sda1 joao \"João Pedro\""
     echo
 }
+
+
+# Verifica se o usuário é o root
+if [ "$EUID" -ne 0 ]; then
+    echo -e "\n Este script precisa ser executado como root."
+    echo -e " Para tal, utilize o comando \"sudo $0\" ou"
+    echo -e " execute-o como usuário root, usando o comando:\n"
+    echo -e " \"sudo su\" e em seguida \"$0\".\n"
+    exit 1
+fi
 
 ### Mensagem de boas vindas ###
 echo -e "\nOlá!! Este é o script de instalação completa do openSUSE Tumbleweed! Nesse tipo de instalação, serão instalados os pacotes principais e suas dependências, bem como pacotes sugeridos, ou seja, pacotes que não são necessários para o funcionamento das aplicações que serão instaladas, mas que podem adicionar recurso extra. Um exemplo disso são os pacotes de tradução. Neste script, os pacotes de tradução serão instalados explicitamente para evitar que alguma tradução acabe faltando."
@@ -75,13 +178,13 @@ magenta='\033[1;35m'
 vermelho='\033[1;31m'
 normal='\033[0m'
 
-particao_raiz=$1
+particao_raiz_informada=$1
 
 ## UEFI ou BIOS
 if [ -d /sys/firmware/efi ]; then
-    particao_EFI=$2
+    particao_EFI_informada=$2
 else
-    dispositivo_boot=$2
+    dispositivo_boot_informado=$2
 fi
 
 senha_root=$3
@@ -124,34 +227,71 @@ fi
 
 echo "════════════════════════════════════════════════════════"
 
-if [ -z "$particao_raiz" ]; then
-    read -p "Partição onde o sistema será instalado [ex.: /dev/sda2]: " particao_raiz
-else
-    printf "Partição onde o sistema será instalado [ex.: /dev/sda2]: "
-    printf "$verde"
-    printf "$particao_raiz"
-    printf "$normal\n"
-fi
+while [[ -z $particao_raiz ]]; do
+    if [ -z "$particao_raiz_informada" ]; then
+        read -p "Partição onde o sistema será instalado [ex.: sda2]: " particao_raiz_informada
+    else
+        particao_validada="$(valida_particao $particao_raiz_informada "ext4 btrfs" 10G)"
+
+        if [[ "/dev/$particao_raiz_informada" == "$particao_validada" ]]; then
+            particao_raiz="$particao_validada"
+
+            if [ -z $ja_rodou ]; then
+                mostra_preenchido "$particao_raiz" "$1" "Partição onde o sistema será instalado: "
+	    fi
+            unset ja_rodou
+        elif [ ! -z "$particao_raiz_informada" ]; then
+            printf "$particao_validada\n"
+            unset particao_raiz_informada
+            ja_rodou="0"
+        fi
+    fi
+done
+
 
 ## UEFI ou BIOS
 if [ -d /sys/firmware/efi ]; then
-    if [ -z "$particao_EFI" ]; then
-        read -p "Partição de inicialização EFI [ex.: /dev/sda1]: " particao_EFI
-    else
-        printf "Partição de inicialização EFI [ex.: /dev/sda1]: "
-        printf "$verde"
-        printf "$particao_EFI"
-        printf "$normal\n"
-    fi
+    while [[ -z $particao_EFI ]]; do
+        if [ -z "$particao_EFI_informada" ]; then
+            read -p "Partição de inicialização EFI [ex.: sda1]: " particao_EFI_informada
+        else
+            particao_validada="$(valida_particao $particao_EFI_informada "fat fat32 vfat fat16" 100M)"
+    
+            if [[ "/dev/$particao_EFI_informada" == "$particao_validada" ]]; then
+                particao_EFI="$particao_validada"
+   
+                if [ -z $ja_rodou ]; then
+                    mostra_preenchido "$particao_EFI" "$2" "Partição de inicialização EFI: "
+                fi
+                unset ja_rodou
+            elif [ ! -z "$particao_EFI_informada" ]; then
+                printf "$particao_validada\n"
+                unset particao_EFI_informada
+                ja_rodou="0"
+            fi
+        fi
+    done
 else
-    if [ -z "$dispositivo_boot" ]; then
-        read -p "Dispositivo de boot [ex.: /dev/sda]: " dispositivo_boot
-    else
-        printf "Dispositivo de boot [ex.: /dev/sda]: "
-        printf "$verde"
-        printf "$dispositivo_boot"
-        printf "$normal\n"
-    fi
+    while [[ -z $dispositivo_boot ]]; do
+        if [ -z "$dispositivo_boot_informado" ]; then 
+            read -p "Dispositivo de inicialização [ex.: sda]: " dispositivo_boot_informado
+        else 
+            dispositivo_boot_validado="$(valida_dispositivo $dispositivo_boot_informado)"
+    
+            if [[ "/dev/$dispositivo_boot_informado" == "$dispositivo_boot_validado" ]]; then 
+                dispositivo_boot="$dispositivo_boot_validado"
+   
+                if [ -z $ja_rodou ]; then 
+                    mostra_preenchido "$dispositivo_boot" "$2" "Dispositivo de inicialização: "
+                fi   
+                unset ja_rodou
+            elif [ ! -z "$dispositivo_boot_informado" ]; then 
+                printf "$dispositivo_boot_validado"
+                unset dispositivo_boot_informado
+                ja_rodou="0"
+            fi   
+        fi   
+    done
 fi
 
 
@@ -163,8 +303,8 @@ if [ -z "$senha_root" ]; then
     echo "║                                               ║"
     echo "╚═══════════════════════════════════════════════╝"
 
-    printf "\n$vermelho Por favor, escolha uma senha segura, pois este   $normal\n"
-    printf "$vermelho usuário pode realizar qualquer ação no sistema!! $normal\n\n"
+    printf "\n$magenta Por favor, escolha uma senha segura, pois este \n"
+    printf " usuário pode realizar qualquer ação no sistema!! $normal\n\n"
 
     while [[ "$senha_root" != "$senha_root_redigitada" ]] || [[ -z "$senha_root" ]]
     do
