@@ -147,6 +147,100 @@ mostra_preenchido(){
     fi
 }
 
+arquivo_bootloader(){
+    if [ -d /sys/firmware/efi ]; then
+        printf '%s\n' \
+        "" \
+        "## Path:	System/Bootloader" \
+        "## Description:	Bootloader configuration" \
+        "## Type:	list(grub,grub2,grub2-efi,none)" \
+        "## Default:	grub2" \
+        "#" \
+        "# Type of bootloader in use." \
+        "# For making the change effect run bootloader configuration tool" \
+        "# and configure newly selected bootloader" \
+        "#" \
+        "#" \
+        "LOADER_TYPE=\"grub2-efi\"" \
+        "" \
+        "## Path:	System/Bootloader" \
+        "## Description:	Bootloader configuration" \
+        "## Type:	yesno" \
+        "## Default:	\"no\"" \
+        "#" \
+        "# Enable Secure Boot support" \
+        "# Only available on UEFI systems and IBM z15+." \
+        "#" \
+        "#" \
+        "SECURE_BOOT=\"yes\"" \
+        "" \
+        "## Path:	System/Bootloader" \
+        "## Description:	Bootloader configuration" \
+        "## Type:	yesno" \
+        "## Default:	\"no\"" \
+        "#" \
+        "# Enable Trusted Boot support" \
+        "# Only available on hardware with a Trusted Platform Module." \
+        "#" \
+        "TRUSTED_BOOT=\"yes\"" \
+        "" \
+        "## Path:	System/Bootloader" \
+        "## Description:	Bootloader configuration" \
+        "## Type:	yesno" \
+        "## Default:	\"yes\"" \
+        "#" \
+        "# Update nvram boot settings (UEFI, OF)" \
+        "# Unset to preserve specific settings or workaround firmware issues." \
+        "#" \
+        "UPDATE_NVRAM=\"yes\""
+    else
+        printf '%s\n' \
+        "" \
+        "## Path:	System/Bootloader" \
+        "## Description:	Bootloader configuration" \
+        "## Type:	list(grub,grub2,grub2-efi,systemd-boot,none)" \
+        "## Default:	grub2" \
+        "#" \
+        "# Type of bootloader in use." \
+        "# For making the change effect run bootloader configuration tool." \
+        "# and configure newly selected bootloader." \
+        "#" \
+        "#" \
+        "LOADER_TYPE=\"grub2\"" \
+        "" \
+        "## Path:	System/Bootloader" \
+        "## Description:	Bootloader configuration" \
+        "## Type:	yesno" \
+        "## Default:	\"no\"" \
+        "#" \
+        "# Enable Secure Boot support" \
+        "# Only available on UEFI systems and IBM z15+." \
+        "#" \
+        "#" \
+        "SECURE_BOOT=\"yes\"" \
+        "" \
+        "## Path:	System/Bootloader" \
+        "## Description:	Bootloader configuration" \
+        "## Type:	yesno" \
+        "## Default:	\"no\"" \
+        "#" \
+        "# Enable Trusted Boot support" \
+        "# Only available on hardware with a Trusted Platform Module." \
+        "#" \
+        "TRUSTED_BOOT=\"no\"" \
+        "" \
+        "## Path:	System/Bootloader" \
+        "## Description:	Bootloader configuration" \
+        "## Type:	yesno" \
+        "## Default:	\"yes\"" \
+        "#" \
+        "# Update nvram boot settings (UEFI, OF)" \
+        "# Unset to preserve specific settings or workaround firmware issues." \
+        "#" \
+        "UPDATE_NVRAM=\"yes\""
+    fi
+}
+
 ajuda(){
     echo -e "Seu comando não possui todos os argumentos necessários. Veja o uso e exemplo abaixo:\n"
     echo -e "Uso:\n"
@@ -231,6 +325,7 @@ while [[ -z $particao_raiz ]]; do
     if [ -z "$particao_raiz_informada" ]; then
         read -p "Partição onde o sistema será instalado [ex.: sda2]: " particao_raiz_informada
     else
+        particao_raiz_informada=$(basename $particao_raiz_informada)
         particao_validada="$(valida_particao $particao_raiz_informada "ext4 btrfs" 10G)"
 
         if [[ "/dev/$particao_raiz_informada" == "$particao_validada" ]]; then
@@ -255,6 +350,7 @@ if [ -d /sys/firmware/efi ]; then
         if [ -z "$particao_EFI_informada" ]; then
             read -p "Partição de inicialização EFI [ex.: sda1]: " particao_EFI_informada
         else
+            particao_EFI_informada=$(basename $particao_EFI_informada)
             particao_validada="$(valida_particao $particao_EFI_informada "fat fat32 vfat fat16" 100M)"
     
             if [[ "/dev/$particao_EFI_informada" == "$particao_validada" ]]; then
@@ -275,7 +371,8 @@ else
     while [[ -z $dispositivo_boot ]]; do
         if [ -z "$dispositivo_boot_informado" ]; then 
             read -p "Dispositivo de inicialização [ex.: sda]: " dispositivo_boot_informado
-        else 
+        else
+            dispositivo_boot_informado=$(basename $dispositivo_boot_informado)
             dispositivo_boot_validado="$(valida_dispositivo $dispositivo_boot_informado)"
     
             if [[ "/dev/$dispositivo_boot_informado" == "$dispositivo_boot_validado" ]]; then 
@@ -456,9 +553,12 @@ mount $particao_raiz $destino
 ### Instalação do sistema base ###
 comando_1="zypper refresh -f"
 comando_2="zypper -n --installroot $destino install -y -t product openSUSE"
-comando_3="zypper -n --installroot $destino install -y zypper-needs-restarting systemd-lang systemd-container ca-certificates ca-certificates-mozilla curl gawk grep-lang sed-lang tar-lang xz-lang gzip procps-lang procps systemd-presets-branding-openSUSE suse-module-tools suse-module-tools-scriptlets diffutils-lang"
+comando_3="zypper -n --installroot $destino install -y zypper-needs-restarting systemd-lang systemd-container ca-certificates ca-certificates-mozilla curl gawk grep-lang sed-lang tar-lang xz-lang gzip procps-lang procps which systemd-presets-branding-openSUSE suse-module-tools suse-module-tools-scriptlets diffutils-lang man man-pages man-pages-posix man-pages-pt_BR"
 
 tentar "$comando_1 && $comando_2 && $comando_3" $tentivas_maximas
+
+### Criação do arquivo de configuração do gestor de inicialização ###
+arquivo_bootloader > $destino/etc/sysconfig/bootloader
 
 ### Bloqueando pacote problemático do ALSA ###
 zypper -n --root $destino remove -u -y alsa-ucm-conf
@@ -471,7 +571,7 @@ mount --bind /dev $destino/dev
 mkdir $destino/boot/efi
 
 ### Atualizando os certificados SSL ###
-chroot $destino update-ca-certificates
+chroot $destino /usr/sbin/update-ca-certificates
 
 ### Adicionando os repositórios principais ###
 echo -e "\nAdicionando repositórios principais.\n"
@@ -711,12 +811,12 @@ gpgkey=https://keys.anydesk.com/repos/RPM-GPG-KEY' > $destino/etc/zypp/repos.d/a
 echo "nameserver 8.8.8.8" > $destino/etc/resolv.conf
 
 ### Importando a chave do repositório do Visual Studio Code ###
-comando_1="chroot $destino rpm --import https://packages.microsoft.com/keys/microsoft.asc"
+comando_1="chroot $destino /usr/bin/rpm --import https://packages.microsoft.com/keys/microsoft.asc"
 
 tentar "$comando_1" $tentivas_maximas
 
 ### Importando a chave do repositório do Geogebra ###
-comando_1="chroot $destino rpm --import https://static.geogebra.org/linux/office@geogebra.org.gpg.key"
+comando_1="chroot $destino /usr/bin/rpm --import https://static.geogebra.org/linux/office@geogebra.org.gpg.key"
 
 tentar "$comando_1" $tentivas_maximas
 
@@ -731,7 +831,6 @@ comando_2="zypper -n --root $destino dist-upgrade -y --download-in-advance --all
 
 tentar "$comando_1 && $comando_2" $tentivas_maximas
 
-echo -e "\nInstalando o restante do sistema base.\n"
 
 ### Bloqueando a instalação de pacotes conflitantes ###
 zypper --root $destino addlock ifplugd
@@ -754,7 +853,7 @@ comando_2="zypper -n --root $destino install --oldpackage -y --allow-vendor-chan
 
 tentar "$comando_1 && $comando_2" $tentivas_maximas
 zypper --root $destino addlock wpa_supplicant
-chroot $destino update-crypto-policies --set LEGACY
+chroot $destino /usr/bin/update-crypto-policies --set LEGACY
 
 ### Instalação do grub (UEFI ou BIOS) ###
 comando_1="zypper -n --root $destino refresh -f"
@@ -765,25 +864,32 @@ if [ -d /sys/firmware/efi ]; then
     tentar "$comando_1 && $comando_2" $tentivas_maximas
 
     mount $particao_EFI $destino/boot/efi
-    chroot $destino mount -t efivarfs efivarfs /sys/firmware/efi/efivars
-    chroot $destino grub2-install
-    chroot $destino dracut -vf --regenerate-all
+    chroot $destino /usr/bin/mount -t efivarfs efivarfs /sys/firmware/efi/efivars
+    chroot $destino /usr/sbin/grub2-install
+    opensuse_secureboot=(chroot $destino /usr/sbin/shim-install --config-file=/boot/grub2/grub.cfg)
 else
     echo -e "\nInstalando o GRUB em modo BIOS\n"
     comando_2="zypper -n --root $destino install -y --download-in-advance grub2-i386-pc-extras"
     tentar "$comando_1 && $comando_2" $tentivas_maximas
-    chroot $destino dracut -vf --regenerate-all
-    chroot $destino grub2-install $dispositivo_boot
+    chroot $destino /usr/sbin/grub2-install $dispositivo_boot
 fi
 
 sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT=""/GRUB_CMDLINE_LINUX_DEFAULT="quiet splash security=apparmor loglevel=3 nosimplefb=1"/' $destino/etc/default/grub
+sed -i 's/.*GRUB_TERMINAL.*/GRUB_TERMINAL=gfxterm/' $destino/etc/default/grub
+sed -i 's/.*GRUB_GFXMODE.*/GRUB_GFXMODE=auto/' $destino/etc/default/grub
 echo "GRUB_DISABLE_OS_PROBER=\"false\"" >> $destino/etc/default/grub
-chroot $destino grub2-mkconfig -o /boot/grub2/grub.cfg
 
+echo
+chroot $destino /usr/bin/dracut -f --regenerate-all
+echo
+chroot $destino /usr/sbin/grub2-mkconfig -o /boot/grub2/grub.cfg
+echo
+"${opensuse_secureboot[@]}"
+echo
 
 ### Ajustando o tema de inialização do sistema ###
-chroot $destino plymouth-set-default-theme bgrt -R
-chroot $destino dracut -vf --regenerate-all
+chroot $destino /usr/sbin/plymouth-set-default-theme bgrt -R
+chroot $destino /usr/bin/dracut -f --regenerate-all
 
 ### Ajustando os pontos de montagem no fstab (UEFI ou BIOS) ###
 if [ -d /sys/firmware/efi ]; then
@@ -850,7 +956,7 @@ if [[ "$laptop" == [sS] ]]; then
     if [[ $instalar_nvidia == "Sim" ]]; then
         echo -e "\nInstalando o SUSE Prime e ajustando para não desligar o áudio do HDMI\n"
         comando_1="zypper -n --root $destino refresh -f"
-        comando_2="zypper -n --root $destino install -y --download-in-advance suse-prime suseprime-appindicator"
+        comando_2="zypper -n --root $destino install -y --download-in-advance suse-prime suseprime-appindicator switcheroo-control"
 
         tentar "$comando_1 && $comando_2" $tentivas_maximas
 
@@ -863,7 +969,7 @@ if [[ "$laptop" == [sS] ]]; then
         ACTION=="unbind", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x030200", TEST=="power/control", ATTR{power/control}="on"' > $destino/etc/udev/rules.d/90-nvidia-udev-pm-G05.rules
 
         # Habilitar o SUSE Prime e realizar as configurações necessárias
-        chroot $destino ln -s /usr/lib/systemd/system/prime-select.service /etc/systemd/system/multi-user.target.wants/prime-select.service
+        chroot $destino /usr/bin/ln -s /usr/lib/systemd/system/prime-select.service /etc/systemd/system/multi-user.target.wants/prime-select.service
         echo "offload" > $destino/etc/prime/boot
         echo "offload" > $destino/etc/prime/current_type
         echo "$iGPU" > $destino/etc/prime/offload_type
@@ -871,8 +977,8 @@ if [[ "$laptop" == [sS] ]]; then
     fi
 
     # Habilitando o TLP para preservação da bateria
-    chroot $destino ln -s /usr/lib/systemd/system/tlp.service /etc/systemd/system/multi-user.target.wants/tlp.service
-    chroot $destino ln -s /usr/lib/systemd/system/touchegg.service /etc/systemd/system/multi-user.target.wants/touchegg.service
+    chroot $destino /usr/bin/ln -s /usr/lib/systemd/system/tlp.service /etc/systemd/system/multi-user.target.wants/tlp.service
+    chroot $destino /usr/bin/ln -s /usr/lib/systemd/system/touchegg.service /etc/systemd/system/multi-user.target.wants/touchegg.service
 
     # Ajustando configurações do TLP
     sed -i '/^/s/^#CPU_SCALING_GOVERNOR_ON_BAT/CPU_SCALING_GOVERNOR_ON_BAT/g' $destino/etc/tlp.conf
@@ -894,39 +1000,39 @@ groupadd --root $destino --system wheel
 
 ### Habilitando serviço de rede ###
 echo -e "\nHabilitando serviço de rede\n"
-chroot $destino ln -s /usr/lib/systemd/system/NetworkManager.service /etc/systemd/system/network.service
-chroot $destino ln -s /usr/lib/systemd/system/NetworkManager.service /etc/systemd/system/multi-user.target.wants/NetworkManager.service
-chroot $destino ln -s /usr/lib/systemd/system/NetworkManager-dispatcher.service /etc/systemd/system/dbus-org.freedesktop.nm-dispatcher.service
-chroot $destino ln -s /usr/lib/systemd/system/NetworkManager-wait-online.service /etc/systemd/system/network-online.target.wants/NetworkManager-wait-online.service
+chroot $destino /usr/bin/ln -s /usr/lib/systemd/system/NetworkManager.service /etc/systemd/system/network.service
+chroot $destino /usr/bin/ln -s /usr/lib/systemd/system/NetworkManager.service /etc/systemd/system/multi-user.target.wants/NetworkManager.service
+chroot $destino /usr/bin/ln -s /usr/lib/systemd/system/NetworkManager-dispatcher.service /etc/systemd/system/dbus-org.freedesktop.nm-dispatcher.service
+chroot $destino /usr/bin/ln -s /usr/lib/systemd/system/NetworkManager-wait-online.service /etc/systemd/system/network-online.target.wants/NetworkManager-wait-online.service
 
 ### Habilitando Firewalld ###
 echo -e "\nHabilitando Firewalld\n"
-chroot $destino ln -s /usr/lib/systemd/system/firewalld.service /etc/systemd/system/dbus-org.fedoraproject.FirewallD1.service
-chroot $destino ln -s /usr/lib/systemd/system/firewalld.service /etc/systemd/system/multi-user.target.wants/firewalld.service
+chroot $destino /usr/bin/ln -s /usr/lib/systemd/system/firewalld.service /etc/systemd/system/dbus-org.fedoraproject.FirewallD1.service
+chroot $destino /usr/bin/ln -s /usr/lib/systemd/system/firewalld.service /etc/systemd/system/multi-user.target.wants/firewalld.service
 
 ### Habilitando Chronyd ###
 echo -e "\nHabilitando Chronyd\n"
-chroot $destino ln -s /usr/lib/systemd/system/chronyd.service /etc/systemd/system/multi-user.target.wants/chronyd.service
+chroot $destino /usr/bin/ln -s /usr/lib/systemd/system/chronyd.service /etc/systemd/system/multi-user.target.wants/chronyd.service
 
 ### Habilitando General Purpose Mouse ###
 echo -e "\nHabilitando General Purpose Mouse\n"
-chroot $destino ln -s /usr/lib/systemd/system/gpm.service /etc/systemd/system/multi-user.target.wants/gpm.service
+chroot $destino /usr/bin/ln -s /usr/lib/systemd/system/gpm.service /etc/systemd/system/multi-user.target.wants/gpm.service
 
 ### Habilitando Libvirtd ###
 echo -e "\nHabilitando Libvirtd\n"
-chroot $destino ln -s /usr/lib/systemd/system/libvirtd.service /etc/systemd/system/multi-user.target.wants/libvirtd.service
-chroot $destino ln -s /usr/lib/systemd/system/virtlockd.socket /etc/systemd/system/sockets.target.wants/virtlockd.socket
-chroot $destino ln -s /usr/lib/systemd/system/virtlogd.socket /etc/systemd/system/sockets.target.wants/virtlogd.socket
-chroot $destino ln -s /usr/lib/systemd/system/libvirtd.socket /etc/systemd/system/sockets.target.wants/libvirtd.socket
-chroot $destino ln -s /usr/lib/systemd/system/libvirtd-ro.socket /etc/systemd/system/sockets.target.wants/libvirtd-ro.socket
+chroot $destino /usr/bin/ln -s /usr/lib/systemd/system/libvirtd.service /etc/systemd/system/multi-user.target.wants/libvirtd.service
+chroot $destino /usr/bin/ln -s /usr/lib/systemd/system/virtlockd.socket /etc/systemd/system/sockets.target.wants/virtlockd.socket
+chroot $destino /usr/bin/ln -s /usr/lib/systemd/system/virtlogd.socket /etc/systemd/system/sockets.target.wants/virtlogd.socket
+chroot $destino /usr/bin/ln -s /usr/lib/systemd/system/libvirtd.socket /etc/systemd/system/sockets.target.wants/libvirtd.socket
+chroot $destino /usr/bin/ln -s /usr/lib/systemd/system/libvirtd-ro.socket /etc/systemd/system/sockets.target.wants/libvirtd-ro.socket
 
 ### Habilitando Earlyoom ###
 echo -e "\nHabilitando Earlyoom\n"
-chroot $destino ln -s /usr/lib/systemd/system/earlyoom.service /etc/systemd/system/multi-user.target.wants/earlyoom.service
+chroot $destino /usr/bin/ln -s /usr/lib/systemd/system/earlyoom.service /etc/systemd/system/multi-user.target.wants/earlyoom.service
 
 ### Desabilitando a política de nomes de interface de rede ###
 echo -e "\nDesabilitando a política de nomes de interface de rede\n"
-chroot $destino ln -s /dev/null /etc/systemd/network/99-default.link
+chroot $destino /usr/bin/ln -s /dev/null /etc/systemd/network/99-default.link
 
 ### Garantindo o início do nm-applet quando o shell padrão não for o bash ###
 cp $destino/usr/share/applications/nm-applet.desktop $destino/etc/xdg/autostart/nm-applet.desktop
@@ -1010,10 +1116,10 @@ screensaver-timeout = 2
 xft-antialias = true" > $destino/etc/lightdm/lightdm-gtk-greeter.conf
 
 ### Ajustando permissão para o LightDM funcionar ###
-chroot $destino chown -R lightdm: /var/lib/lightdm
+chroot $destino /usr/bin/chown -R lightdm: /var/lib/lightdm
 
 ### Adicionando repositório do Flathub ###
-chroot $destino flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+chroot $destino /usr/bin/flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
 ### Limpando pacotes já baixados ###
 zypper -n --root $destino clean
@@ -1059,7 +1165,7 @@ comando_1="wget https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts
 
 tentar "$comando_1" $tentivas_maximas
 
-chroot $destino fc-cache -r
+chroot $destino /usr/bin/fc-cache -r
 
 ### Instalando um skel ###
 echo -e "\nInstalando um skel\n"
@@ -1136,30 +1242,30 @@ fi' > $destino/etc/profile.d/extra_paths.sh
 echo 'export SHELL=/usr/bin/fish' > $destino/etc/profile.d/default_shell.sh
 
 ### Criando o cache do tealdeer ###
-chroot $destino su -c "/usr/bin/tldr --update" -s /bin/bash $usuario
+chroot $destino /usr/bin/su -c "/usr/bin/tldr --update" -s /bin/bash $usuario
 
 ### Ajustando o tema dos aplicativos do Gnome ###
 echo "[org.gnome.desktop.interface]
 color-scheme='prefer-dark'" > $destino/usr/share/glib-2.0/schemas/10_org.gnome.desktop.interface.gschema.override
-chroot $destino glib-compile-schemas /usr/share/glib-2.0/schemas
+chroot $destino /usr/bin/glib-compile-schemas /usr/share/glib-2.0/schemas
 
 ### Loja Gnome Software deve preferir o repositório local ao invés de Flatpak ###
 echo "[org.gnome.software]
 packaging-format-preference = [ 'package', 'flatpak' ]" > $destino/usr/share/glib-2.0/schemas/20_org.gnome.software-jpmsb.gschema.override
-chroot $destino glib-compile-schemas /usr/share/glib-2.0/schemas
+chroot $destino /usr/bin/glib-compile-schemas /usr/share/glib-2.0/schemas
 
 ### Definindo a senha do root ###
 echo -e "\nDefinindo a senha do usuário root\n"
 echo "root:$senha_root" | chpasswd --root $destino
 
 ### Ajustando as permissões dos diretórios do PolicyKit ###
-chroot $destino chown -R root:root /usr/share/polkit-1/
-chroot $destino chown polkitd:root /usr/share/polkit-1/rules.d
-chroot $destino chown polkitd:root /usr/share/polkit-1/rules.d/50-default.rules
-chroot $destino chown polkitd:root /etc/polkit-1/rules.d
+chroot $destino /usr/bin/chown -R root:root /usr/share/polkit-1/
+chroot $destino /usr/bin/chown polkitd:root /usr/share/polkit-1/rules.d
+chroot $destino /usr/bin/chown polkitd:root /usr/share/polkit-1/rules.d/50-default.rules
+chroot $destino /usr/bin/chown polkitd:root /etc/polkit-1/rules.d
 
 ### Ajustando a zona padrão do Firewalld para 'trusted' ###
-chroot $destino firewall-offline-cmd --set-default-zone=trusted
+chroot $destino /usr/bin/firewall-offline-cmd --set-default-zone=trusted
 
 ### Desmontando diretórios ###
 desmontar_tudo $destino
