@@ -300,6 +300,7 @@ fi
 
 ### Identificação das GPUs presentes ###
 gpu_info=$(lspci | grep -E "VGA|3D controller")
+num_gpus=$(echo "$gpu_info" | wc -l)
 
 if echo "$gpu_info" | grep -qi 'Intel'; then
     pacotes_intel_gpu="intel-gpu-tools intel-media-driver"
@@ -947,16 +948,20 @@ fi
 if [[ "$laptop" == [sS] ]]; then
     ### Instalando componentes para melhor experiência com laptops ###
     echo -e "\nInstalando componentes para melhor experiência com laptops\n"
+    if [ "$num_gpus" -gt 1 ]; then
+        switcheroo_control="switcheroo-control"
+    fi
+ 
     comando_1="zypper -n --root $destino refresh -f"
     comando_2="zypper -n --root $destino install -y --download-in-advance -t pattern laptop"
-    comando_3="zypper -n --root $destino install -y --download-in-advance touchegg"
+    comando_3="zypper -n --root $destino install -y --download-in-advance touchegg $switcheroo_control"
 
     tentar "$comando_1 && $comando_2 && $comando_3" $tentivas_maximas
 
     if [[ $instalar_nvidia == "Sim" ]]; then
         echo -e "\nInstalando o SUSE Prime e ajustando para não desligar o áudio do HDMI\n"
         comando_1="zypper -n --root $destino refresh -f"
-        comando_2="zypper -n --root $destino install -y --download-in-advance suse-prime suseprime-appindicator switcheroo-control"
+        comando_2="zypper -n --root $destino install -y --download-in-advance suse-prime suseprime-appindicator"
 
         tentar "$comando_1 && $comando_2" $tentivas_maximas
 
@@ -968,8 +973,7 @@ if [[ "$laptop" == [sS] ]]; then
         ACTION=="unbind", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x030000", TEST=="power/control", ATTR{power/control}="on"
         ACTION=="unbind", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x030200", TEST=="power/control", ATTR{power/control}="on"' > $destino/etc/udev/rules.d/90-nvidia-udev-pm-G05.rules
 
-        # Habilitar o Switcheroo, SUSE Prime e realizar as configurações necessárias
-        chroot $destino /usr/bin/ln -s /usr/lib/systemd/system/switcheroo-control.service /etc/systemd/system/graphical.target.wants/switcheroo-control.service
+        # Habilitar o SUSE Prime e realizar as configurações necessárias
         chroot $destino /usr/bin/ln -s /usr/lib/systemd/system/prime-select.service /etc/systemd/system/multi-user.target.wants/prime-select.service
         echo "offload" > $destino/etc/prime/boot
         echo "offload" > $destino/etc/prime/current_type
@@ -988,6 +992,11 @@ if [[ "$laptop" == [sS] ]]; then
     sed -i '/^/s/^#PCIE_ASPM_ON_BAT=default/PCIE_ASPM_ON_BAT=powersupersave/g' $destino/etc/tlp.conf
     sed -i '/^/s/^#CPU_ENERGY_PERF_POLICY_ON_AC=balance_performance/CPU_ENERGY_PERF_POLICY_ON_AC=power/g' $destino/etc/tlp.conf
     sed -i '/^/s/^#CPU_ENERGY_PERF_POLICY_ON_BAT=balance_power/CPU_ENERGY_PERF_POLICY_ON_BAT=power/g' $destino/etc/tlp.conf
+
+    # Habilitar o serviço do switcheroo-control
+    if [ ! -z "$switcheroo_control" ]; then
+        chroot $destino /usr/bin/ln -s /usr/lib/systemd/system/switcheroo-control.service /etc/systemd/system/graphical.target.wants/switcheroo-control.service
+    fi
 fi
 
 ### Criando diretório images ###
