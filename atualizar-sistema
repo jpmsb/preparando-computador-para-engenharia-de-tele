@@ -2,72 +2,75 @@
 
 script_temporario="/tmp/atualizar_sistema"
 
-cat << \EOF > $script_temporario
-#!/bin/bash
+script_atualizador(){
+    printf '%s\n' \
+    '#!/bin/bash' \
+    '' \
+    'export ZYPP_MEDIANETWORK=1' \
+    '' \
+    'box(){' \
+    '    local sentence="$1"' \
+    '    local sentenceLenght=${#sentence}' \
+    '    local horizontalSpacing=$(($sentenceLenght+2))' \
+    '' \
+    '    local leftUpperCornerSymbol="╔"' \
+    '    local rightUpperCornerSymbol="╗"' \
+    '    local leftBottomCornerSymbol="╚"' \
+    '    local rightBottomCornerSymbol="╝"' \
+    '    local horizontalSymbol="═"' \
+    '    local verticalSymbol="║"' \
+    '' \
+    '    for line in $(seq 1 $horizontalSpacing)' \
+    '    do' \
+    '        local horizontalLine=$horizontalSymbol$horizontalLine' \
+    '    done' \
+    '' \
+    '    echo "$leftUpperCornerSymbol$horizontalLine$rightUpperCornerSymbol"' \
+    '    echo "$verticalSymbol${horizontalLine//$horizontalSymbol/ }$verticalSymbol"' \
+    '    echo "$verticalSymbol $sentence $verticalSymbol"' \
+    '    echo "$verticalSymbol${horizontalLine//$horizontalSymbol/ }$verticalSymbol"' \
+    '    echo "$leftBottomCornerSymbol$horizontalLine$rightBottomCornerSymbol"' \
+    '}' \
+    '' \
+    'atualizar_repositorios(){' \
+    '    local comando="$1"' \
+    '    box "Atualizando as informações dos repositórios"' \
+    '    box "Executando \"$comando\""' \
+    '' \
+    '    $comando' \
+    '}' \
+    '' \
+    'atualizar() {' \
+    '    local comando="$1"' \
+    '' \
+    '    box "Prosseguindo para a atualização dos pacotes..."' \
+    '' \
+    '    box "Executando \"$comando\""' \
+    '' \
+    '    box "Verifique o que será realizado antes de prosseguir!!"' \
+    '' \
+    '    $comando' \
+    '    retorno=$?' \
+    '' \
+    '    if [ $retorno -ne 0 ]; then' \
+    '        box "Algo deu errado!! Você pode tentar novamente."' \
+    '    fi' \
+    '' \
+    "    read -rep \$'\nPressione ENTER para sair...\n'" \
+    '    pkcon get-updates' \
+    '}' \
+    '' \
+    'atualizar_repositorios "pkcon get-updates"' \
+    'atualizar "/usr/bin/zypper dist-upgrade"'
 
-export ZYPP_MEDIANETWORK=1
-
-box(){
-    local sentence="$1"
-    local sentenceLenght=${#sentence}
-    local horizontalSpacing=$(($sentenceLenght+2))
-
-    local leftUpperCornerSymbol="╔"
-    local rightUpperCornerSymbol="╗"
-    local leftBottomCornerSymbol="╚"
-    local rightBottomCornerSymbol="╝"
-    local horizontalSymbol="═"
-    local verticalSymbol="║"
-
-    for line in $(seq 1 $horizontalSpacing)
-    do
-        local horizontalLine=$horizontalSymbol$horizontalLine
-    done
-
-    echo "$leftUpperCornerSymbol$horizontalLine$rightUpperCornerSymbol"
-    echo "$verticalSymbol${horizontalLine//$horizontalSymbol/ }$verticalSymbol"
-    echo "$verticalSymbol $sentence $verticalSymbol"
-    echo "$verticalSymbol${horizontalLine//$horizontalSymbol/ }$verticalSymbol"
-    echo "$leftBottomCornerSymbol$horizontalLine$rightBottomCornerSymbol"
+    chmod +x $script_temporario
 }
 
-atualizar_repositorios(){
-    local comando="$1"
-    box "Atualizando as informações dos repositórios"
-    box "Executando \"$comando\""
-
-    $comando
-}
-
-atualizar() {
-    local comando="$1"
-
-    box "Prosseguindo para a atualização dos pacotes..."
-
-    box "Executando \"$comando\""
-    
-    box "Verifique o que será realizado antes de prosseguir!!"
-    
-    $comando
-    retorno=$?
-    
-    if [ $retorno -ne 0 ]; then
-        box "Algo deu errado!! Você pode tentar novamente."
-    fi
-    
-    read -rep $'\nPresssione ENTER para sair...\n'
-    pkcon get-updates
-}
-
-atualizar_repositorios "pkcon get-updates"
-atualizar "/usr/bin/zypper dist-upgrade"
-EOF
-
-chmod +x $script_temporario
 
 if [ -z $1 ]; then
     /usr/bin/xfce4-terminal --hide-menubar --hide-toolbar --zoom 1.5 --maximize -e "$0 0" -T "Instalar atualizações"
 else
+    script_atualizador > $script_temporario
     /usr/bin/pkexec bash $script_temporario
     rm -f $script_temporario
     killall package-update-indicator
