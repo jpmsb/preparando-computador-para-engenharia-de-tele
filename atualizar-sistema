@@ -61,7 +61,10 @@ script_atualizador(){
     '}' \
     '' \
     'atualizar_repositorios "pkcon get-updates"' \
-    'atualizar "/usr/bin/zypper dist-upgrade"'
+    'atualizar "/usr/bin/zypper dist-upgrade"' \
+    '' \
+    'rm -rf /var/tmp/rpm-tmp.*' \
+    'rm -rf /var/tmp/zypp.*'
 
     chmod +x $script_temporario
 }
