@@ -555,8 +555,9 @@ mount $particao_raiz $destino
 comando_1="zypper refresh -f"
 comando_2="zypper -n --installroot $destino install -y -t product openSUSE"
 comando_3="zypper -n --installroot $destino install -y zypper-needs-restarting systemd-lang systemd-container ca-certificates ca-certificates-mozilla curl gawk grep-lang sed-lang tar-lang xz-lang gzip procps-lang procps which systemd-presets-branding-openSUSE suse-module-tools suse-module-tools-scriptlets diffutils-lang man man-pages man-pages-posix man-pages-pt_BR"
+comando_4="zypper -n --installroot $destino addlocale pt_BR"
 
-tentar "$comando_1 && $comando_2 && $comando_3" $tentivas_maximas
+tentar "$comando_1 && $comando_2 && $comando_3 && $comando_4" $tentivas_maximas
 
 ### Criação do arquivo de configuração do gestor de inicialização ###
 arquivo_bootloader > $destino/etc/sysconfig/bootloader
@@ -674,15 +675,6 @@ path=/
 type=rpm-md
 keeppackages=0' > $destino/etc/zypp/repos.d/Education.repo
 
-echo '[Security_Logging]
-name=Security Logging
-type=rpm-md
-baseurl=https://download.opensuse.org/repositories/security:/logging/openSUSE_Tumbleweed/
-gpgcheck=1
-gpgkey=https://download.opensuse.org/repositories/security:/logging/openSUSE_Tumbleweed/repodata/repomd.xml.key
-enabled=1
-keeppackages=0' > $destino/etc/zypp/repos.d/Security_logging.repo
-
 echo '[Games]
 name=Games
 enabled=1
@@ -789,15 +781,6 @@ repo_gpgcheck=1
 enabled=0
 type=rpm-md' > $destino/etc/zypp/repos.d/teamviewer.repo
 
-echo '[geogebra]
-name=geogebra
-enabled=1
-autorefresh=1
-baseurl=http://www.geogebra.net/linux/rpm/x86_64
-type=rpm-md
-repo_gpgcheck=0
-keeppackages=0' > $destino/etc/zypp/repos.d/geogebra.repo
-
 echo '[AnyDesk]
 name=AnyDesk
 enabled=0
@@ -813,11 +796,6 @@ echo "nameserver 8.8.8.8" > $destino/etc/resolv.conf
 
 ### Importando a chave do repositório do Visual Studio Code ###
 comando_1="chroot $destino /usr/bin/rpm --import https://packages.microsoft.com/keys/microsoft.asc"
-
-tentar "$comando_1" $tentivas_maximas
-
-### Importando a chave do repositório do Geogebra ###
-comando_1="chroot $destino /usr/bin/rpm --import https://static.geogebra.org/linux/office@geogebra.org.gpg.key"
 
 tentar "$comando_1" $tentivas_maximas
 
@@ -924,7 +902,7 @@ tentar "$comando_1 && $comando_2" $tentivas_maximas
 echo -e "\nInstalando componentes extras\n"
 
 comando_1="zypper -n --root $destino refresh -f"
-comando_2="zypper -n --root $destino install -y --allow-vendor-change --download-in-advance myspell-dictionaries myspell-en myspell-en_US myspell-lightproof-en myspell-lightproof-pt_BR myspell-pt_BR okular-lang libKF5XmlGui5-lang libKF5ConfigWidgets5-lang libKF5Bookmarks5-lang libKF5Codecs5-lang libKF5Completion5-lang libKF5ConfigCore5-lang libKF5DBusAddons5-lang libKF5Declarative5-lang libKF5GlobalAccel5-lang libKF5I18n5-lang libKF5IconThemes5-lang libKF5ItemViews5-lang libKF5JobWidgets5-lang libKF5KHtml5-lang libKF5Notifications5-lang libKF5Parts5-lang libKF5Pty5-lang libKF5Solid5-lang libKF5SonnetCore5-lang libKF5SyntaxHighlighting5-lang libKF5TextWidgets5-lang libKF5WidgetsAddons5-lang libKF5WindowSystem5-lang vlc-qt vlc vlc-lang vlc-codecs vlc-codec-gstreamer gnome-calculator-lang kcolorchooser-lang gnome-disk-utility-lang qemu-kvm libvirt-daemon-qemu qemu-linux-user qemu-linux-user libvirt-daemon-qemu virt-manager qt5ct kolourpaint-lang libqt5-qtxmlpatterns-imports libQt5WebChannel5-imports gparted-lang pluma-lang engrampa-lang libreoffice libreoffice-branding-openSUSE libreoffice-l10n-pt_BR libreoffice-l10n-en libreoffice-branding-openSUSE libreoffice-calc libreoffice-draw libreoffice-filters-optional libreoffice-gnome libreoffice-gtk3 libreoffice-icon-themes libreoffice-impress libreoffice-l10n-en libreoffice-l10n-pt_BR libreoffice-mailmerge libreoffice-math libreoffice-pyuno libreoffice-share-linker libreoffice-writer MozillaFirefox MozillaFirefox-branding-openSUSE MozillaFirefox-translations-common MozillaFirefox-translations-other transmission-gtk-lang baobab-lang"
+comando_2="zypper -n --root $destino install -y --allow-vendor-change --download-in-advance myspell-dictionaries myspell-en myspell-en_US myspell-lightproof-en myspell-lightproof-pt_BR myspell-pt_BR okular-lang libKF5XmlGui5-lang libKF5ConfigWidgets5-lang libKF5Bookmarks5-lang libKF5Codecs5-lang libKF5Completion5-lang libKF5ConfigCore5-lang libKF5DBusAddons5-lang libKF5Declarative5-lang libKF5GlobalAccel5-lang libKF5I18n5-lang libKF5IconThemes5-lang libKF5ItemViews5-lang libKF5JobWidgets5-lang libKF5KHtml5-lang libKF5Notifications5-lang libKF5Parts5-lang libKF5Pty5-lang libKF5Solid5-lang libKF5SonnetCore5-lang libKF5SyntaxHighlighting5-lang libKF5TextWidgets5-lang libKF5WidgetsAddons5-lang libKF5WindowSystem5-lang vlc-qt vlc vlc-lang vlc-codecs vlc-codec-gstreamer gnome-calculator-lang kcolorchooser-lang gnome-disk-utility-lang libvirt-daemon-qemu qemu-linux-user qemu-linux-user libvirt-daemon-qemu virt-manager qt5ct kolourpaint-lang libqt5-qtxmlpatterns-imports libQt5WebChannel5-imports gparted-lang pluma-lang engrampa-lang libreoffice libreoffice-branding-openSUSE libreoffice-l10n-pt_BR libreoffice-l10n-en libreoffice-branding-openSUSE libreoffice-calc libreoffice-draw libreoffice-filters-optional libreoffice-gnome libreoffice-gtk3 libreoffice-icon-themes libreoffice-impress libreoffice-l10n-en libreoffice-l10n-pt_BR libreoffice-mailmerge libreoffice-math libreoffice-pyuno libreoffice-share-linker libreoffice-writer MozillaFirefox MozillaFirefox-branding-openSUSE MozillaFirefox-translations-common MozillaFirefox-translations-other transmission-gtk-lang baobab-lang"
 
 tentar "$comando_1 && $comando_2" $tentivas_maximas
 
