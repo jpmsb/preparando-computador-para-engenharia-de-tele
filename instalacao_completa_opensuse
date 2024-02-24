@@ -303,7 +303,7 @@ gpu_info=$(lspci | grep -E "VGA|3D controller")
 num_gpus=$(echo "$gpu_info" | wc -l)
 
 if echo "$gpu_info" | grep -qi 'Intel'; then
-    pacotes_intel_gpu="intel-gpu-tools intel-media-driver"
+    pacotes_intel_gpu="intel-gpu-tools intel-media-driver intel-hybrid-driver"
 fi
 
 if echo "$gpu_info" | grep -qi 'AMD'; then
