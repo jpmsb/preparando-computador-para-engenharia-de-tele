@@ -968,8 +968,6 @@ if [[ "$laptop" == [sS] ]]; then
     sed -i '/^/s/^#CPU_SCALING_GOVERNOR_ON_AC/CPU_SCALING_GOVERNOR_ON_AC/g' $destino/etc/tlp.conf
     sed -i '/^/s/^#RUNTIME_PM_ON_AC=on/RUNTIME_PM_ON_AC=auto/g' $destino/etc/tlp.conf
     sed -i '/^/s/^#PCIE_ASPM_ON_BAT=default/PCIE_ASPM_ON_BAT=powersupersave/g' $destino/etc/tlp.conf
-    sed -i '/^/s/^#CPU_ENERGY_PERF_POLICY_ON_AC=balance_performance/CPU_ENERGY_PERF_POLICY_ON_AC=power/g' $destino/etc/tlp.conf
-    sed -i '/^/s/^#CPU_ENERGY_PERF_POLICY_ON_BAT=balance_power/CPU_ENERGY_PERF_POLICY_ON_BAT=power/g' $destino/etc/tlp.conf
 
     # Habilitar o serviço do switcheroo-control
     if [ ! -z "$switcheroo_control" ]; then
