@@ -45,6 +45,10 @@ script_atualizador(){
     '' \
     '    box "Prosseguindo para a atualização dos pacotes..."' \
     '' \
+    '    while ! zypper -n list-patches > /dev/null 2>&1; do' \
+    '        sleep 1' \
+    '    done' \
+    '' \
     '    box "Executando \"$comando\""' \
     '' \
     '    box "Verifique o que será realizado antes de prosseguir!!"' \
