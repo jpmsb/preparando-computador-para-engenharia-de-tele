@@ -811,7 +811,7 @@ comando_2="zypper -n --root $destino dist-upgrade -y --download-in-advance --all
 comando_3="zypper -n --root $destino install -y --allow-vendor-change --download-in-advance $pacotes_base"
 comando_4="zypper -n --root $destino install -y --allow-vendor-change --download-in-advance -t pattern apparmor fonts"
 
-tentar "$comando_1 && $comando_2 && $comando_3 && $comando_4" $tentivas_maximas
+tentar "$comando_1 ; $comando_2 && $comando_3 && $comando_4" $tentivas_maximas
 
 ### (Bug fix) Instalação de versão mais antiga do wpa_supplicant ###
 ### que suporta autenticação com TLSv1.0, TLSv1.1 e TLSv1.2      ###
@@ -822,7 +822,7 @@ wpa_supplicant_2_9_url="https://download.opensuse.org/distribution/leap/15.4/rep
 comando_1="zypper -n --root $destino refresh -f"
 comando_2="zypper -n --root $destino install --oldpackage -y --allow-vendor-change $wpa_supplicant_2_9_url"
 
-tentar "$comando_1 && $comando_2" $tentivas_maximas
+tentar "$comando_1 ; $comando_2" $tentivas_maximas
 zypper --root $destino addlock wpa_supplicant
 chroot $destino /usr/bin/update-crypto-policies --set LEGACY
 
@@ -832,7 +832,7 @@ comando_1="zypper -n --root $destino refresh -f"
 if [ -d /sys/firmware/efi ]; then
     echo -e "\nInstalando o GRUB em modo UEFI\n"
     comando_2="zypper -n --root $destino install -y --download-in-advance efitools efivar grub2-x86_64-efi-extras"
-    tentar "$comando_1 && $comando_2" $tentivas_maximas
+    tentar "$comando_1 ; $comando_2" $tentivas_maximas
 
     mount $particao_EFI $destino/boot/efi
     chroot $destino /usr/bin/mount -t efivarfs efivarfs /sys/firmware/efi/efivars
@@ -841,7 +841,7 @@ if [ -d /sys/firmware/efi ]; then
 else
     echo -e "\nInstalando o GRUB em modo BIOS\n"
     comando_2="zypper -n --root $destino install -y --download-in-advance grub2-i386-pc-extras"
-    tentar "$comando_1 && $comando_2" $tentivas_maximas
+    tentar "$comando_1 ; $comando_2" $tentivas_maximas
     chroot $destino /usr/sbin/grub2-install $dispositivo_boot
 fi
 
@@ -889,7 +889,7 @@ comando_1="zypper -n --root $destino refresh -f"
 comando_2="zypper -n --root $destino install -y --allow-vendor-change --download-in-advance $componentes_graficos $ambiente_de_trabalho $ferramentas_extras"
 comando_3="zypper -n --root $destino install -y --allow-vendor-change --download-in-advance -t pattern x11_yast x11"
 
-tentar "$comando_1 && $comando_2 && $comando_3" $tentivas_maximas
+tentar "$comando_1 ; $comando_2 && $comando_3" $tentivas_maximas
 
 ### Adicionando trava para que o pacote não seja removido durante atualizações ###
 zypper --root $destino addlock package-update-indicator package-update-indicator-lang
@@ -900,7 +900,7 @@ if [[ $instalar_nvidia == "Sim" ]]; then
     comando_1="zypper -n --root $destino refresh -f"
     comando_2="zypper -n --root $destino install -y --download-in-advance nvidia-compute-G06 nvidia-compute-G06-32bit nvidia-compute-utils-G06 nvidia-driver-G06-kmp-default nvidia-drivers-G06 nvidia-gl-G06 nvidia-gl-G06-32bit nvidia-utils-G06 nvidia-video-G06 nvidia-video-G06-32bit"
 
-    tentar "$comando_1 && $comando_2" $tentivas_maximas
+    tentar "$comando_1 ; $comando_2" $tentivas_maximas
 fi
 
 ### Instalando o SUSE Prime e ajustando para não desligar o áudio do HDMI ###
@@ -915,14 +915,14 @@ if [[ "$laptop" == [sS] ]]; then
     comando_2="zypper -n --root $destino install -y --download-in-advance -t pattern laptop"
     comando_3="zypper -n --root $destino install -y --download-in-advance touchegg $switcheroo_control"
 
-    tentar "$comando_1 && $comando_2 && $comando_3" $tentivas_maximas
+    tentar "$comando_1 ; $comando_2 && $comando_3" $tentivas_maximas
 
     if [[ $instalar_nvidia == "Sim" ]]; then
         echo -e "\nInstalando o SUSE Prime e ajustando para não desligar o áudio do HDMI\n"
         comando_1="zypper -n --root $destino refresh -f"
         comando_2="zypper -n --root $destino install -y --download-in-advance suse-prime suseprime-appindicator"
 
-        tentar "$comando_1 && $comando_2" $tentivas_maximas
+        tentar "$comando_1 ; $comando_2" $tentivas_maximas
 
         echo '# Enable runtime PM for NVIDIA VGA/3D controller devices on driver bind
         ACTION=="bind", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x030000", TEST=="power/control", ATTR{power/control}="auto"
@@ -1098,15 +1098,19 @@ zypper -n --root $destino remove -y --clean-deps java-11-openjdk java-11-openjdk
 echo -e "\nRemovendo o repositório do openSUSE Leap\n"
 zypper --root $destino removerepo "Open Source Software Leap"
 
-### Atualizando pacotes órfãos ###
+### Atualizando os pacotes órfãos e garantindo ###
+### que as bibliotecas gráficas vêm do Packman ###
 echo -e "\nAtualizando pacotes obsoletos\n"
 pacotes_orfaos="$(zypper -n --root $destino search -s --installed-only | grep -E "\(.*\)" | awk '{print $3}' | grep -v "wpa_supplicant" | tr '\n' ' ')"
-zypper -n --root $destino install -y --download-in-advance --force --repo "Open Source Software" $pacotes_orfaos
 
-### Ajustando para que o zypper use --no-recommends por padrão ###
-# sed -i 's/# solver.onlyRequires = false/solver.onlyRequires = true/g' $destino/etc/zypp/zypp.conf
+comando_1="zypper -n --root $destino refresh -f"
+comando_2="zypper -n --root $destino install -y --download-in-advance --force --repo \"Open Source Software\" $pacotes_orfaos"
+comando_3="zypper -n --root $destino dist-upgrade -y --download-in-advance --from \"Packman Repository\" --allow-vendor-change"
+comando_4="zypper -n --root $destino dist-upgrade -y --download-in-advance"
 
-### Ajustando para que o zypper mude o fornecedor de pacotes por padrão ###
+tentar "$comando_1 ; $comando_2 && $comando_3 && $comando_4" $tentivas_maximas
+
+### Ajustando para que o zypper não mude o fornecedor de pacotes por padrão ###
 echo -e "\nAjustando para que o zypper não mude o fornecedor de pacotes por padrão\n"
 sed -i 's/solver.dupAllowVendorChange = true/solver.dupAllowVendorChange = false/' $destino/etc/zypp/zypp.conf
 
