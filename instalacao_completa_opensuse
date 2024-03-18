@@ -1101,7 +1101,7 @@ zypper --root $destino removerepo "Open Source Software Leap"
 ### Atualizando os pacotes órfãos e garantindo ###
 ### que as bibliotecas gráficas vêm do Packman ###
 echo -e "\nAtualizando pacotes obsoletos\n"
-pacotes_orfaos="$(zypper -n --root $destino search -s --installed-only | grep -E "\(.*\)" | awk '{print $3}' | grep -v "wpa_supplicant" | tr '\n' ' ')"
+pacotes_orfaos="$(zypper -n --root $destino search -s --installed-only | grep -E "package.*\(.*\)" | awk '{print $3}' | grep -v "wpa_supplicant" | tr '\n' ' ')"
 
 comando_1="zypper -n --root $destino refresh -f"
 comando_2="zypper -n --root $destino install -y --download-in-advance --force --repo \"Open Source Software\" $pacotes_orfaos"
@@ -1159,12 +1159,12 @@ echo '<?xml version="1.0" encoding="UTF-8"?>
 
 ### Instalando o pacote de ícones Tela (modo standard) ###
 echo -e "\nInstalando o tema de ícones Tela\n"
-comando_1="wget https://github.com/vinceliuice/Tela-icon-theme/archive/refs/heads/master.zip -O /tmp/Tela-icon-theme.zip"
+comando_1="wget https://github.com/vinceliuice/Tela-icon-theme/archive/refs/tags/2022-02-21.zip -O /tmp/Tela-icon-theme.zip"
 
 tentar "$comando_1" $tentivas_maximas
 
 unzip /tmp/Tela-icon-theme.zip -d /tmp > /dev/null
-bash /tmp/Tela-icon-theme-master/install.sh -d $destino/usr/share/icons > /dev/null
+bash /tmp/Tela-icon-theme-2022-02-21/install.sh -d $destino/usr/share/icons > /dev/null
 
 ### Ajustando o Package Update Indicator para ###
 ### utilizar um script customizado            ###
