@@ -45,7 +45,7 @@ script_atualizador(){
     '' \
     '    box "Prosseguindo para a atualização dos pacotes..."' \
     '' \
-    '    while ! zypper -n list-patches > /dev/null 2>&1; do' \
+    '    while [ -s /run/zypp.pid ]; do' \
     '        sleep 1' \
     '    done' \
     '' \
