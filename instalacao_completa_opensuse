@@ -1101,7 +1101,7 @@ zypper --root $destino removerepo "Open Source Software Leap"
 ### Atualizando os pacotes órfãos e garantindo ###
 ### que as bibliotecas gráficas vêm do Packman ###
 echo -e "\nAtualizando pacotes obsoletos\n"
-pacotes_orfaos="$(zypper -n --root $destino search -s --installed-only | grep -E "package.*\(.*\)" | awk '{print $3}' | grep -v "wpa_supplicant" | tr '\n' ' ')"
+pacotes_orfaos="$(zypper -n --root $destino search -s --installed-only -t package | grep -E "\(.*\)" | awk '{print $3}' | grep -v "wpa_supplicant" | tr '\n' ' ')"
 
 comando_1="zypper -n --root $destino refresh -f"
 comando_2="zypper -n --root $destino install -y --download-in-advance --force --repo \"Open Source Software\" $pacotes_orfaos"
