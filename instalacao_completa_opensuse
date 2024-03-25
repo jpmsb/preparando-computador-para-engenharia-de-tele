@@ -601,6 +601,15 @@ type=rpm-md
 priority=80
 keeppackages=0' > $destino/etc/zypp/repos.d/Non_Open_Source_Software.repo
 
+echo '[Update]
+name=Update
+enabled=1
+autorefresh=1
+baseurl=http://download.opensuse.org/update/tumbleweed/
+type=rpm-md
+priority=70
+keeppackages=0' > $destino/etc/zypp/repos.d/Update.repo
+
 echo '[Debug Packages]
 name=Debug Packages
 enabled=1
@@ -630,15 +639,6 @@ type=rpm-md
 priority=99
 keeppackages=0' > $destino/etc/zypp/repos.d/Open_Source_Software_Leap.repo
 
-echo '[Update]
-name=Update
-enabled=1
-autorefresh=1
-baseurl=http://download.opensuse.org/update/tumbleweed/
-type=rpm-md
-priority=70
-keeppackages=0' > $destino/etc/zypp/repos.d/Update.repo
-
 echo "[Emulators]
 name=Emulators
 enabled=1
@@ -649,53 +649,6 @@ type=rpm-md
 priority=60
 keeppackages=0" > $destino/etc/zypp/repos.d/Emulators.repo
 
-echo '[Hardware_SDR]
-name=Hardware SDR
-enabled=1
-autorefresh=1
-baseurl=https://download.opensuse.org/repositories/hardware:/sdr/openSUSE_Tumbleweed/
-type=rpm-md
-priority=99
-keeppackages=0' > $destino/etc/zypp/repos.d/Hardware_SDR.repo
-
-echo '[Hardware]
-name=Hardware
-enabled=1
-autorefresh=1
-baseurl=http://download.opensuse.org/repositories/hardware/openSUSE_Tumbleweed/
-type=rpm-md
-gpgcheck=1
-gpgkey=http://download.opensuse.org/repositories/hardware/openSUSE_Tumbleweed/repodata/repomd.xml.key
-priority=99
-keeppackages=0' > $destino/etc/zypp/repos.d/Hardware.repo
-
-echo '[Education]
-name=Education
-enabled=1
-autorefresh=1
-baseurl=https://download.opensuse.org/repositories/Education/openSUSE_Tumbleweed/
-path=/
-type=rpm-md
-keeppackages=0' > $destino/etc/zypp/repos.d/Education.repo
-
-echo '[Games]
-name=Games
-enabled=1
-autorefresh=1
-baseurl=https://download.opensuse.org/repositories/games/openSUSE_Tumbleweed/
-type=rpm-md
-gpgcheck=1
-keeppackages=0' > $destino/etc/zypp/repos.d/Games.repo
-
-echo '[Game_Tools]
-name=Game Tools
-enabled=1
-autorefresh=1
-baseurl=https://download.opensuse.org/repositories/games:/tools/openSUSE_Tumbleweed/
-type=rpm-md
-gpgcheck=1
-keeppackages=0' > $destino/etc/zypp/repos.d/Games_Tools.repo
-
 echo '[Multimedia_Proaudio]
 name=Multimedia Proaudio
 baseurl=https://download.opensuse.org/repositories/multimedia:/proaudio/openSUSE_Tumbleweed/
@@ -704,15 +657,6 @@ type=rpm-md
 gpgcheck=1
 gpgkey=https://download.opensuse.org/repositories/multimedia:/proaudio/openSUSE_Tumbleweed/repodata/repomd.xml.key
 autorefresh=1' > $destino/etc/zypp/repos.d/Multimedia_Proaudio.repo
-
-echo '[Graphics]
-name=Graphics
-enabled=1
-autorefresh=1
-baseurl=https://download.opensuse.org/repositories/graphics/openSUSE_Tumbleweed/
-type=rpm-md
-gpgcheck=1
-keeppackages=0' > $destino/etc/zypp/repos.d/Graphics.repo
 
 echo '[OpenH.264]
 name=OpenH.264
@@ -774,25 +718,6 @@ gpgcheck=1
 gpgkey=https://dl.google.com/linux/linux_signing_key.pub
 type=rpm-md
 keeppackages=0' > $destino/etc/zypp/repos.d/google-chrome.repo
-
-echo '[teamviewer]
-name=TeamViewer - $basearch
-baseurl=https://linux.teamviewer.com/yum/stable/main/binary-$basearch/
-gpgkey=https://linux.teamviewer.com/pubkey/currentkey.asc
-gpgcheck=1
-repo_gpgcheck=1
-enabled=0
-type=rpm-md' > $destino/etc/zypp/repos.d/teamviewer.repo
-
-echo '[AnyDesk]
-name=AnyDesk
-enabled=0
-autorefresh=1
-baseurl=http://rpm.anydesk.com/opensuse/x86_64/
-gpgcheck=1
-repo_gpgcheck=1
-gpgkey=https://keys.anydesk.com/repos/RPM-GPG-KEY' > $destino/etc/zypp/repos.d/anydesk.repo
-
 
 ### Ajustando o servidor de DNS ###
 echo "nameserver 8.8.8.8" > $destino/etc/resolv.conf
