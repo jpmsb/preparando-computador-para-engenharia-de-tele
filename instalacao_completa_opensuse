@@ -585,7 +585,7 @@ echo '[Open_Source_Software]
 name=Open Source Software
 enabled=1
 autorefresh=1
-baseurl=https://download.opensuse.org/tumbleweed/repo/oss/
+baseurl=http://download.opensuse.org/tumbleweed/repo/oss/
 path=/
 type=rpm-md
 priority=80
@@ -595,7 +595,7 @@ echo '[Non_Open_Source_Software]
 name=Non Open Source Software
 enabled=1
 autorefresh=1
-baseurl=https://download.opensuse.org/tumbleweed/repo/non-oss/
+baseurl=http://download.opensuse.org/tumbleweed/repo/non-oss/
 path=/
 type=rpm-md
 priority=80
@@ -651,7 +651,7 @@ keeppackages=0" > $destino/etc/zypp/repos.d/Emulators.repo
 
 echo '[Multimedia_Proaudio]
 name=Multimedia Proaudio
-baseurl=https://download.opensuse.org/repositories/multimedia:/proaudio/openSUSE_Tumbleweed/
+baseurl=http://download.opensuse.org/repositories/multimedia:/proaudio/openSUSE_Tumbleweed/
 enabled=1
 type=rpm-md
 gpgcheck=1
@@ -668,7 +668,7 @@ type=rpm-md
 keeppackages=0' > $destino/etc/zypp/repos.d/OpenH.264.repo
 
 if [[ $instalar_nvidia = "Sim" ]]; then
-    echo -e '[NVIDIA]\nname=NVIDIA\nenabled=1\nautorefresh=1\nbaseurl=https://download.nvidia.com/opensuse/tumbleweed\ntype=rpm-md\nkeeppackages=0' > $destino/etc/zypp/repos.d/NVIDIA.repo
+    echo -e '[NVIDIA]\nname=NVIDIA\nenabled=1\nautorefresh=1\nbaseurl=http://download.nvidia.com/opensuse/tumbleweed\ntype=rpm-md\nkeeppackages=0' > $destino/etc/zypp/repos.d/NVIDIA.repo
 fi
 
 echo '[Packman_Repository]
@@ -694,7 +694,7 @@ echo '[X2go]
 name=X2Go
 enabled=1
 autorefresh=1
-baseurl=https://download.opensuse.org/repositories/X11:/RemoteDesktop:/x2go/openSUSE_Tumbleweed
+baseurl=http://download.opensuse.org/repositories/X11:/RemoteDesktop:/x2go/openSUSE_Tumbleweed
 type=rpm-md
 priority=99
 keeppackages=0' > $destino/etc/zypp/repos.d/X2Go.repo
@@ -713,9 +713,9 @@ echo '[google-chrome]
 name=google-chrome
 enabled=1
 autorefresh=1
-baseurl=https://dl.google.com/linux/chrome/rpm/stable/x86_64
+baseurl=http://dl.google.com/linux/chrome/rpm/stable/x86_64
 gpgcheck=1
-gpgkey=https://dl.google.com/linux/linux_signing_key.pub
+gpgkey=http://dl.google.com/linux/linux_signing_key.pub
 type=rpm-md
 keeppackages=0' > $destino/etc/zypp/repos.d/google-chrome.repo
 
