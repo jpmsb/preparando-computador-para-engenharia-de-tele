@@ -552,7 +552,7 @@ fi
 mount $particao_raiz $destino
 
 ### Instalação do sistema base ###
-pacotes_iniciais="zypper-needs-restarting systemd-lang systemd-container ca-certificates ca-certificates-mozilla curl gawk grep-lang sed-lang tar-lang xz-lang gzip procps-lang procps which systemd-presets-branding-openSUSE suse-module-tools suse-module-tools-scriptlets diffutils-lang man man-pages man-pages-posix man-pages-pt_BR"
+pacotes_iniciais="libz1 libz1-x86-64-v3 zypper-needs-restarting systemd-lang systemd-container ca-certificates ca-certificates-mozilla curl gawk grep-lang sed-lang tar-lang xz-lang gzip procps-lang procps which systemd-presets-branding-openSUSE suse-module-tools suse-module-tools-scriptlets diffutils-lang man man-pages man-pages-posix man-pages-pt_BR"
 
 comando_1="zypper refresh -f"
 comando_2="zypper -n --installroot $destino install -y -t product openSUSE"
@@ -998,7 +998,6 @@ FONT_UNIMAP=" > $destino/etc/vconsole.conf
 
 ### Ajustando o tema do gerenciador de login ###
 echo "[greeter]
-background = /usr/share/wallpapers/openSUSEdefault/contents/images/1600x1200.jpg
 theme-name = Adapta-LightGreen-Nokto
 indicators = ~host;~spacer;~clock;~spacer;~language;~layout;~session;~a11y;~power;
 font-name = Open Sans 16
