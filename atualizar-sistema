@@ -2,6 +2,12 @@
 
 script_temporario="/tmp/atualizar_sistema"
 
+if [ -z "$SSH_CONNECTION" ] && [ -z "$SSH_CLIENT" ] && [ -z "$SSH_TTY" ]; then
+    RODAR_PRIVILEGIADO="/usr/bin/pkexec"
+else
+    RODAR_PRIVILEGIADO="/usr/bin/sudo"
+fi
+
 script_atualizador(){
     printf '%s\n' \
     '#!/bin/bash' \
@@ -74,11 +80,11 @@ script_atualizador(){
 }
 
 
-if [ -z $1 ]; then
+if [ -z $1 ] && [ "$RODAR_PRIVILEGIADO" = "/usr/bin/pkexec" ]; then
     /usr/bin/xfce4-terminal --hide-menubar --hide-toolbar --zoom 1.5 --maximize -e "$0 0" -T "Instalar atualizações"
 else
     script_atualizador > $script_temporario
-    /usr/bin/pkexec bash $script_temporario
+    $RODAR_PRIVILEGIADO bash $script_temporario
     rm -f $script_temporario
     killall package-update-indicator
     nohup /usr/bin/package-update-indicator > /dev/null 2>&1 &
