@@ -86,10 +86,10 @@ else
     script_atualizador > $script_temporario
     $RODAR_PRIVILEGIADO bash $script_temporario
     rm -f $script_temporario
-    killall package-update-indicator
-    nohup /usr/bin/package-update-indicator > /dev/null 2>&1 &
+    killall package-update-indicator -9
 
-    # Sem esta espera, o comando acima
-    # não possui tempo para se instanciar
-    sleep 0.01
+    while ! pgrep -f "/usr/bin/package-update-indicator" > /dev/null; do
+        nohup /usr/bin/package-update-indicator > /dev/null 2>&1 &
+        sleep 0.1
+    done
 fi
