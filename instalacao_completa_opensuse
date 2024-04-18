@@ -1094,6 +1094,8 @@ tentar "$comando_1" $tentivas_maximas
 unzip /tmp/Tela-icon-theme.zip -d /tmp > /dev/null
 bash /tmp/Tela-icon-theme-2022-02-21/install.sh -d $destino/usr/share/icons > /dev/null
 
+sed -i '/<rect style="fill:currentColor;" class="ColorScheme-Text" x="5" y="6" width="2" height="3" rx="0" ry="0"\/>/d; /<rect style="fill:currentColor;" class="ColorScheme-Text" x="9" y="6" width="2" height="3" rx="0" ry="0"\/>/d' $destino/usr/share/icons/Tela-dark/16/devices/network-wired-activated.svg
+
 ### Ajustando o Package Update Indicator para ###
 ### utilizar um script customizado            ###
 mkdir -p $destino/etc/skel/.config/package-update-indicator/
@@ -1139,6 +1141,7 @@ fi' > $destino/etc/profile.d/extra_paths.sh
 
 ### Definindo o interpretador de comandos FISH na variável SHELL ###
 echo 'export SHELL=/usr/bin/fish' > $destino/etc/profile.d/default_shell.sh
+echo 'SHELL=/usr/bin/fish' >> $destino/etc/environment
 
 ### Criando o cache do tealdeer ###
 chroot $destino /usr/bin/su -c "/usr/bin/tldr --update" -s /bin/bash $usuario
