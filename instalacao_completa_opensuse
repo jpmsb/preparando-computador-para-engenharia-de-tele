@@ -802,7 +802,9 @@ fi
 ### Instalando componentes gráficos, a área de trabalho e ferramentas extras ###
 echo -e "\nInstalando componentes gráficos, a área de trabalho e ferramentas extras\n"
 
-componentes_graficos="xorg-x11-server-extra xorg-x11-driver-video xorg-x11-driver-input xinput xf86-input-joystick xorg-x11-fonts-core lightdm-lang lightdm-gtk-greeter-lang lightdm-gtk-greeter-settings-lang xscreensaver-data-extra gstreamer-plugins-ugly-codecs gstreamer-plugins-bad-codecs libavcodec56 libavcodec57 metatheme-adapta-common gtk3-metatheme-adapta gtk4-metatheme-adapta blueman-lang bluez NetworkManager-applet NetworkManager-connection-editor NetworkManager-connection-editor-lang polkit-gnome-lang libgnomesu0 xdg-desktop-portal-gtk-lang xdg-desktop-portal-lang xdg-terminal-exec yast2-theme-breeze opensuse-welcome-lang gvfs-lang tumbler tumbler-lang tumbler-webp-thumbnailer sox libva-utils xclip xclipboard libgnomesu-lang fontconfig-lang gtk3-lang gsettings-desktop-schemas-lang gstreamer-lang gstreamer-plugins-bad-lang gstreamer-plugins-base-lang gstreamer-plugins-ugly-lang upower-lang zenity-lang gdk-pixbuf-lang colord-lang firewall-config xkill mugshot yast2-usbauth yast2-update-FACTORY yast2-testsuite yast2-multipath yast2-devtools autoyast2 yast2-installation-control yast2-configuration-management yast2-support patterns-yast-yast2_desktop yast2-tune yast2-kdump yast2-journal libdvdcss2 qsynth-lang gstreamer-plugins-bad-fluidsynth fluidsynth libvulkan_intel libvulkan_radeon simplescreenrecorder google-noto-sans-cjk-fonts simple-scan-lang libgtkglext-x11-1_0-0 xdotool PackageKit-lang gnome-packagekit-lang gnome-packagekit-extras package-update-indicator-lang firewall-applet firewall-config xhost susepaste-screenshot libqt5-qtimageformats distribution-logos-openSUSE-icons distribution-logos-openSUSE wallpapers-openSUSE-extra qpwgraph gdk-pixbuf-loader-libavif webp-pixbuf-loader gdk-pixbuf-loader-libavif raw-thumbnailer jxl-thumbnailer rsvg-thumbnailer gdk-pixbuf-loader-rsvg"
+tema_breeze="$(zypper search breeze | grep -o 'breeze[0-9]\+' | uniq)"
+
+componentes_graficos="xorg-x11-server-extra xorg-x11-driver-video xorg-x11-driver-input xinput xf86-input-joystick xorg-x11-fonts-core lightdm-lang lightdm-gtk-greeter-lang lightdm-gtk-greeter-settings-lang xscreensaver-data-extra gstreamer-plugins-ugly-codecs gstreamer-plugins-bad-codecs libavcodec56 libavcodec57 metatheme-adapta-common gtk3-metatheme-adapta gtk4-metatheme-adapta blueman-lang bluez NetworkManager-applet NetworkManager-connection-editor NetworkManager-connection-editor-lang polkit-gnome-lang libgnomesu0 xdg-desktop-portal-gtk-lang xdg-desktop-portal-lang xdg-terminal-exec yast2-theme-breeze opensuse-welcome-lang gvfs-lang tumbler tumbler-lang tumbler-webp-thumbnailer sox libva-utils xclip xclipboard libgnomesu-lang fontconfig-lang gtk3-lang gsettings-desktop-schemas-lang gstreamer-lang gstreamer-plugins-bad-lang gstreamer-plugins-base-lang gstreamer-plugins-ugly-lang upower-lang zenity-lang gdk-pixbuf-lang colord-lang firewall-config xkill mugshot yast2-usbauth yast2-update-FACTORY yast2-testsuite yast2-multipath yast2-devtools autoyast2 yast2-installation-control yast2-configuration-management yast2-support patterns-yast-yast2_desktop yast2-tune yast2-kdump yast2-journal libdvdcss2 qsynth-lang gstreamer-plugins-bad-fluidsynth fluidsynth libvulkan_intel libvulkan_radeon simplescreenrecorder google-noto-sans-cjk-fonts simple-scan-lang libgtkglext-x11-1_0-0 xdotool PackageKit-lang gnome-packagekit-lang gnome-packagekit-extras package-update-indicator-lang firewall-applet firewall-config xhost susepaste-screenshot libqt5-qtimageformats distribution-logos-openSUSE-icons distribution-logos-openSUSE wallpapers-openSUSE-extra qpwgraph gdk-pixbuf-loader-libavif webp-pixbuf-loader gdk-pixbuf-loader-libavif raw-thumbnailer jxl-thumbnailer rsvg-thumbnailer gdk-pixbuf-loader-rsvg $tema_breeze"
 
 ambiente_XFCE="xfce4-panel-lang xfce4-panel-profiles xfce4-panel-restore-defaults xfce4-power-manager-lang xfce4-pulseaudio-plugin-lang pavucontrol-lang xfce4-screensaver xfce4-screenshooter-lang xfce4-session-lang xfce4-settings-lang xfce4-terminal-lang xfce4-datetime-plugin-lang xfce4-genmon-plugin-lang xfce4-kbdleds-plugin-lang xfce4-notifyd-lang xfce4-panel-lang xfce4-pulseaudio-plugin-lang xfce4-systemload-plugin-lang xfce4-notifyd-theme-adapta xfwm4-lang xfwm4-theme-adapta thunar-lang thunar-sendto-blueman thunar-plugin-media-tags-lang thunar-plugin-shares-lang thunar-volman-branding-openSUSE thunar-volman-lang thunar-plugin-archive-lang thunar-font-manager xfdesktop-lang xfce4-settings-color xfce4-sensors-plugin-lang xfce4-battery-plugin-lang xfce4-appfinder-lang xfce4-xkb-plugin-lang xfce4-weather-plugin-lang xfce4-docklike-plugin xfce4-whiskermenu-plugin-lang xfce4-panel-plugin-indicator-lang xfce4-power-manager-plugin xfce4-power-manager-branding-openSUSE ristretto-lang nomacs-lang"
 
@@ -1068,11 +1070,26 @@ chroot $destino /usr/bin/fc-cache -r
 
 ### Instalando um skel ###
 echo -e "\nInstalando um skel\n"
-comando_1="wget https://github.com/jpmsb/preparando-computador-para-engenharia-de-tele/raw/main/skel.tar.gz -O /tmp/skel.tar.gz"
+comando_1="wget https://github.com/jpmsb/preparando-computador-para-engenharia-de-tele/raw/main/skel.tar.xz -O /tmp/skel.tar.xz"
 
 tentar "$comando_1" $tentivas_maximas
 
-tar -xf /tmp/skel.tar.gz -C $destino/etc/skel
+tar -xf /tmp/skel.tar.xz -C $destino/etc/skel
+
+### Correção do tema de cores do nomacs - Image Lounge ###
+mkdir -p $destino/etc/skel/.config/nomacs
+echo '[DisplaySettings]
+bgColorNoMacsRGBA=4281545523
+bgColorWidgetRGBA=2852126720
+fontColorRGBA=4292730333
+highlightColorRGBA=4278233855
+iconColorRGBA=4292730333
+themeName312=Dark-Theme.css
+tpPattern=true' > "$destino/etc/skel/.config/nomacs/Image Lounge.conf"
+
+### Tema de cores Breeze Dark para o Okular ###
+echo '[UiSettings]
+ColorScheme=Breeze Dark' > $destino/etc/skel/.config/okularrc
 
 ### Definindo configurações para o xfce4-terminal ###
 echo '<?xml version="1.0" encoding="UTF-8"?>
