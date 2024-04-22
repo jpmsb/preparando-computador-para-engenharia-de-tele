@@ -251,19 +251,6 @@ ajuda(){
 }
 
 
-# Verifica se o usuário é o root
-if [ "$EUID" -ne 0 ]; then
-    echo -e "\n Este script precisa ser executado como root."
-    echo -e " Para tal, utilize o comando \"sudo $0\" ou"
-    echo -e " execute-o como usuário root, usando o comando:\n"
-    echo -e " \"sudo su\" e em seguida \"$0\".\n"
-    exit 1
-fi
-
-### Mensagem de boas vindas ###
-echo -e "\nOlá!! Este é o script de instalação completa do openSUSE Tumbleweed! Nesse tipo de instalação, serão instalados os pacotes principais e suas dependências, bem como pacotes sugeridos, ou seja, pacotes que não são necessários para o funcionamento das aplicações que serão instaladas, mas que podem adicionar recurso extra. Um exemplo disso são os pacotes de tradução. Neste script, os pacotes de tradução serão instalados explicitamente para evitar que alguma tradução acabe faltando."
-echo -e "\nNo mais, aproveite!!\n"
-
 ### Variáveis preparatórias ###
 destino=/mnt
 tentivas_maximas=5
@@ -271,6 +258,36 @@ verde='\033[1;32m'
 magenta='\033[1;35m'
 vermelho='\033[1;31m'
 normal='\033[0m'
+
+
+# Verifica se o comando zypper está presente
+if ! command -v "zypper" &> /dev/null; then
+    printf "$vermelho"
+    echo -e "\n O comando \"zypper\" não foi encontrado. Este script foi feito para ser executado em sistemas openSUSE.$normal\n"
+    printf "$verde"
+    echo -e " No link abaixo, pode baixar um ISO Live CD do openSUSE Tumbleweed:"
+    echo -e "     https://download.opensuse.org/tumbleweed/iso/openSUSE-Tumbleweed-XFCE-Live-x86_64-Current.iso\n"
+    echo -e " Após baixar o ISO, grave-o em um pendrive e dê boot por ele. Em seguida, abra um terminal execute este script.\n"
+    printf "$normal"
+    exit 1
+fi
+
+# Verifica se o usuário é o root
+if [ "$EUID" -ne 0 ]; then
+    printf "$vermelho"
+    echo -e "\n Este script precisa ser executado como root.\n"
+    printf "$verde"
+    echo -e " Para tal, utilize o comando \"sudo $0\" ou"
+    echo -e " execute-o como usuário root, usando os comandos:\n"
+    echo -e " \"sudo su\" e em seguida \"$0\".\n"
+    printf "$normal"
+    exit 1
+fi
+
+
+### Mensagem de boas vindas ###
+echo -e "\nOlá!! Este é o script de instalação completa do openSUSE Tumbleweed! Nesse tipo de instalação, serão instalados os pacotes principais e suas dependências, bem como pacotes sugeridos, ou seja, pacotes que não são necessários para o funcionamento das aplicações que serão instaladas, mas que podem adicionar recurso extra. Um exemplo disso são os pacotes de tradução. Neste script, os pacotes de tradução serão instalados explicitamente para evitar que alguma tradução acabe faltando."
+echo -e "\nNo mais, aproveite!!\n"
 
 particao_raiz_informada=$1
 
