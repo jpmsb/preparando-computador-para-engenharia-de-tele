@@ -853,6 +853,14 @@ if [[ $instalar_nvidia == "Sim" ]]; then
     comando_2="zypper -n --root $destino install -y --download-in-advance nvidia-compute-G06 nvidia-compute-G06-32bit nvidia-compute-utils-G06 nvidia-driver-G06-kmp-default nvidia-drivers-G06 nvidia-gl-G06 nvidia-gl-G06-32bit nvidia-utils-G06 nvidia-video-G06 nvidia-video-G06-32bit"
 
     tentar "$comando_1 ; $comando_2" $tentivas_maximas
+
+    KERNEL_ATUAL="$(chroot $destino /usr/bin/find /usr/src/ -maxdepth 1 -type d -name 'linux-*-*-obj' | sort -t- -k2,2Vr -k3,3nr | head -n 1)"
+    SYSSRC="$KERNEL_ATUAL/x86_64/default/"
+    NVIDIA_SRC="/usr/src/kernel-modules/$(chroot $destino /usr/bin/ls /usr/src/kernel-modules/)"
+
+    KERNEL_ATUAL=$KERNEL_ATUAL SYSSRC=$SYSSRC chroot $destino /bin/bash $NVIDIA_SRC/conftest.sh
+    KERNEL_ATUAL=$KERNEL_ATUAL SYSSRC=$SYSSRC chroot $destino /usr/bin/make -C $NVIDIA_SRC
+    KERNEL_ATUAL=$KERNEL_ATUAL SYSSRC=$SYSSRC chroot $destino /usr/bin/make modules_install -C $NVIDIA_SRC
 fi
 
 ### Instalando o SUSE Prime e ajustando para não desligar o áudio do HDMI ###
