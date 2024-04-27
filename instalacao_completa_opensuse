@@ -873,7 +873,7 @@ if [[ "$laptop" == [sS] ]]; then
  
     comando_1="zypper -n --root $destino refresh -f"
     comando_2="zypper -n --root $destino install -y --download-in-advance -t pattern laptop"
-    comando_3="zypper -n --root $destino install -y --download-in-advance touchegg $switcheroo_control"
+    comando_3="zypper -n --root $destino install -y --download-in-advance touchegg $switcheroo_control tlpui"
 
     tentar "$comando_1 ; $comando_2 && $comando_3" $tentivas_maximas
 
@@ -891,6 +891,9 @@ if [[ "$laptop" == [sS] ]]; then
         # Disable runtime PM for NVIDIA VGA/3D controller devices on driver unbind
         ACTION=="unbind", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x030000", TEST=="power/control", ATTR{power/control}="on"
         ACTION=="unbind", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x030200", TEST=="power/control", ATTR{power/control}="on"' > $destino/etc/udev/rules.d/90-nvidia-udev-pm-G05.rules
+
+        # Habilitar controle de energia dinâmico
+        echo 'options nvidia NVreg_DynamicPowerManagement=0x02' > $destino/etc/modprobe.d/09-nvidia-dpm.conf
 
         # Habilitar o SUSE Prime e realizar as configurações necessárias
         chroot $destino /usr/bin/ln -s /usr/lib/systemd/system/prime-select.service /etc/systemd/system/multi-user.target.wants/prime-select.service
