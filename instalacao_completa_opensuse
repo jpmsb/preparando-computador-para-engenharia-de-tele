@@ -565,14 +565,6 @@ if [[ "$resposta" == [nN] ]]; then
     exit 0
 fi
 
-# Instalação do git caso não esteja presente
-if ! command -v "git" &> /dev/null; then
-    echo "Instalando o git..."
-    comando_1="zypper -n install -y git"
-
-    tentar "$comando_1" $tentivas_maximas
-fi
-
 ### Montando a partição onde o sistema será instalado ###
 mount $particao_raiz $destino
 
