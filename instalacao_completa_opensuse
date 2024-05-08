@@ -1137,7 +1137,7 @@ chmod +x $destino/usr/local/bin/atualizar-sistema
 
 ### Criando usuário com poder sudo ###
 echo -e "\nCriando usuário \"$usuario\" com poder sudo\n"
-useradd --root $destino -m --groups kvm,libvirt,wheel,users,video,disk,dialout -c "$nome_completo" --shell /bin/bash $usuario
+useradd --root $destino -m --groups libvirt,wheel,users,video,dialout -c "$nome_completo" --shell /bin/bash $usuario
 echo "$usuario:$senha" | chpasswd --root $destino
 rm -rf $destino/home/$usuario/bin
 
