@@ -976,7 +976,7 @@ Comment=Allows apps running in Distrobox containers to use the local X server.
 Exec=bash -c "/usr/bin/xhost +si:localuser:$USER"
 Terminal=False' > $destino/etc/xdg/autostart/distrobox-xhost-allower.desktop
 
-### Ajustando o sudo para respeitar o grupo wheel ###
+### Ajustando o PolicyKit para respeitar o grupo wheel ###
 echo "polkit.addAdminRule(function(action, subject) {
     return [\"unix-user:0\", \"unix-group:wheel\"];
 });" > $destino/etc/polkit-1/rules.d/00-wheel.rules
