@@ -1,10 +1,31 @@
+## Tabela de conteúdos
+- [Preparando o seu computador para a Engenharia de Telecomunicações](#preparando-o-seu-computador-para-a-engenharia-de-telecomunicações)
+  - [Sistema operacional](#sistema-operacional)
+    - [Por que openSUSE Tumbleweed?](#por-que-opensuse-tumbleweed)
+    - [Instalação do openSUSE](#instalação-do-opensuse)
+    - [Baixe a mídia de instalação Live CD](#baixe-a-mídia-de-instalação-live-cd)
+    - [Gravação da ISO em um pendrive](#gravação-da-iso-em-um-pendrive)
+    - [Inicialização do sistema Live CD](#inicialização-do-sistema-live-cd)
+    - [Instalação do openSUSE através do script](#instalação-do-opensuse-através-do-script)
+    - [Inicializando o sistema pela primeira vez](#inicializando-o-sistema-pela-primeira-vez)
+      - [Tela de login](#tela-de-login)
+      - [Área de trabalho](#área-de-trabalho)
+        - [Instalação do GNOME](#instalação-do-gnome)
+        - [Instalação do KDE](#instalação-do-kde)
+  - [Informações extras](#informações-extras)
+  - [Instalação das aplicações](#instalação-das-aplicações)
+    - [Instalação do Octave](#instalação-do-octave)
+    - [Instalação do JDK (Java Development Kit) 21](#instalação-do-jdk-java-development-kit-21)
+    - [Instalação do Gradle](#instalação-do-gradle)
+
 # Preparando o seu computador para a Engenharia de Telecomunicações
 
 Quando se inicia em um curso de tecnologia, nem sempre as ferramentas que serão utilizadas ao longo do processo já estão prontas para uso. Na Engenharia de Telecomunicações, é comum o uso de diversas aplicações e tê-las disponíveis em seu ambiente de trabalho pode facilitar a realização de várias tarefas.
 
+
 ## Sistema operacional
 
-O sistema operacional escolhido é o openSUSE Tumbleweed, que é uma distribuição Linux, ou seja, utiliza o núcleo Linux para fazer a comunicação entre as aplicações e o *hardware* do seu computador.
+O sistema operacional escolhido é o [openSUSE Tumbleweed](https://get.opensuse.org/tumbleweed/), que é uma distribuição Linux, ou seja, utiliza o núcleo Linux para fazer a comunicação entre as aplicações e o *hardware* do seu computador.
 
 Há várias outras distribuições Linux disponíveis e bem famosas, como Ubuntu, Debian, Fedora, Linux Mint, entre outros.
 
@@ -16,8 +37,238 @@ Abaixo, estão alguns motivos para a escolha do openSUSE Tumbleweed:
 - É mantido com o apoio da empresa alemã SUSE, o que dá a segurança de o projeto não ser abandonado de uma hora para outra, como ocorrem com sistemas menores, além de haver um time de desenvolvedores para manter e testar o sistema;
 - *Você vai adquirir vários conhecimentos ao longo do curso, então é interessante utilizar algo além de Debian e Ubuntu, afinal, Linux é Linux e, quanto menos você se prender à ferramentas, melhor será a sua capacidade para desenvolver novas soluções.*
 
-## Instalação do openSUSE
+### Instalação do openSUSE
 
-Para facilitar o processo de instalação e já deixar o ambiente preparado, foi criado um script que instalará todo o sistema para você.
+Para facilitar o processo de instalação e já deixar o ambiente preparado, foi criado um [`script`](https://github.com/jpmsb/preparando-computador-para-engenharia-de-tele/blob/main/instalacao_completa_opensuse) que instalará todo o sistema para você. Essa rotina, além de instalar o sistema operacional, também pré-instala algumas aplicações extras e realiza configurações adicionais que precisariam ser realizadas manualmente pelo usuário.
 
-Caso você já possua outro sistema em seu computador, será necessário ajustar as partições do seu armazenamento para criar um espaço para instalar o openSUSE. A maioria geralmente possui o Windows instalado. Você será guiado ao longo do processo.
+Caso você já possua outro sistema em seu computador, será necessário ajustar as partições do seu armazenamento de modo a criar um espaço suficiente para instalar o openSUSE. A maioria das pessoas geralmente possui o Windows instalado. Você será guiado ao longo do processo.
+
+### Baixe a mídia de instalação Live CD
+
+O primeiro passo para conseguir utilizar a rotina de instalação presente neste repositório é baixar a ISO Live CD do openSUSE Tumbleweed. Para tal, você pode utilizar o link abaixo:
+
+ - [openSUSE Tumbleweed XFCE Live CD](https://download.opensuse.org/tumbleweed/iso/openSUSE-Tumbleweed-XFCE-Live-x86_64-Current.iso)
+
+### Gravação da ISO em um pendrive
+
+Para gravar a ISO em um pendrive, você pode utilizar o [Balena Etcher](https://www.balena.io/etcher/), que é uma ferramenta multiplataforma e muito simples de ser utilizada.
+
+### Inicialização do sistema Live CD
+
+Com o pendrive já gravado, você pode reiniciar o seu computador e acessar o *boot menu* para selecionar o pendrive como dispositivo de inicialização. A tecla para acessar o *boot menu* varia de acordo com o fabricante do seu computador. Abaixo, estão listadas as teclas de acesso ao *boot menu* que são típicas de alguns fabricantes:
+
+- **Acer**: F12 ou F9
+- **Asus**: ESC ou F8
+- **Dell**: F12 
+- **HP**: F9 ou ESC
+- **Lenovo**: F8, F10 ou F12
+- **Samsung**: F12 ou ESC
+
+Uma vez o sistema inicializado, você terá acesso à uma àrea de trabalho semelhante à imagem abaixo:
+
+![openSUSE Tumbleweed XFCE Live CD](imagens/opensuse_tumbleweed_xfce_live_cd.png)
+
+Note que o idioma do sistema está em inglês. A disposição do teclado está com o padrão estadunidense. Entretanto, o sistema que será instalado no seu computador estará totalmente traduzido para o Português do Brasil e com a disposição de teclado para ABNT2.
+
+Você pode fechar a janela de boas-vindas. Para acessar o terminal, clique no "Menu", localizado no canto inferior esquerdo da tela, e clique no ícone com o título "Terminal Emulator":
+
+![Terminal Emulator](imagens/opensuse_tumbleweed_xfce_live_cd_terminal.png)
+
+Com o terminal aberto, instale o `gparted` com o seguinte comando:
+
+```bash
+sudo zypper install gparted
+```
+
+![](imagens/opensuse_tumbleweed_xfce_live_cd_instalar_gparted.png)
+
+Após a instalação, execute o `gparted` com o comando:
+
+```bash
+gparted
+```
+
+Com o `gparted` aberto, você poderá redimensionar as partições do seu armazenamento para criar um espaço suficiente para instalar o openSUSE. Na imagem abaixo é exemplificado o `gparted` com uma partição de 10 GB para o openSUSE:
+
+![](imagens/opensuse_tumbleweed_xfce_live_cd_gparted.png)
+
+É preciso ter cautela ao redimensionar as partições, pois qualquer erro pode resultar na perda de dados. Caso você não tenha experiência com particionamento de discos, é recomendável pedir ajuda. Caso você esteja no começo do curso, **recomenda-se pelo menos 200 GB** para o sistema. **A instalação completa do sistema ocupa cerca de 10 GB.**
+
+Com relação ao tipo de partição, você pode escolher entre EXT4 e BTRFS. O BTRFS é um sistema de arquivos mais moderno e com mais recursos, como snapshots, compressão de dados, entre outros. Entretanto, o EXT4 é mais estável e mais utilizado. **Caso você não tenha certeza, escolha o EXT4**.
+
+Se você possuir o Windows instalado, basta clicar com o botão direito em cima da partição do tipo NTFS e selecionar a opção "Rezise/Move". Em seguida, arraste a barra para redimensionar a partição. Após isso, clique no botão "-> Resize/Move" para aplicar as mudanças. Na imagem abaixo, é mostrado um exemplo da tela de redimensionamento de uma partição NTFS:
+
+![](imagens/gparted_redimensionar_ntfs.png)
+
+Após realizadas as mudanças, você pode fechar o `gparted`. Voltando ao terminal, baixe o *script* de instalação com o comando:
+
+### Instalação do openSUSE através do script
+
+```bash
+wget https://raw.githubusercontent.com/jpmsb/preparando-computador-para-engenharia-de-tele/main/instalacao_completa_opensuse -O instalacao_completa_opensuse
+```
+
+Para executar o *script*, eleve para o usuário `root` com o comando:
+
+```bash
+sudo su
+bash instalacao_completa_opensuse
+```
+
+Basta seguir as instruções e responder as perguntas que o *script* fará. Abaixo, é mostrada uma captura de tela com essa etapa inicial:
+
+![](imagens/opensuse_tumbleweed_xfce_live_cd_instalar_sistema.png)
+
+Abaixo, é explicado o significado de algumas perguntas:
+
+ - **Partição onde o sistema será instalado [ex.: sda2]:**: você deve informar a partição onde o openSUSE será instalado;
+ - **Partição de inicialização EFI [ex.: sda1]:**: você deve informar a partição EFI, que é onde o *bootloader* será instalado;
+ - **Nome do computador:**: não pode conter espaços e identificará o seu computador na rede. No exemplo da imagem acima, o nome do computador é `um-teste`;
+ - **A instalação será realizada em um notebook? [S/N]**: caso você esteja instalando em um notebook, digite "S" e confirme com "Enter".
+
+Após confirmar que os dados estão corretos, digite "S" e confirme com "Enter". Basta esperar a rotina finalizar o processo de instalação, que leva cerca de 60 minutos. É preciso manter a conexão com a internet ativa durante todo o processo.
+
+Ao final da rotina de instalação, caso veja a mensagem:
+
+```
+Tudo pronto!! Digite "sudo reboot" para reiniciar o seu computador.
+```
+
+Você pode reiniciar o seu computador com o comando:
+
+```bash
+sudo reboot
+```
+
+### Inicializando o sistema pela primeira vez
+
+Na próxima inicialização, você deverá ter um menu de *boot* semelhante ao da imagem abaixo:
+
+![](imagens/opensuse_tumbleweed_grub.png)
+
+Caso possua o Windows instalado, o mesmo será listado no menu para que você possa escolhê-lo. Use as setas direcionais para trocar de opção.
+
+#### Tela de login
+
+Ao iniciar o sistema, você será apresentado à tela de login, conforme ilustrado abaixo:
+
+![](imagens/opensuse_tumbleweed_login.png)
+
+#### Área de trabalho
+
+Após inserir suas credenciais, você será direcionado à área de trabalho do openSUSE Tumbleweed, conforme ilustrado abaixo:
+
+![](imagens/opensuse_tumbleweed_area_de_trabalho.png)
+
+A interface gráfica escolhida é o XFCE, que é uma interface leve e muito customizável. Você pode personalizar a interface gráfica conforme a sua preferência.
+
+Caso queiram, também é possível instalar outras interfaces gráficas, como KDE, GNOME, entre outras.
+
+##### Instalação do GNOME
+
+O GNOME é uma interface gráfica muito popular e utilizada em várias distribuições Linux, incluindo o famoso Ubuntu. Para instalar o GNOME, basta executar o comando:
+
+```bash
+sudo zypper install -t pattern gnome
+```
+
+Após a instalação, reinicie o sistema. Você verá que a tela de login estará diferente. O gestor de login que é instalado nesse processo é o GDM.
+
+##### Instalação do KDE
+
+O KDE (chamado de Plasma) é outra interface que é muito popular e é mais customizável que o GNOME. Além disso, é mais familiar ao Windows. Para instalar o KDE, basta executar o comando:
+
+```bash
+sudo zypper install -t pattern kde
+```
+
+Após a instalação, reinicie o sistema. Você verá que a tela de login estará diferente. O gestor de login que é instalado nesse processo é o SDDM.
+
+## Informações extras
+
+O interpretador de comandos utilizado é o FISH (Friendly Interactive SHell), que é amigável e fácil de ser utilizado. Possui recursos de autocompletar e sugestões de comandos. Além disso, caso um comando não exista, o mesmo é destacado em vermelho.
+
+Além disso, há algumas aplicações de terminal que podem facilitar a sua vida, como por exemplo o `cnf`, que indica qual pacote você deve instalar para disponibilizar um comando:
+
+![](imagens/opensuse_tumbleweed_cnf.png)
+
+Outro comando útil é o `tldr`, que mostra exemplos de uso de comandos:
+
+![](imagens/opensuse_tumbleweed_tldr_zypper.png)
+
+Conforme mostrado na imagem acima, o Zypper é o gerenciador de pacotes do openSUSE. Com ele, você pode procurar, instalar, atualizar e remover pacotes do sistema. Note que para o openSUSE Tumbleweed, o comando para atualizar o sistema é:
+
+```bash
+sudo zypper dist-upgrade
+```
+ou
+```bash
+sudo zypper dup
+```
+
+Você não precisará executar o comando de atualização manualmente. Assim que houver atualizações disponíveis, o sistema irá notificá-lo. O símbolo que indica que há atualizações disponíveis é um ícone de seta para cima, localizado no canto inferior direito da tela, conforme ilustrado abaixo:
+
+![](imagens/opensuse_tumbleweed_atualizar.png)
+
+
+
+## Instalação das aplicações
+
+Abaixo será explicado como instalar algumas aplicações que serão utilizadas ao longo do curso. O objetivo é descomplicar o processo de deixar essas ferramentas preparadas para uso.
+
+### Instalação do Octave
+
+O Octave é um software livre para cálculos numéricos, muito utilizado em cursos de engenharia. Para instalar o Octave, bem como os pacotes que serão mais usados ao longo do curso, basta executar o comando:
+
+```bash
+sudo zypper install octave octave-cli octave-forge-communications octave-forge-control octave-forge-signal octave-forge-queueing octave-forge-statistics
+```
+
+Para que os pacotes sejam carregados na inicialização do Octave, crie o arquivo `~/.octaverc` com o seguinte comando:
+
+```bash
+echo '# Aumentando o tamanho dos textos dos eixos e título
+warning('off','Octave:shadowed-function')
+set(0, "defaultaxesfontsize", 16)  % axes labels
+set(0, "defaulttextfontsize", 16)  % title
+
+# Carregar pacotes adicionais
+pkg load signal
+pkg load communications
+pkg load statistics
+pkg load queueing' > ~/.octaverc
+```
+
+### Instalação do JDK (Java Development Kit) 21
+
+Para instalar o JDK 21, basta executar o comando:
+
+```bash
+sudo zypper install java-21-openjdk
+```
+
+Em seguida, defina a variável de ambiente `JAVA_HOME` com o comando:
+
+```fish
+set --export JAVA_HOME (dirname (dirname (readlink -f (which java))))
+```
+
+
+
+### Instalação do Gradle
+
+Para o facilitar o processo de instalação do Gradle, foi criado um *script* que realiza tal processo, obtendo a versão mais recente da ferraemnta. A rotina pode ser chamada com o comando
+
+```bash
+instalar-gradle
+```
+
+Será perguntada pela sua senha de usuário definida durante a instalação do openSUSE. Após a instalação, você pode verificar se o Gradle foi instalado corretamente com o comando:
+
+```bash
+gradle --version
+```
+
+A saída é semelhante à abaixo:
+
+![](imagens/opensuse_tumbleweed_gradle_version.png)
