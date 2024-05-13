@@ -18,3 +18,4 @@ sudo rm -f /opt/java/gradle
 sudo ln -s /opt/java/gradle-$versao /opt/java/gradle
 sudo rm -f /usr/local/bin/gradle
 sudo ln -s /opt/java/gradle/bin/gradle /usr/local/bin/gradle
+rm -f /tmp/gradle.zip
