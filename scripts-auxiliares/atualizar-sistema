@@ -70,7 +70,7 @@ script_atualizador(){
     '    pkcon get-updates' \
     '}' \
     '' \
-    'atualizar_repositorios "pkcon update --only-download"' \
+    'atualizar_repositorios "pkcon get-updates"' \
     'atualizar "/usr/bin/zypper dist-upgrade --auto-agree-with-licenses"' \
     '' \
     'rm -rf /var/tmp/rpm-tmp.*' \
