@@ -14,7 +14,7 @@ Em seguida, defina a variável de ambiente `JAVA_HOME` com o comando:
 set --export JAVA_HOME (dirname (dirname (readlink -f (which java))))
 ```
 
-Voc^pode verificar se o JDK foi instalado corretamente com o comando:
+Você pode verificar se o JDK foi instalado corretamente com o comando:
 
 ```bash
 java --version
