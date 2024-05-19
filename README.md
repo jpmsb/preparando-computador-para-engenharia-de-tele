@@ -1,27 +1,31 @@
-## Tabela de conteúdos
-- [Preparando o seu computador para a Engenharia de Telecomunicações](#preparando-o-seu-computador-para-a-engenharia-de-telecomunicações)
-  - [Sistema operacional](#sistema-operacional)
-    - [Por que openSUSE Tumbleweed?](#por-que-opensuse-tumbleweed)
-    - [Instalação do openSUSE](#instalação-do-opensuse)
-    - [Baixe a mídia de instalação Live CD](#baixe-a-mídia-de-instalação-live-cd)
-    - [Gravação da ISO em um pendrive](#gravação-da-iso-em-um-pendrive)
-    - [Inicialização do sistema Live CD](#inicialização-do-sistema-live-cd)
-    - [Instalação do openSUSE através do script](#instalação-do-opensuse-através-do-script)
-    - [Inicializando o sistema pela primeira vez](#inicializando-o-sistema-pela-primeira-vez)
-      - [Tela de login](#tela-de-login)
-      - [Área de trabalho](#área-de-trabalho)
-        - [Instalação do GNOME](#instalação-do-gnome)
-        - [Instalação do KDE](#instalação-do-kde)
-  - [Informações extras](#informações-extras)
-  - [Instalação das aplicações](#instalação-das-aplicações)
-    - [Instalação do Octave](#instalação-do-octave)
-    - [Instalação do JDK (Java Development Kit) 21](#instalação-do-jdk-java-development-kit-21)
-    - [Instalação do Gradle](#instalação-do-gradle)
-
 # Preparando o seu computador para a Engenharia de Telecomunicações
 
 Quando se inicia em um curso de tecnologia, nem sempre as ferramentas que serão utilizadas ao longo do processo já estão prontas para uso. Na Engenharia de Telecomunicações, é comum o uso de diversas aplicações e tê-las disponíveis em seu ambiente de trabalho pode facilitar a realização de várias tarefas.
 
+### Tabela de conteúdos
+
+- [Sistema operacional](#sistema-operacional)
+    - [Por que openSUSE Tumbleweed?](#por-que-opensuse-tumbleweed)
+    - [Instalação do openSUSE](#instala%C3%A7%C3%A3o-do-opensuse)
+    - [Baixe a mídia de instalação Live CD](#baixe-a-m%C3%ADdia-de-instala%C3%A7%C3%A3o-live-cd)
+    - [Gravação da ISO em um pendrive](#grava%C3%A7%C3%A3o-da-iso-em-um-pendrive)
+    - [Inicialização do sistema Live CD](#inicializa%C3%A7%C3%A3o-do-sistema-live-cd)
+    - [Instalação do openSUSE através do script](#instala%C3%A7%C3%A3o-do-opensuse-atrav%C3%A9s-do-script)
+    - [Inicializando o sistema pela primeira vez](#inicializando-o-sistema-pela-primeira-vez)
+        - [Tela de login](#tela-de-login)
+        - [Área de trabalho](#%C3%A1rea-de-trabalho)
+            - [Instalação do GNOME](#instala%C3%A7%C3%A3o-do-gnome)
+            - [Instalação do KDE](#instala%C3%A7%C3%A3o-do-kde)
+- [Informações extras](#informa%C3%A7%C3%B5es-extras)
+- [Guias de instalação e uso](#guias-de-instala%C3%A7%C3%A3o-e-uso)
+    - [Docker](guias-de-aplicacoes/Docker.md)
+    - [Google Chrome](guias-de-aplicacoes/Google-Chrome.md)
+    - [Gradle](guias-de-aplicacoes/Gradle.md)
+    - [Java Development Kit (JDK) 21](guias-de-aplicacoes/JDK-21.md)
+    - [OBS Studio](guias-de-aplicacoes/OBS-Studio.md)
+    - [Octave](guias-de-aplicacoes/Octave.md)
+    - [PlatformIO](guias-de-aplicacoes/PlatformIO.md)
+    - [Podman](guias-de-aplicacoes/Podman.md)
 
 ## Sistema operacional
 
@@ -188,7 +192,7 @@ Após a instalação, reinicie o sistema. Você verá que a tela de login estar�
 
 O interpretador de comandos utilizado é o FISH (Friendly Interactive SHell), que é amigável e fácil de ser utilizado. Possui recursos de autocompletar e sugestões de comandos. Além disso, caso um comando não exista, o mesmo é destacado em vermelho.
 
-Além disso, há algumas aplicações de terminal que podem facilitar a sua vida, como por exemplo o `cnf`, que indica qual pacote você deve instalar para disponibilizar um comando:
+Adicionalmente, há algumas aplicações de terminal que podem facilitar a sua vida, como por exemplo o `cnf`, que indica qual pacote você deve instalar para disponibilizar um comando:
 
 ![](imagens/opensuse_tumbleweed_cnf.png)
 
@@ -212,63 +216,15 @@ Você não precisará executar o comando de atualização manualmente. Assim que
 
 
 
-## Instalação das aplicações
+## Guias de instalação e uso
 
-Abaixo será explicado como instalar algumas aplicações que serão utilizadas ao longo do curso. O objetivo é descomplicar o processo de deixar essas ferramentas preparadas para uso.
+Abaixo estão listados guias onde será explicado como instalar algumas aplicações utilizadas ao longo do curso, além de ferramentas adicionais. O objetivo é descomplicar o processo de deixar essas ferramentas preparadas para uso.
 
-### Instalação do Octave
-
-O Octave é um software livre para cálculos numéricos, muito utilizado em cursos de engenharia. Para instalar o Octave, bem como os pacotes que serão mais usados ao longo do curso, basta executar o comando:
-
-```bash
-sudo zypper install octave octave-cli octave-forge-communications octave-forge-control octave-forge-signal octave-forge-queueing octave-forge-statistics
-```
-
-Para que os pacotes sejam carregados na inicialização do Octave, crie o arquivo `~/.octaverc` com o seguinte comando:
-
-```bash
-echo '# Aumentando o tamanho dos textos dos eixos e título
-warning('off','Octave:shadowed-function')
-set(0, "defaultaxesfontsize", 16)  % axes labels
-set(0, "defaulttextfontsize", 16)  % title
-
-# Carregar pacotes adicionais
-pkg load signal
-pkg load communications
-pkg load statistics
-pkg load queueing' > ~/.octaverc
-```
-
-### Instalação do JDK (Java Development Kit) 21
-
-Para instalar o JDK 21, basta executar o comando:
-
-```bash
-sudo zypper install java-21-openjdk
-```
-
-Em seguida, defina a variável de ambiente `JAVA_HOME` com o comando:
-
-```fish
-set --export JAVA_HOME (dirname (dirname (readlink -f (which java))))
-```
-
-
-
-### Instalação do Gradle
-
-Para o facilitar o processo de instalação do Gradle, foi criado um *script* que realiza tal processo, obtendo a versão mais recente da ferraemnta. A rotina pode ser chamada com o comando
-
-```bash
-instalar-gradle
-```
-
-Será perguntada pela sua senha de usuário definida durante a instalação do openSUSE. Após a instalação, você pode verificar se o Gradle foi instalado corretamente com o comando:
-
-```bash
-gradle --version
-```
-
-A saída é semelhante à abaixo:
-
-![](imagens/opensuse_tumbleweed_gradle_version.png)
+- [Docker](guias-de-aplicacoes/Docker.md)
+- [Google Chrome](guias-de-aplicacoes/Google-Chrome.md)
+- [Gradle](guias-de-aplicacoes/Gradle.md)
+- [Java Development Kit (JDK) 21](guias-de-aplicacoes/JDK-21.md)
+- [OBS Studio](guias-de-aplicacoes/OBS-Studio.md)
+- [Octave](guias-de-aplicacoes/Octave.md)
+- [PlatformIO](guias-de-aplicacoes/PlatformIO.md)
+- [Podman](guias-de-aplicacoes/Podman.md)
