@@ -1113,7 +1113,7 @@ ColorScheme=Breeze Dark' > $destino/etc/skel/.config/okularrc
 echo '<?xml version="1.0" encoding="UTF-8"?>
 
 <channel name="xfce4-terminal" version="1.0">
-  <property name="color-palette" type="string" value="rgb(0,0,0);rgb(170,0,0);rgb(0,170,0);rgb(170,85,0);rgb(62,125,205);rgb(170,0,170);rgb(0,170,170);rgb(170,170,170);rgb(85,85,85);rgb(255,85,85);rgb(85,255,85);rgb(255,255,85);rgb(85,85,255);rgb(255,85,255);rgb(85,255,255);rgb(255,255,255)"/>
+  <property name="color-palette" type="string" value="rgb(0,0,0);rgb(170,0,0);rgb(0,170,0);rgb(246,211,45);rgb(62,125,205);rgb(170,0,170);rgb(0,170,170);rgb(170,170,170);rgb(85,85,85);rgb(255,85,85);rgb(85,255,85);rgb(255,255,85);rgb(85,85,255);rgb(255,85,255);rgb(85,255,255);rgb(255,255,255)"/>
   <property name="font-name" type="string" value="NotoMono Nerd Font Mono 12"/>
   <property name="scrolling-unlimited" type="bool" value="true"/>
   <property name="run-custom-command" type="bool" value="true"/>
