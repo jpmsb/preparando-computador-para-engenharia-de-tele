@@ -125,7 +125,7 @@ Basta seguir as instruções e responder as perguntas que o *script* fará. Abai
 
 Abaixo, é explicado o significado de algumas perguntas:
 
- - **Partição onde o sistema será instalado [ex.: sda2]:**: você deve informar a partição onde o openSUSE será instalado;
+ - **Partição onde o sistema será instalado [ex.: sda2]:**: você deve informar a partição onde o openSUSE será instalado. Recomenda-se pelo 200 GB de espaço caso você esteja no começo do curso. Além disso, a partição deve estar formatada como EXT4 ou BTRFS;
  - **Partição de inicialização EFI [ex.: sda1]:**: você deve informar a partição EFI, que é onde o *bootloader* será instalado;
  - **Nome do computador:**: não pode conter espaços e identificará o seu computador na rede. No exemplo da imagem acima, o nome do computador é `um-teste`;
  - **A instalação será realizada em um notebook? [S/N]**: caso você esteja instalando em um notebook, digite "S" e confirme com "Enter".
@@ -166,7 +166,7 @@ Após inserir suas credenciais, você será direcionado à área de trabalho do 
 
 A interface gráfica escolhida é o XFCE, que é uma interface leve e muito customizável. Você pode personalizar a interface gráfica conforme a sua preferência.
 
-Caso queiram, também é possível instalar outras interfaces gráficas, como KDE, GNOME, entre outras.
+Caso queira, também é possível instalar outras interfaces gráficas, como KDE, GNOME, entre outras.
 
 ##### Instalação do GNOME
 
