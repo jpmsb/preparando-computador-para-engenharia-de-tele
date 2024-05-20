@@ -14,14 +14,22 @@ done
 if [ -d /opt/Gradle/gradle-$versao ]; then
     echo "A versão mais recente já está instalada."
     echo "Versão atual: $versao"
-    exit 0
-else
-    sudo wget "https://services.gradle.org/distributions/gradle-$versao-bin.zip" -O /tmp/gradle.zip
-    sudo mkdir -p /opt/Gradle/
-    sudo unzip /tmp/gradle.zip -d /opt/Gradle/
-    sudo rm -f /opt/Gradle/gradle
-    sudo ln -s /opt/Gradle/gradle-$versao /opt/Gradle/gradle
-    sudo rm -f /usr/local/bin/gradle
-    sudo ln -s /opt/Gradle/gradle/bin/gradle /usr/local/bin/gradle
-    sudo rm -f /tmp/gradle.zip
+    
+    while [[ "$resposta" != [sSnN] ]]; do
+        read -p "Deseja reinstalar? [s/n] " resposta
+    done
+
+    if [[ "$resposta" == [nN] ]]; then
+        exit 0
+    fi
 fi
+
+sudo rm -rf /opt/Gradle/gradle-$versao
+sudo wget "https://services.gradle.org/distributions/gradle-$versao-bin.zip" -O /tmp/gradle.zip
+sudo mkdir -p /opt/Gradle/
+sudo unzip /tmp/gradle.zip -d /opt/Gradle/
+sudo rm -f /opt/Gradle/gradle
+sudo ln -s /opt/Gradle/gradle-$versao /opt/Gradle/gradle
+sudo rm -f /usr/local/bin/gradle
+sudo ln -s /opt/Gradle/gradle/bin/gradle /usr/local/bin/gradle
+sudo rm -f /tmp/gradle.zip
