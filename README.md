@@ -200,7 +200,7 @@ Outro comando útil é o `tldr`, que mostra exemplos de uso de comandos:
 
 ![](imagens/opensuse_tumbleweed_tldr_zypper.png)
 
-Conforme mostrado na imagem acima, o Zypper é o gerenciador de pacotes do openSUSE. Com ele, você pode procurar, instalar, atualizar e remover pacotes do sistema. Note que para o openSUSE Tumbleweed, o comando para atualizar o sistema é:
+Conforme mostrado na imagem acima, o Zypper é o gerenciador de pacotes do openSUSE. Com ele, você pode procurar, instalar, atualizar e remover pacotes do sistema. Note que para atualizar o openSUSE Tumbleweed, o comando é:
 
 ```bash
 sudo zypper dist-upgrade
@@ -210,11 +210,17 @@ ou
 sudo zypper dup
 ```
 
-Você não precisará executar o comando de atualização manualmente. Assim que houver atualizações disponíveis, o sistema irá notificá-lo. O símbolo que indica que há atualizações disponíveis é um ícone de seta para cima, localizado no canto inferior direito da tela, conforme ilustrado abaixo:
+Porém, a forma recomendada é utilizar o script [`atualizar-sistema`](scripts-auxiliares/atualizar-sistema), que facilita o processo e pode ser executado com o comando abaixo:
+
+```bash
+atualizar-sistema
+```
+
+Você **não** precisará executar o comando de atualização manualmente. Assim que houver atualizações disponíveis, o sistema irá notificá-lo. O símbolo que indica que há atualizações disponíveis é um ícone de seta para cima, localizado no canto inferior direito da tela, conforme ilustrado abaixo:
 
 ![](imagens/opensuse_tumbleweed_atualizar.png)
 
-
+Como o openSUSE Tumbleweed é uma distribuição *rolling release*, é comum receber notificação de atualizações diariamente e até múltiplas vezes ao dia. Entretanto, você não precisa atualizar de imediado, podendo fazê-lo quando for mais conveniente, como, por exemplo, uma vez por semana, uma vez a cada duas semanas ou até mesmo até uma vez por mês.
 
 ## Guias de instalação e uso
 
