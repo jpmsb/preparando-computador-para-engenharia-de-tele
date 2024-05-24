@@ -43,7 +43,7 @@ Abaixo, estão alguns motivos para a escolha do openSUSE Tumbleweed:
 
 ### Instalação do openSUSE
 
-Para facilitar o processo de instalação e já deixar o ambiente preparado, foi criado um [`script`](https://github.com/jpmsb/preparando-computador-para-engenharia-de-tele/blob/main/instalacao_completa_opensuse) que instalará todo o sistema para você. Essa rotina, além de instalar o sistema operacional, também pré-instala algumas aplicações extras e realiza configurações adicionais que precisariam ser realizadas manualmente pelo usuário.
+Para facilitar o processo de instalação e já deixar o ambiente preparado, foi criado o *script* [`instalacao_completa_opensuse`](https://github.com/jpmsb/preparando-computador-para-engenharia-de-tele/blob/main/instalacao_completa_opensuse) que instalará todo o sistema para você, além de pré-instalar algumas aplicações extras, como o Visual Studio Code, e realizar configurações adicionais que precisariam ser realizadas manualmente pelo usuário.
 
 Caso você já possua outro sistema em seu computador, será necessário ajustar as partições do seu armazenamento de modo a criar um espaço suficiente para instalar o openSUSE. A maioria das pessoas geralmente possui o Windows instalado. Você será guiado ao longo do processo.
 
