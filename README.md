@@ -18,6 +18,8 @@ Quando se inicia em um curso de tecnologia, nem sempre as ferramentas que serão
             - [Instalação do KDE](#instala%C3%A7%C3%A3o-do-kde)
 - [Informações extras](#informa%C3%A7%C3%B5es-extras)
 - [Guias de instalação e uso](#guias-de-instala%C3%A7%C3%A3o-e-uso)
+    - [Avrdude](guias-de-aplicacoes/Avrdude.md)
+    - [Compilador C++ para AVR](guias-de-aplicacoes/Compilador-para-AVR.md)
     - [Docker](guias-de-aplicacoes/Docker.md)
     - [Google Chrome](guias-de-aplicacoes/Google-Chrome.md)
     - [Gradle](guias-de-aplicacoes/Gradle.md)
@@ -226,6 +228,8 @@ Como o openSUSE Tumbleweed é uma distribuição *rolling release*, é comum rec
 
 Abaixo estão listados guias onde será explicado como instalar algumas aplicações utilizadas ao longo do curso, além de ferramentas adicionais. O objetivo é descomplicar o processo de deixar essas ferramentas preparadas para uso.
 
+- [Avrdude](guias-de-aplicacoes/Avrdude.md)
+- [Compilador para AVR](guias-de-aplicacoes/Compilador-para-AVR.md)
 - [Docker](guias-de-aplicacoes/Docker.md)
 - [Google Chrome](guias-de-aplicacoes/Google-Chrome.md)
 - [Gradle](guias-de-aplicacoes/Gradle.md)
