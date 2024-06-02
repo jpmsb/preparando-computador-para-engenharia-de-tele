@@ -28,7 +28,7 @@ if [ -d "$DIR_INSTALACAO" ]; then
     echo "Versão atual: $ULTIMA_VERSAO"
     
     while [[ "$resposta" != [sSnN] ]]; do
-        read -p "Deseja reinstalar? [s/n] " resposta
+        read -p "Deseja reinstalar? [s/n] " resposta < /dev/tty
     done
 
     if [[ "$resposta" == [nN] ]]; then
