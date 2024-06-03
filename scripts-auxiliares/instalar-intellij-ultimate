@@ -6,12 +6,7 @@ IDE="idea"
 NOME_ALTERNATIVO_BIN_IDE="intellij-ultimate"
 DESCRICAO="O IDE líder para Java e Kotlin"
 
-if [ ! -z "$NOME_ALTERNATIVO_BIN_IDE" ]; then
-    BIN_IDE="$NOME_ALTERNATIVO_BIN_IDE"
-else
-    BIN_IDE="$IDE"
-fi
-
+BIN_IDE="${NOME_ALTERNATIVO_BIN_IDE:-$IDE}"
 NOME_ARQUIVO_DESKTOP="$(echo $NOME_IDE | tr 'A-Z ' 'a-z-')"
 DIR_JETBRAINS="/opt/JetBrains"
 URL="https://data.services.jetbrains.com/products/download?platform=linux&code=$CODIGO_IDE"
@@ -47,7 +42,7 @@ sudo mkdir -p "$DIR_INSTALACAO"
 
 echo -e "\nExtraindo o arquivo baixado \"${ARQUIVO_BAIXADO}\" para \"$DIR_INSTALACAO\"...\n"
 pv ${ARQUIVO_BAIXADO} | sudo tar -xz -C ${DIR_INSTALACAO} --strip-components=1
-sudo rm -f /usr/local/bin/clion
+sudo rm -f /usr/local/bin/$BIN_IDE
 sudo ln -s "$DIR_INSTALACAO/bin/$IDE.sh" /usr/local/bin/$BIN_IDE
 sudo rm -f ${ARQUIVO_BAIXADO}
 sudo -E chown -R $USER: "$DIR_INSTALACAO"
