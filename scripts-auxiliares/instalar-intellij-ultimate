@@ -1,22 +1,22 @@
 #!/bin/bash
 
-NOME_IDE="IntelliJ IDEA Ultimate"
-CODIGO_IDE="IIU"
-IDE="idea"
-NOME_ALTERNATIVO_BIN_IDE="intellij-ultimate"
-DESCRICAO="O IDE líder para Java e Kotlin"
+export NOME_IDE="IntelliJ IDEA Ultimate"
+export CODIGO_IDE="IIU"
+export IDE="idea"
+export NOME_ALTERNATIVO_BIN_IDE="intellij-ultimate"
+export DESCRICAO="O IDE líder para Java e Kotlin"
 
-BIN_IDE="${NOME_ALTERNATIVO_BIN_IDE:-$IDE}"
-NOME_ARQUIVO_DESKTOP="$(echo $NOME_IDE | tr 'A-Z ' 'a-z-')"
-DIR_JETBRAINS="/opt/JetBrains"
-URL="https://data.services.jetbrains.com/products/download?platform=linux&code=$CODIGO_IDE"
-VERDE="\033[1;32m"
-NORMAL="\033[0m"
+export BIN_IDE="${NOME_ALTERNATIVO_BIN_IDE:-$IDE}"
+export NOME_ARQUIVO_DESKTOP="$(echo $NOME_IDE | tr 'A-Z ' 'a-z-')"
+export DIR_JETBRAINS="/opt/JetBrains"
+export URL="https://data.services.jetbrains.com/products/download?platform=linux&code=$CODIGO_IDE"
+export VERDE="\033[1;32m"
+export NORMAL="\033[0m"
 
-URL_ARQUIVO=$(wget -qSO --max-redirect 0 --spider "$URL" 2>&1 | tac | grep -P -o -m 1 "(?<=Location: ).*")
-IDE_ULTIMA_VERSAO=$(echo $URL_ARQUIVO | grep -P -o "(?<=/)[^/]*(?=.tar.gz)")
-ULTIMA_VERSAO="$(echo "$IDE_ULTIMA_VERSAO" | cut -f2 -d "-")"
-DIR_INSTALACAO="$DIR_JETBRAINS/$(echo $NOME_IDE | tr ' ' '-')-$ULTIMA_VERSAO"
+export URL_ARQUIVO=$(wget -qSO --max-redirect 0 --spider "$URL" 2>&1 | tac | grep -P -o -m 1 "(?<=Location: ).*")
+export IDE_ULTIMA_VERSAO=$(echo $URL_ARQUIVO | grep -P -o "(?<=/)[^/]*(?=.tar.gz)")
+export ULTIMA_VERSAO="$(echo "$IDE_ULTIMA_VERSAO" | cut -f2 -d "-")"
+export DIR_INSTALACAO="$DIR_JETBRAINS/$(echo $NOME_IDE | tr ' ' '-')-$ULTIMA_VERSAO"
 
 if [ -d "$DIR_INSTALACAO" ]; then
     echo "A versão mais recente do $NOME_IDE já está instalada."
@@ -26,38 +26,39 @@ if [ -d "$DIR_INSTALACAO" ]; then
         read -p "Deseja reinstalar? [s/n] " resposta < /dev/tty
     done
 
-    if [[ "$resposta" == [nN] ]]; then
-        exit 0
-    fi
+    [[ "$resposta" == [nN] ]] && exit 0
 fi
 
 echo -e "\nInstalando $NOME_IDE $ULTIMA_VERSAO...\n"
-sudo -s exit
 
-ARQUIVO_BAIXADO="/tmp/$(basename $URL_ARQUIVO)"
-echo -e "\nBaixando $NOME_IDE $ULTIMA_VERSAO...\n"
-wget -q --show-progress --read-timeout=5 --tries=0 -cO ${ARQUIVO_BAIXADO} ${URL_ARQUIVO}
-sudo rm -rf "$DIR_INSTALACAO"
-sudo mkdir -p "$DIR_INSTALACAO"
-
-echo -e "\nExtraindo o arquivo baixado \"${ARQUIVO_BAIXADO}\" para \"$DIR_INSTALACAO\"...\n"
-pv ${ARQUIVO_BAIXADO} | sudo tar -xz -C ${DIR_INSTALACAO} --strip-components=1
-sudo rm -f /usr/local/bin/$BIN_IDE
-sudo ln -s "$DIR_INSTALACAO/bin/$IDE.sh" /usr/local/bin/$BIN_IDE
-sudo rm -f ${ARQUIVO_BAIXADO}
-sudo -E chown -R $USER: "$DIR_INSTALACAO"
-
-echo -e "\nCriando atalho no menu...\n"
-echo "[Desktop Entry]
-Encoding=UTF-8
-Name=$NOME_IDE
-Comment=$DESCRICAO
-Exec=$BIN_IDE
-Icon=$DIR_INSTALACAO/bin/$IDE.svg
-Terminal=false
-Type=Application
-Categories=Development;IDE;
-StartupNotify=true" | sudo tee /usr/share/applications/$NOME_ARQUIVO_DESKTOP.desktop > /dev/null
+set -e
+sudo -E -- bash -c '
+    ARQUIVO_BAIXADO="/tmp/$(basename $URL_ARQUIVO)"
+    echo -e "\nBaixando $NOME_IDE $ULTIMA_VERSAO...\n"
+    wget -q --show-progress --read-timeout=5 --tries=0 -cO ${ARQUIVO_BAIXADO} ${URL_ARQUIVO}
+    rm -rf "$DIR_INSTALACAO"
+    mkdir -p "$DIR_INSTALACAO"
+    
+    echo -e "\nExtraindo o arquivo baixado \"${ARQUIVO_BAIXADO}\" para \"$DIR_INSTALACAO\"...\n"
+    pv ${ARQUIVO_BAIXADO} | sudo tar -xz -C ${DIR_INSTALACAO} --strip-components=1
+    rm -f /usr/local/bin/$BIN_IDE
+    ln -s "$DIR_INSTALACAO/bin/$IDE.sh" /usr/local/bin/$BIN_IDE
+    rm -f ${ARQUIVO_BAIXADO}
+    chown -R $SUDO_USER: "$DIR_INSTALACAO"
+    
+    echo -e "\nCriando atalho no menu...\n"
+    printf "%s\n"                           \
+        "[Desktop Entry]"                   \
+        "Encoding=UTF-8"                    \
+        "Name=$NOME_IDE"                    \
+        "Comment=$DESCRICAO"                \
+        "Exec=$BIN_IDE"                     \
+        "Icon=$DIR_INSTALACAO/bin/$IDE.svg" \
+        "Terminal=false"                    \
+        "Type=Application"                  \
+        "Categories=Development;IDE;"       \
+        "StartupNotify=true" > /usr/share/applications/$NOME_ARQUIVO_DESKTOP.desktop
+'
 
 echo -e "O $NOME_IDE $ULTIMA_VERSAO foi instalado com sucesso.\n"
 
