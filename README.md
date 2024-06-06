@@ -17,7 +17,7 @@ Quando se inicia em um curso de tecnologia, nem sempre as ferramentas que serão
             - [Instalação do GNOME](#instala%C3%A7%C3%A3o-do-gnome)
             - [Instalação do KDE](#instala%C3%A7%C3%A3o-do-kde)
 - [Informações extras](#informa%C3%A7%C3%B5es-extras)
-- [Guias de instalação e uso](#guias-de-instala%C3%A7%C3%A3o-e-uso)
+- [Guias para instalação e uso de aplicações](#guias-para-instala%C3%A7%C3%A3o-e-uso-de-aplica%C3%A7%C3%B5es)
     - [Avrdude](guias-de-aplicacoes/Avrdude.md)
     - [CLion](guias-de-aplicacoes/CLion.md)
     - [Compilador C++ para AVR](guias-de-aplicacoes/Compilador-para-AVR.md)
@@ -226,7 +226,7 @@ Você **não** precisará executar o comando de atualização manualmente. Assim
 
 Como o openSUSE Tumbleweed é uma distribuição *rolling release*, é comum receber notificação de atualizações diariamente e até múltiplas vezes ao dia. Entretanto, você não precisa atualizar de imediado, podendo fazê-lo quando for mais conveniente, como, por exemplo, uma vez por semana, uma vez a cada duas semanas ou até mesmo até uma vez por mês.
 
-## Guias de instalação e uso
+## Guias para instalação e uso de aplicações
 
 Abaixo estão listados guias onde será explicado como instalar algumas aplicações utilizadas ao longo do curso, além de ferramentas adicionais. O objetivo é descomplicar o processo de deixar essas ferramentas preparadas para uso.
 
