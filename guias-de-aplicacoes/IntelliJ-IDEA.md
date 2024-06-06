@@ -2,6 +2,13 @@
 
 O IntelliJ IDEA é uma IDE da JetBrains com foco em desenvolvimento Java.
 
+### Tabela de conteúdos
+
+- [Instalação](#instalação)
+  - [IntelliJ IDEA Community](#intellij-idea-community)
+  - [IntelliJ IDEA Ultimate](#intellij-idea-ultimate)
+- [Desinstalação](#desinstalação)
+
 ## Instalação
 
 Para facilitar a instalação, foram criados *scripts* que automatizam o processo, de forma que, com um simples comando, a IDE é instalada.
