@@ -40,14 +40,14 @@ Caso tenha ambos instalados:
 
 O processo de desinstalação é simples e basta remover os arquivos e diretórios criados pelos *scripts* de instalação.
 
-### IntelliJ IDEA Community
+ - **IntelliJ IDEA Community**:
 
-```bash
-sudo rm -r /opt/JetBrains/IntelliJ-IDEA-Community* /usr/share/applications/intellij-idea-community.desktop /usr/local/bin/intellij-community
-```
+    ```bash
+    sudo rm -r /opt/JetBrains/IntelliJ-IDEA-Community* /usr/share/applications/intellij-idea-community.desktop /usr/local/bin/intellij-community
+    ```
 
-### IntelliJ IDEA Ultimate
+ - **IntelliJ IDEA Ultimate**:
 
-```bash
-sudo rm -r /opt/JetBrains/IntelliJ-IDEA-Ultimate* /usr/share/applications/intellij-idea-ultimate.desktop /usr/local/bin/intellij-ultimate
-```
+    ```bash
+    sudo rm -r /opt/JetBrains/IntelliJ-IDEA-Ultimate* /usr/share/applications/intellij-idea-ultimate.desktop /usr/local/bin/intellij-ultimate
+    ```
