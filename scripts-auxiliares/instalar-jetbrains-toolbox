@@ -1,0 +1,25 @@
+#!/bin/bash
+
+NOME="JetBrains Toolbox"
+CODIGO="TB"
+BINARIO="jetbrains-toolbox"
+URL="https://data.services.jetbrains.com/products/download?platform=linux&code=$CODIGO"
+URL_ARQUIVO=$(wget -qSO --max-redirect 0 --spider "$URL" 2>&1 | tac | grep -P -o -m 1 "(?<=Location: ).*")
+DIR_INSTALACAO="$HOME/.local/bin"
+VERDE="\033[01;32m"
+NORMAL="\033[00m"
+
+echo -e "\nInstalando $NOME...\n"
+ARQUIVO_BAIXADO="/tmp/$(basename $URL_ARQUIVO)"
+
+echo -e "Baixando a última versão do $NOME...\n"
+wget -q --show-progress --read-timeout=5 --tries=0 -cO ${ARQUIVO_BAIXADO} ${URL_ARQUIVO}
+
+echo -e "\nExtraindo o arquivo baixado \"${ARQUIVO_BAIXADO}\" para \"$DIR_INSTALACAO\"...\n"
+pv ${ARQUIVO_BAIXADO} | tar -xz -C ${DIR_INSTALACAO} --strip-components=1
+rm -f ${ARQUIVO_BAIXADO}
+
+echo -e "\nExecutando a aplicação...\n"
+$DIR_INSTALACAO/$BINARIO
+
+echo -e "${VERDE}Você pode encontrar o $NOME no menu de aplicativos ou usar o comando \"$BINARIO\" no terminal.${NORMAL}\n"
