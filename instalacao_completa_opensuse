@@ -1011,6 +1011,8 @@ FONT_UNIMAP=" > $destino/etc/vconsole.conf
 
 ### Ajustando o tema do gerenciador de login ###
 echo "[greeter]
+background = /usr/share/wallpapers/openSUSEdefault/contents/images/5120x3200.png
+user-background = false
 theme-name = Adapta-LightGreen-Nokto
 indicators = ~host;~spacer;~clock;~spacer;~language;~layout;~session;~a11y;~power;
 font-name = Open Sans 16
