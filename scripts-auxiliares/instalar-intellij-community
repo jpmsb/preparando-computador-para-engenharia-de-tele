@@ -13,7 +13,7 @@ export URL="https://data.services.jetbrains.com/products/download?platform=linux
 export VERDE="\033[1;32m"
 export NORMAL="\033[0m"
 
-export URL_ARQUIVO=$(wget -qSO --max-redirect 0 --spider "$URL" 2>&1 | tac | grep -P -o -m 1 "(?<=Location: ).*")
+export URL_ARQUIVO=$(wget -qS --max-redirect 0 --spider "$URL" 2>&1 | tac | grep -P -o -m 1 "(?<=Location: ).*")
 export IDE_ULTIMA_VERSAO=$(echo $URL_ARQUIVO | grep -P -o "(?<=/)[^/]*(?=.tar.gz)")
 export ULTIMA_VERSAO="$(echo "$IDE_ULTIMA_VERSAO" | cut -f2 -d "-")"
 export DIR_INSTALACAO="$DIR_JETBRAINS/$(echo $NOME_IDE | tr ' ' '-')-$ULTIMA_VERSAO"

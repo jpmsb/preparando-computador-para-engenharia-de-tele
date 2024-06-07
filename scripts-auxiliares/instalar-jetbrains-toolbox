@@ -4,7 +4,7 @@ NOME="JetBrains Toolbox"
 CODIGO="TB"
 BINARIO="jetbrains-toolbox"
 URL="https://data.services.jetbrains.com/products/download?platform=linux&code=$CODIGO"
-URL_ARQUIVO=$(wget -qSO --max-redirect 0 --spider "$URL" 2>&1 | tac | grep -P -o -m 1 "(?<=Location: ).*")
+URL_ARQUIVO=$(wget -qS --max-redirect 0 --spider "$URL" 2>&1 | tac | grep -P -o -m 1 "(?<=Location: ).*")
 DIR_INSTALACAO="$HOME/.local/bin"
 VERDE="\033[01;32m"
 NORMAL="\033[00m"
