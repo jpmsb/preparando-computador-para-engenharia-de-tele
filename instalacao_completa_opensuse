@@ -1062,7 +1062,7 @@ sed -i '/# repo.refresh.delay = 10/a repo.refresh.delay = 10080' $destino/etc/zy
 
 ### Instalando o tema Adapta ###
 echo -e "\nInstalando o tema Adpata\n"
-comando_1="wget https://github.com/jpmsb/preparando-computador-para-engenharia-de-tele/raw/main/compactados/tema-adapta.tar.gz -O /tmp/adapta.tar.gz"
+comando_1="wget -q --show-progress https://github.com/jpmsb/preparando-computador-para-engenharia-de-tele/raw/main/compactados/tema-adapta.tar.gz -O /tmp/adapta.tar.gz"
 
 tentar "$comando_1" $tentivas_maximas
 
@@ -1074,7 +1074,7 @@ cp $destino/usr/share/applications/org.opensuse.opensuse_welcome.desktop $destin
 
 ### Instalando a fonte Noto Mono Nerd Font ###
 echo -e "\nInstalando a fonte Noto Mono Nerd Font\n"
-comando_1="wget https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Noto/Mono/NotoMonoNerdFontMono-Regular.ttf -O $destino/usr/share/fonts/NotoMonoNerdFontMono-Regular.ttf"
+comando_1="wget -q --show-progress https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Noto/Mono/NotoMonoNerdFontMono-Regular.ttf -O $destino/usr/share/fonts/NotoMonoNerdFontMono-Regular.ttf"
 
 tentar "$comando_1" $tentivas_maximas
 
@@ -1082,7 +1082,7 @@ chroot $destino /usr/bin/fc-cache -r
 
 ### Instalando um skel ###
 echo -e "\nInstalando um skel\n"
-comando_1="wget https://github.com/jpmsb/preparando-computador-para-engenharia-de-tele/raw/main/compactados/skel.tar.xz -O /tmp/skel.tar.xz"
+comando_1="wget -q --show-progress https://github.com/jpmsb/preparando-computador-para-engenharia-de-tele/raw/main/compactados/skel.tar.xz -O /tmp/skel.tar.xz"
 
 tentar "$comando_1" $tentivas_maximas
 
@@ -1090,7 +1090,7 @@ tar -xf /tmp/skel.tar.xz -C $destino/etc/skel
 
 ### Rotina para a instalação do Gradle ###
 echo -e "\nObtendo rotina que facilita a instalação do Gradle\n"
-comando_1="wget https://github.com/jpmsb/preparando-computador-para-engenharia-de-tele/raw/main/scripts-auxiliares/instalar-gradle -O $destino/usr/local/bin/instalar-gradle"
+comando_1="wget -q --show-progress https://github.com/jpmsb/preparando-computador-para-engenharia-de-tele/raw/main/scripts-auxiliares/instalar-gradle -O $destino/usr/local/bin/instalar-gradle"
 
 tentar "$comando_1" $tentivas_maximas
 
@@ -1124,11 +1124,11 @@ echo '<?xml version="1.0" encoding="UTF-8"?>
 
 ### Instalando o pacote de ícones Tela (modo standard) ###
 echo -e "\nInstalando o tema de ícones Tela\n"
-comando_1="wget https://github.com/vinceliuice/Tela-icon-theme/archive/refs/tags/2022-02-21.zip -O /tmp/Tela-icon-theme.zip"
+comando_1="wget -q --show-progress https://github.com/vinceliuice/Tela-icon-theme/archive/refs/tags/2022-02-21.tar.gz -O /tmp/Tela-icon-theme.tar.gz"
 
 tentar "$comando_1" $tentivas_maximas
 
-unzip /tmp/Tela-icon-theme.zip -d /tmp > /dev/null
+tar -xf /tmp/Tela-icon-theme.tar.gz -C /tmp
 bash /tmp/Tela-icon-theme-2022-02-21/install.sh -d $destino/usr/share/icons > /dev/null
 
 sed -i '/<rect style="fill:currentColor;" class="ColorScheme-Text" x="5" y="6" width="2" height="3" rx="0" ry="0"\/>/d; /<rect style="fill:currentColor;" class="ColorScheme-Text" x="9" y="6" width="2" height="3" rx="0" ry="0"\/>/d' $destino/usr/share/icons/Tela-dark/16/devices/network-wired-activated.svg
@@ -1142,7 +1142,7 @@ update-command='/usr/local/bin/atualizar-sistema'" > $destino/etc/skel/.config/p
 
 ### Script para atualizar o sistema ###
 echo -e "\nInstalando o script para atualizar o sistema\n"
-comando_1="wget https://raw.githubusercontent.com/jpmsb/preparando-computador-para-engenharia-de-tele/main/scripts-auxiliares/atualizar-sistema -O $destino/usr/local/bin/atualizar-sistema"
+comando_1="wget -q --show-progress https://raw.githubusercontent.com/jpmsb/preparando-computador-para-engenharia-de-tele/main/scripts-auxiliares/atualizar-sistema -O $destino/usr/local/bin/atualizar-sistema"
 
 tentar "$comando_1" $tentivas_maximas
 
