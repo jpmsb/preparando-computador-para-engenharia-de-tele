@@ -1212,4 +1212,4 @@ chroot $destino /usr/bin/firewall-offline-cmd --set-default-zone=trusted
 ### Desmontando diretórios ###
 desmontar_tudo $destino
 
-echo -e "\n\nTudo pronto!! Digite \"sudo reboot\" para reiniciar o seu computador."
+echo -e "${verde}\n\nTudo pronto!! Digite \"sudo reboot\" para reiniciar o seu computador.${normal}"
