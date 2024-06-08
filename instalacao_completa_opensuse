@@ -241,6 +241,222 @@ arquivo_bootloader(){
     fi
 }
 
+ajustar_tema_icones_tela(){
+    diretorio_base="$1"
+
+    #### Ajuste no ícone de rede ####
+    sed -i '/<rect style="fill:currentColor;" class="ColorScheme-Text" x="5" y="6" width="2" height="3" rx="0" ry="0"\/>/d; /<rect style="fill:currentColor;" class="ColorScheme-Text" x="9" y="6" width="2" height="3" rx="0" ry="0"\/>/d' $diretorio_base/Tela-dark/16/devices/network-wired-activated.svg
+
+    #### Alteração dos ícones de energia para versão com melhor visualização ####
+    printf '%s\n' \
+        '<svg width="16" height="16" version="1.1" xmlns="http://www.w3.org/2000/svg">' \
+        ' <path d="m6 0v1h-2c-0.554 0-1 0.446-1 1v12c0 0.554 0.446 1 1 1h8c0.554 0 1-0.446 1-1v-12c0-0.554-0.446-1-1-1h-2v-1h-4zm2 4v3h3l-3 5v-3h-3l3-5z" fill="#555555"/>' \
+        '</svg>' | tee $diretorio_base/Tela/symbolic/status/ac-adapter-symbolic.svg > $diretorio_base/Tela-light/symbolic/status/ac-adapter-symbolic.svg
+
+    printf '%s\n' \
+        '<svg width="16" height="16" version="1.1" xmlns="http://www.w3.org/2000/svg">' \
+        ' <path d="m6 0v1h-2c-0.554 0-1 0.446-1 1v12c0 0.554 0.446 1 1 1h8c0.554 0 1-0.446 1-1v-12c0-0.554-0.446-1-1-1h-2v-1h-4zm2 4v3h3l-3 5v-3h-3l3-5z" fill="#aaaaaa"/>' \
+        '</svg>' > $diretorio_base/Tela-dark/symbolic/status/ac-adapter-symbolic.svg
+
+    echo '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><path d="M6 1v1H3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2h-3V1zm2 4a2 2 0 1 1 0 4v1H7V8h1a1 1 0 1 0-1-1H6a2 2 0 0 1 2-2zm-1 6h1v1H7z" class="warning" fill="#f57900"/></svg>' | tee $diretorio_base/Tela/symbolic/status/battery-missing-symbolic.svg > $diretorio_base/Tela-light/symbolic/status/battery-missing-symbolic.svg
+
+    printf '%s\n' \
+        '<svg width="16" height="16" enable-background="new" version="1.1" xmlns="http://www.w3.org/2000/svg">' \
+        ' <path d="m6 1v1h-3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-12h-3v-1z" fill="#555555" opacity=".3"/>' \
+        ' <path d="m3 3v11c0 0.55228 0.44772 1 1 1h8c0.55228 0 1-0.44772 1-1v-11z" fill="#555555"/>' \
+        '</svg>' | tee $diretorio_base/Tela/symbolic/status/battery-level-90-symbolic.svg > $diretorio_base/Tela-light/symbolic/status/battery-level-90-symbolic.svg
+
+    printf '%s\n' \
+        '<svg width="16" height="16" enable-background="new" version="1.1" xmlns="http://www.w3.org/2000/svg">' \
+        ' <path d="m6 1v1h-3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-12h-3v-1zm2 4v3h3l-3 5v-3h-3z" fill="#555555" opacity=".3"/>' \
+        ' <path d="m3 3v11c0 0.55228 0.44772 1 1 1h8c0.55228 0 1-0.44772 1-1v-11zm5 2v3h3l-3 5v-3h-3z" class="success" fill="#8fd68f"/>' \
+        '</svg>' | tee $diretorio_base/Tela/symbolic/status/battery-level-90-charging-symbolic.svg > $diretorio_base/Tela-light/symbolic/status/battery-level-90-charging-symbolic.svg
+
+    echo '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><path d="M6 1v1H3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2h-3V1z" opacity=".3" fill="#555555"/><path d="M3 6v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V6z" fill="#555555"/></svg>' | tee $diretorio_base/Tela/symbolic/status/battery-level-80-symbolic.svg > $diretorio_base/Tela-light/symbolic/status/battery-level-80-symbolic.svg
+
+    echo '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><path d="M6 1v1H3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2h-3V1zm2 4v3h3l-3 5v-3H5z" opacity=".3" fill="#555555"/><path d="M3 6v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V6H8v2h3l-3 5v-3H5l2.4-4z" class="success" fill="#8fd68f"/></svg>' | tee $diretorio_base/Tela/symbolic/status/battery-level-80-charging-symbolic.svg > $diretorio_base/Tela-light/symbolic/status/battery-level-80-charging-symbolic.svg
+
+    printf '%s\n' \
+        '<svg width="16" height="16" enable-background="new" version="1.1" xmlns="http://www.w3.org/2000/svg">' \
+        ' <path d="m6 1v1h-3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-12h-3v-1z" fill="#555555" opacity=".3"/>' \
+        ' <path d="m3 5v9c0 0.55228 0.44772 1 1 1h8c0.55228 0 1-0.44772 1-1v-9z" fill="#555555"/>' \
+        '</svg>' | tee $diretorio_base/Tela/symbolic/status/battery-level-70-symbolic.svg > $diretorio_base/Tela-light/symbolic/status/battery-level-70-symbolic.svg
+
+    printf '%s\n' \
+        '<svg width="16" height="16" enable-background="new" version="1.1" xmlns="http://www.w3.org/2000/svg">' \
+        ' <path d="m6 1v1h-3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-12h-3v-1zm2 4v3h3l-3 5v-3h-3z" fill="#555555" opacity=".3"/>' \
+        ' <path d="m3 5v9a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-9h-5v3h3l-3 5v-3h-3l3-5h-5z" class="success" fill="#8fd68f"/>' \
+        '</svg>' | tee $diretorio_base/Tela/symbolic/status/battery-level-70-charging-symbolic.svg > $diretorio_base/Tela-light/symbolic/status/battery-level-70-charging-symbolic.svg
+
+    echo '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><path d="M6 1v1H3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2h-3V1z" opacity=".3" fill="#555555"/><path d="M3 8v6a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V8z" fill="#555555"/></svg>' | tee $diretorio_base/Tela/symbolic/status/battery-level-60-symbolic.svg > $diretorio_base/Tela-light/symbolic/status/battery-level-60-symbolic.svg
+
+    echo '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><path d="M6 1v1H3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2h-3V1zm2 4v3h3l-3 5v-3H5z" opacity=".3" fill="#555555"/><path d="M3 8v6a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V8h-2l-3 5v-3H5l1.2-2z" class="success" fill="#8fd68f"/></svg>' | tee $diretorio_base/Tela/symbolic/status/battery-level-60-charging-symbolic.svg > $diretorio_base/Tela-light/symbolic/status/battery-level-60-charging-symbolic.svg
+
+    printf '%s\n' \
+        '<svg width="16" height="16" enable-background="new" version="1.1" xmlns="http://www.w3.org/2000/svg">' \
+        ' <path d="m6 1v1h-3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-12h-3v-1z" fill="#555555" opacity=".3"/>' \
+        ' <path d="m3 8v6c0 0.55228 0.44772 1 1 1h8c0.55228 0 1-0.44772 1-1v-6z" fill="#555555"/>' \
+        '</svg>' | tee $diretorio_base/Tela/symbolic/status/battery-level-50-symbolic.svg > $diretorio_base/Tela-light/symbolic/status/battery-level-50-symbolic.svg
+
+    echo '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><path d="M6 1v1H3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2h-3V1zm2 4v3h3l-3 5v-3H5z" opacity=".3" fill="#555555"/><path d="M3 8v6a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V8h-2l-3 5v-3H5l1.2-2z" class="success" fill="#8fd68f"/></svg>' | tee $diretorio_base/Tela/symbolic/status/battery-level-50-charging-symbolic.svg > $diretorio_base/Tela-light/symbolic/status/battery-level-50-charging-symbolic.svg
+
+    echo '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><path d="M6 1v1H3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2h-3V1z" opacity=".3" fill="#555555"/><path d="M3 10v4a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-4z" fill="#555555"/></svg>' | tee $diretorio_base/Tela/symbolic/status/battery-level-40-symbolic.svg > $diretorio_base/Tela-light/symbolic/status/battery-level-40-symbolic.svg
+
+    echo '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><path d="M6 1v1H3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2h-3V1zm2 4v3h3l-3 5v-3H5z" opacity=".3" fill="#555555"/><path d="M3 10v4a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-4H9.801L8 13v-3H5z" class="success" fill="#8fd68f"/></svg>' | tee $diretorio_base/Tela/symbolic/status/battery-level-40-charging-symbolic.svg > $diretorio_base/Tela-light/symbolic/status/battery-level-40-charging-symbolic.svg
+
+    printf '%s\n' \
+        '<svg width="16" height="16" enable-background="new" version="1.1" xmlns="http://www.w3.org/2000/svg">' \
+        ' <path d="m6 1v1h-3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-12h-3v-1z" fill="#555555" opacity=".3"/>' \
+        ' <path d="m3 11v3c0 0.55228 0.44772 1 1 1h8c0.55228 0 1-0.44772 1-1v-3z" class="warning" fill="#ff7f2a"/>' \
+        '</svg>' | tee $diretorio_base/Tela/symbolic/status/battery-level-30-symbolic.svg > $diretorio_base/Tela-light/symbolic/status/battery-level-30-symbolic.svg
+
+    printf '%s\n' \
+        '<svg width="16" height="16" version="1.1" xmlns="http://www.w3.org/2000/svg">' \
+        ' <path d="m6 1v1h-3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-12h-3v-1zm2 4v3h3l-3 5v-3h-3z" fill="#555555" opacity=".3"/>' \
+        ' <path d="m3 11v3a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-3h-3.8008l-1.1992 2v-2h-5z" class="warning" fill="#ff7f2a"/>' \
+        '</svg>' | tee $diretorio_base/Tela/symbolic/status/battery-level-30-charging-symbolic.svg > $diretorio_base/Tela-light/symbolic/status/battery-level-30-charging-symbolic.svg
+
+    printf '%s\n' \
+        '<svg width="16" height="16" version="1.1" xmlns="http://www.w3.org/2000/svg">' \
+        ' <path class="error" d="m10 1v1h3s-3e-5 0.446-3e-5 1v11c0 0.554-0.446 1-1 1h-8c-0.554 0-1-0.446-1-1v-11c0-0.554 3e-5 -1 3e-5 -1h3v-1z" fill="#e74c3c" opacity=".35"/>' \
+        ' <path class="error" d="m13 12v2c0 0.554-0.446 1-1 1h-8c-0.554 0-1-0.446-1-1v-2z" fill="#e74c3c"/>' \
+        '</svg>' | tee $diretorio_base/Tela/symbolic/status/battery-level-20-symbolic.svg > $diretorio_base/Tela-light/symbolic/status/battery-level-20-symbolic.svg
+
+    printf '%s\n' \
+        '<svg width="16" height="16" enable-background="new" version="1.1" xmlns="http://www.w3.org/2000/svg">' \
+        ' <path d="m6 1v1h-3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-12h-3v-1zm2 4v3h3l-3 5v-3h-3z" class="error" fill="#e74c3c" opacity=".35"/>' \
+        ' <path d="m3 13v1a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h-5-5z" class="error" fill="#e74c3c"/>' \
+        '</svg>' | tee $diretorio_base/Tela/symbolic/status/battery-level-20-charging-symbolic.svg > $diretorio_base/Tela-light/symbolic/status/battery-level-20-charging-symbolic.svg
+
+    printf '%s\n' \
+        '<svg width="16" height="16" enable-background="new" version="1.1" xmlns="http://www.w3.org/2000/svg">' \
+        ' <path d="m6 1v1h-3v1 11c0 0.554 0.446 1 1 1h4.7129c-1.0343-0.82662-1.7129-2.0821-1.7129-3.5 0-2.4734 2.0266-4.5 4.5-4.5 0.52807 0 1.028 0.10993 1.5 0.2793v-4.2793-1h-3v-1h-4zm4 8.6172c-0.57873 0.45573-1 1.0799-1 1.8828s0.42127 1.4271 1 1.8828v-0.38281-1-2.3828z" class="error" fill="#e74c3c" opacity=".35"/>' \
+        ' <path d="m3 13v1c0 0.554 0.446 1 1 1h4.7129c-0.6491-0.51876-1.1482-1.2047-1.4336-2h-4.2793zm6.5918 0c0.12301 0.13878 0.26017 0.26624 0.4082 0.38281v-0.38281h-0.4082z" class="error" fill="#e74c3c"/>' \
+        ' <path class="warning" d="m11.5 8a3.5 3.5 0 0 0-3.5 3.5 3.5 3.5 0 0 0 3.5 3.5 3.5 3.5 0 0 0 3.5-3.5 3.5 3.5 0 0 0-3.5-3.5zm-0.5 1h1v3h-1v-3zm0 4h1v1h-1v-1z" fill="#ff7f2a"/>' \
+        '</svg>' | tee $diretorio_base/Tela/symbolic/status/battery-level-10-symbolic.svg > $diretorio_base/Tela-light/symbolic/status/battery-level-10-symbolic.svg
+
+    printf '%s\n' \
+        '<svg width="16" height="16" enable-background="new" version="1.1" xmlns="http://www.w3.org/2000/svg">' \
+        ' <path d="m6 1v1h-3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-12h-3v-1zm2 4v3h3l-3 5v-3h-3z" class="error" fill="#e74c3c" opacity=".35"/>' \
+        ' <path d="m3 13v1a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h-5-5z" class="error" fill="#e74c3c"/>' \
+        '</svg>' | tee $diretorio_base/Tela/symbolic/status/battery-level-10-charging-symbolic.svg > $diretorio_base/Tela-light/symbolic/status/battery-level-10-charging-symbolic.svg
+
+    echo '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><path d="M6 1v1H3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2h-3V1z" fill="#555555"/></svg>' | tee $diretorio_base/Tela/symbolic/status/battery-full-symbolic.svg > $diretorio_base/Tela-light/symbolic/status/battery-full-symbolic.svg
+
+    echo '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><path d="M6 1v1H3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2h-3V1zm2 4v3h3l-3 5v-3H5z" class="success" fill="#8fd68f"/></svg>' | tee $diretorio_base/Tela/symbolic/status/battery-full-charging-symbolic.svg > $diretorio_base/Tela-light/symbolic/status/battery-full-charging-symbolic.svg
+
+    printf '%s\n' \
+        '<svg width="16" height="16" version="1.1" xmlns="http://www.w3.org/2000/svg">' \
+        ' <path d="M6 1v1H3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2h-3V1zm2 4v3h3l-3 5v-3H5z" fill="#555555"/>' \
+        '</svg>' | tee $diretorio_base/Tela/symbolic/status/battery-full-charged-symbolic.svg > $diretorio_base/Tela-light/symbolic/status/battery-full-charged-symbolic.svg
+
+    printf '%s\n' \
+        '<svg width="16" height="16" version="1.1" xmlns="http://www.w3.org/2000/svg">' \
+        ' <path class="error" d="m5.9998 1.0034v1h-3v12c2e-5 1 1 1 1 1h8c1 0 1-1 1-1v-12h-3v-1zm1 3h2v4l-0.25 2h-1.5l-0.25-2zm0 7h2v2h-2z" fill="#e74c3c"/>' \
+        '</svg>' | tee $diretorio_base/Tela/symbolic/status/battery-empty-symbolic.svg > $diretorio_base/Tela-light/symbolic/status/battery-empty-symbolic.svg
+
+    echo '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><path d="M6 1v1H3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2h-3V1zm2 4v3h3l-3 5v-3H5z" opacity=".3" fill="#555555"/></svg>' | tee $diretorio_base/Tela/symbolic/status/battery-empty-charging-symbolic.svg > $diretorio_base/Tela-light/symbolic/status/battery-empty-charging-symbolic.svg
+
+    echo '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><path d="M6 1v1H3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2h-3V1zm2 4a2 2 0 1 1 0 4v1H7V8h1a1 1 0 1 0-1-1H6a2 2 0 0 1 2-2zm-1 6h1v1H7z" class="warning" fill="#f57900"/></svg>' > $diretorio_base/Tela-dark/symbolic/status/battery-missing-symbolic.svg
+
+    printf '%s\n' \
+        '<svg width="16" height="16" enable-background="new" version="1.1" xmlns="http://www.w3.org/2000/svg">' \
+        ' <path d="m6 1v1h-3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-12h-3v-1z" fill="#aaaaaa" opacity=".3"/>' \
+        ' <path d="m3 3v11c0 0.55228 0.44772 1 1 1h8c0.55228 0 1-0.44772 1-1v-11z" fill="#aaaaaa"/>' \
+        '</svg>' > $diretorio_base/Tela-dark/symbolic/status/battery-level-90-symbolic.svg
+
+    printf '%s\n' \
+        '<svg width="16" height="16" enable-background="new" version="1.1" xmlns="http://www.w3.org/2000/svg">' \
+        ' <path d="m6 1v1h-3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-12h-3v-1zm2 4v3h3l-3 5v-3h-3z" fill="#aaaaaa" opacity=".3"/>' \
+        ' <path d="m3 3v11c0 0.55228 0.44772 1 1 1h8c0.55228 0 1-0.44772 1-1v-11zm5 2v3h3l-3 5v-3h-3z" class="success" fill="#8fd68f"/>' \
+        '</svg>' > $diretorio_base/Tela-dark/symbolic/status/battery-level-90-charging-symbolic.svg
+
+    echo '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><path d="M6 1v1H3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2h-3V1z" opacity=".3" fill="#aaaaaa"/><path d="M3 6v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V6z" fill="#aaaaaa"/></svg>' > $diretorio_base/Tela-dark/symbolic/status/battery-level-80-symbolic.svg
+
+    echo '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><path d="M6 1v1H3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2h-3V1zm2 4v3h3l-3 5v-3H5z" opacity=".3" fill="#aaaaaa"/><path d="M3 6v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V6H8v2h3l-3 5v-3H5l2.4-4z" class="success" fill="#8fd68f"/></svg>' > $diretorio_base/Tela-dark/symbolic/status/battery-level-80-charging-symbolic.svg
+
+    printf '%s\n' \
+        '<svg width="16" height="16" enable-background="new" version="1.1" xmlns="http://www.w3.org/2000/svg">' \
+        ' <path d="m6 1v1h-3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-12h-3v-1z" fill="#aaaaaa" opacity=".3"/>' \
+        ' <path d="m3 5v9c0 0.55228 0.44772 1 1 1h8c0.55228 0 1-0.44772 1-1v-9z" fill="#aaaaaa"/>' \
+        '</svg>' > $diretorio_base/Tela-dark/symbolic/status/battery-level-70-symbolic.svg
+
+    printf '%s\n' \
+        '<svg width="16" height="16" enable-background="new" version="1.1" xmlns="http://www.w3.org/2000/svg">' \
+        ' <path d="m6 1v1h-3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-12h-3v-1zm2 4v3h3l-3 5v-3h-3z" fill="#aaaaaa" opacity=".3"/>' \
+        ' <path d="m3 5v9a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-9h-5v3h3l-3 5v-3h-3l3-5h-5z" class="success" fill="#8fd68f"/>' \
+        '</svg>' > $diretorio_base/Tela-dark/symbolic/status/battery-level-70-charging-symbolic.svg
+
+    echo '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><path d="M6 1v1H3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2h-3V1z" opacity=".3" fill="#aaaaaa"/><path d="M3 8v6a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V8z" fill="#aaaaaa"/></svg>' > $diretorio_base/Tela-dark/symbolic/status/battery-level-60-symbolic.svg
+
+    echo '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><path d="M6 1v1H3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2h-3V1zm2 4v3h3l-3 5v-3H5z" opacity=".3" fill="#aaaaaa"/><path d="M3 8v6a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V8h-2l-3 5v-3H5l1.2-2z" class="success" fill="#8fd68f"/></svg>' > $diretorio_base/Tela-dark/symbolic/status/battery-level-60-charging-symbolic.svg
+
+    printf '%s\n' \
+        '<svg width="16" height="16" enable-background="new" version="1.1" xmlns="http://www.w3.org/2000/svg">' \
+        ' <path d="m6 1v1h-3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-12h-3v-1z" fill="#aaaaaa" opacity=".3"/>' \
+        ' <path d="m3 8v6c0 0.55228 0.44772 1 1 1h8c0.55228 0 1-0.44772 1-1v-6z" fill="#aaaaaa"/>' \
+        '</svg>' > $diretorio_base/Tela-dark/symbolic/status/battery-level-50-symbolic.svg
+
+    echo '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><path d="M6 1v1H3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2h-3V1zm2 4v3h3l-3 5v-3H5z" opacity=".3" fill="#aaaaaa"/><path d="M3 8v6a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V8h-2l-3 5v-3H5l1.2-2z" class="success" fill="#8fd68f"/></svg>' > $diretorio_base/Tela-dark/symbolic/status/battery-level-50-charging-symbolic.svg
+
+    echo '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><path d="M6 1v1H3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2h-3V1z" opacity=".3" fill="#aaaaaa"/><path d="M3 10v4a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-4z" fill="#aaaaaa"/></svg>' > $diretorio_base/Tela-dark/symbolic/status/battery-level-40-symbolic.svg
+
+    echo '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><path d="M6 1v1H3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2h-3V1zm2 4v3h3l-3 5v-3H5z" opacity=".3" fill="#aaaaaa"/><path d="M3 10v4a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-4H9.801L8 13v-3H5z" class="success" fill="#8fd68f"/></svg>' > $diretorio_base/Tela-dark/symbolic/status/battery-level-40-charging-symbolic.svg
+
+    printf '%s\n' \
+        '<svg width="16" height="16" enable-background="new" version="1.1" xmlns="http://www.w3.org/2000/svg">' \
+        ' <path d="m6 1v1h-3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-12h-3v-1z" fill="#aaaaaa" opacity=".3"/>' \
+        ' <path d="m3 11v3c0 0.55228 0.44772 1 1 1h8c0.55228 0 1-0.44772 1-1v-3z" class="warning" fill="#ff7f2a"/>' \
+        '</svg>' > $diretorio_base/Tela-dark/symbolic/status/battery-level-30-symbolic.svg
+
+    printf '%s\n' \
+        '<svg width="16" height="16" version="1.1" xmlns="http://www.w3.org/2000/svg">' \
+        ' <path d="m6 1v1h-3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-12h-3v-1zm2 4v3h3l-3 5v-3h-3z" fill="#aaaaaa" opacity=".3"/>' \
+        ' <path d="m3 11v3a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-3h-3.8008l-1.1992 2v-2h-5z" class="warning" fill="#ff7f2a"/>' \
+        '</svg>' > $diretorio_base/Tela-dark/symbolic/status/battery-level-30-charging-symbolic.svg
+
+    printf '%s\n' \
+        '<svg width="16" height="16" version="1.1" xmlns="http://www.w3.org/2000/svg">' \
+        ' <path class="error" d="m10 1v1h3s-3e-5 0.446-3e-5 1v11c0 0.554-0.446 1-1 1h-8c-0.554 0-1-0.446-1-1v-11c0-0.554 3e-5 -1 3e-5 -1h3v-1z" fill="#e74c3c" opacity=".35"/>' \
+        ' <path class="error" d="m13 12v2c0 0.554-0.446 1-1 1h-8c-0.554 0-1-0.446-1-1v-2z" fill="#e74c3c"/>' \
+        '</svg>' > $diretorio_base/Tela-dark/symbolic/status/battery-level-20-symbolic.svg
+
+    printf '%s\n' \
+        '<svg width="16" height="16" enable-background="new" version="1.1" xmlns="http://www.w3.org/2000/svg">' \
+        ' <path d="m6 1v1h-3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-12h-3v-1zm2 4v3h3l-3 5v-3h-3z" class="error" fill="#e74c3c" opacity=".35"/>' \
+        ' <path d="m3 13v1a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h-5-5z" class="error" fill="#e74c3c"/>' \
+        '</svg>' > $diretorio_base/Tela-dark/symbolic/status/battery-level-20-charging-symbolic.svg
+
+    printf '%s\n' \
+        '<svg width="16" height="16" enable-background="new" version="1.1" xmlns="http://www.w3.org/2000/svg">' \
+        ' <path d="m6 1v1h-3v1 11c0 0.554 0.446 1 1 1h4.7129c-1.0343-0.82662-1.7129-2.0821-1.7129-3.5 0-2.4734 2.0266-4.5 4.5-4.5 0.52807 0 1.028 0.10993 1.5 0.2793v-4.2793-1h-3v-1h-4zm4 8.6172c-0.57873 0.45573-1 1.0799-1 1.8828s0.42127 1.4271 1 1.8828v-0.38281-1-2.3828z" class="error" fill="#e74c3c" opacity=".35"/>' \
+        ' <path d="m3 13v1c0 0.554 0.446 1 1 1h4.7129c-0.6491-0.51876-1.1482-1.2047-1.4336-2h-4.2793zm6.5918 0c0.12301 0.13878 0.26017 0.26624 0.4082 0.38281v-0.38281h-0.4082z" class="error" fill="#e74c3c"/>' \
+        ' <path class="warning" d="m11.5 8a3.5 3.5 0 0 0-3.5 3.5 3.5 3.5 0 0 0 3.5 3.5 3.5 3.5 0 0 0 3.5-3.5 3.5 3.5 0 0 0-3.5-3.5zm-0.5 1h1v3h-1v-3zm0 4h1v1h-1v-1z" fill="#ff7f2a"/>' \
+        '</svg>' > $diretorio_base/Tela-dark/symbolic/status/battery-level-10-symbolic.svg
+
+    printf '%s\n' \
+        '<svg width="16" height="16" enable-background="new" version="1.1" xmlns="http://www.w3.org/2000/svg">' \
+        ' <path d="m6 1v1h-3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-12h-3v-1zm2 4v3h3l-3 5v-3h-3z" class="error" fill="#e74c3c" opacity=".35"/>' \
+        ' <path d="m3 13v1a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h-5-5z" class="error" fill="#e74c3c"/>' \
+        '</svg>' > $diretorio_base/Tela-dark/symbolic/status/battery-level-10-charging-symbolic.svg
+
+    echo '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><path d="M6 1v1H3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2h-3V1z" fill="#aaaaaa"/></svg>' > $diretorio_base/Tela-dark/symbolic/status/battery-full-symbolic.svg
+
+    echo '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><path d="M6 1v1H3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2h-3V1zm2 4v3h3l-3 5v-3H5z" class="success" fill="#8fd68f"/></svg>' > $diretorio_base/Tela-dark/symbolic/status/battery-full-charging-symbolic.svg
+
+    printf '%s\n' \
+        '<svg width="16" height="16" version="1.1" xmlns="http://www.w3.org/2000/svg">' \
+        ' <path d="M6 1v1H3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2h-3V1zm2 4v3h3l-3 5v-3H5z" fill="#aaaaaa"/>' \
+        '</svg>' > $diretorio_base/Tela-dark/symbolic/status/battery-full-charged-symbolic.svg
+
+    printf '%s\n' \
+        '<svg width="16" height="16" version="1.1" xmlns="http://www.w3.org/2000/svg">' \
+        ' <path class="error" d="m5.9998 1.0034v1h-3v12c2e-5 1 1 1 1 1h8c1 0 1-1 1-1v-12h-3v-1zm1 3h2v4l-0.25 2h-1.5l-0.25-2zm0 7h2v2h-2z" fill="#e74c3c"/>' \
+        '</svg>' > $diretorio_base/Tela-dark/symbolic/status/battery-empty-symbolic.svg
+
+    echo '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><path d="M6 1v1H3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2h-3V1zm2 4v3h3l-3 5v-3H5z" opacity=".3" fill="#aaaaaa"/></svg>' > $diretorio_base/Tela-dark/symbolic/status/battery-empty-charging-symbolic.svg
+}
+
 ajuda(){
     echo -e "Seu comando não possui todos os argumentos necessários. Veja o uso e exemplo abaixo:\n"
     echo -e "Uso:\n"
@@ -1124,14 +1340,15 @@ echo '<?xml version="1.0" encoding="UTF-8"?>
 
 ### Instalando o pacote de ícones Tela (modo standard) ###
 echo -e "\nInstalando o tema de ícones Tela\n"
-comando_1="wget -q --show-progress https://github.com/vinceliuice/Tela-icon-theme/archive/refs/tags/2022-02-21.tar.gz -O /tmp/Tela-icon-theme.tar.gz"
+ultima_tag_tela=$(basename $(curl -Ls -o /dev/null -w %{url_effective} https://github.com/vinceliuice/Tela-icon-theme/releases/latest))
+comando_1="wget -q --show-progress https://github.com/vinceliuice/Tela-icon-theme/archive/refs/tags/$ultima_tag_tela.tar.gz -O /tmp/Tela-icon-theme.tar.gz"
 
 tentar "$comando_1" $tentivas_maximas
 
 tar -xf /tmp/Tela-icon-theme.tar.gz -C /tmp
-bash /tmp/Tela-icon-theme-2022-02-21/install.sh -d $destino/usr/share/icons > /dev/null
+bash /tmp/Tela-icon-theme-$ultima_tag_tela/install.sh -d $destino/usr/share/icons > /dev/null
 
-sed -i '/<rect style="fill:currentColor;" class="ColorScheme-Text" x="5" y="6" width="2" height="3" rx="0" ry="0"\/>/d; /<rect style="fill:currentColor;" class="ColorScheme-Text" x="9" y="6" width="2" height="3" rx="0" ry="0"\/>/d' $destino/usr/share/icons/Tela-dark/16/devices/network-wired-activated.svg
+ajustar_tema_icones_tela $destino/usr/share/icons
 
 ### Ajustando o Package Update Indicator para ###
 ### utilizar um script customizado            ###
