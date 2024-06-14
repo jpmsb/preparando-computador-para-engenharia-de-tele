@@ -149,95 +149,95 @@ mostra_preenchido(){
 
 arquivo_bootloader(){
     if [ -d /sys/firmware/efi ]; then
-        printf '%s\n' \
-        "" \
-        "## Path:	System/Bootloader" \
-        "## Description:	Bootloader configuration" \
-        "## Type:	list(grub,grub2,grub2-efi,none)" \
-        "## Default:	grub2" \
-        "#" \
-        "# Type of bootloader in use." \
-        "# For making the change effect run bootloader configuration tool" \
-        "# and configure newly selected bootloader" \
-        "#" \
-        "#" \
-        "LOADER_TYPE=\"grub2-efi\"" \
-        "" \
-        "## Path:	System/Bootloader" \
-        "## Description:	Bootloader configuration" \
-        "## Type:	yesno" \
-        "## Default:	\"no\"" \
-        "#" \
-        "# Enable Secure Boot support" \
-        "# Only available on UEFI systems and IBM z15+." \
-        "#" \
-        "#" \
-        "SECURE_BOOT=\"yes\"" \
-        "" \
-        "## Path:	System/Bootloader" \
-        "## Description:	Bootloader configuration" \
-        "## Type:	yesno" \
-        "## Default:	\"no\"" \
-        "#" \
-        "# Enable Trusted Boot support" \
-        "# Only available on hardware with a Trusted Platform Module." \
-        "#" \
-        "TRUSTED_BOOT=\"yes\"" \
-        "" \
-        "## Path:	System/Bootloader" \
-        "## Description:	Bootloader configuration" \
-        "## Type:	yesno" \
-        "## Default:	\"yes\"" \
-        "#" \
-        "# Update nvram boot settings (UEFI, OF)" \
-        "# Unset to preserve specific settings or workaround firmware issues." \
-        "#" \
-        "UPDATE_NVRAM=\"yes\""
+        printf '%s\n'                                                               \
+            ""                                                                      \
+            "## Path: System/Bootloader"                                            \
+            "## Description: Bootloader configuration"                              \
+            "## Type: list(grub,grub2,grub2-efi,none)"                              \
+            "## Default: grub2"                                                     \
+            "#"                                                                     \
+            "# Type of bootloader in use."                                          \
+            "# For making the change effect run bootloader configuration tool"      \
+            "# and configure newly selected bootloader"                             \
+            "#"                                                                     \
+            "#"                                                                     \
+            "LOADER_TYPE=\"grub2-efi\""                                             \
+            ""                                                                      \
+            "## Path: System/Bootloader"                                            \
+            "## Description: Bootloader configuration"                              \
+            "## Type: yesno"                                                        \
+            "## Default: \"no\""                                                    \
+            "#"                                                                     \
+            "# Enable Secure Boot support"                                          \
+            "# Only available on UEFI systems and IBM z15+."                        \
+            "#"                                                                     \
+            "#"                                                                     \
+            "SECURE_BOOT=\"yes\""                                                   \
+            ""                                                                      \
+            "## Path: System/Bootloader"                                            \
+            "## Description: Bootloader configuration"                              \
+            "## Type: yesno"                                                        \
+            "## Default: \"no\""                                                    \
+            "#"                                                                     \
+            "# Enable Trusted Boot support"                                         \
+            "# Only available on hardware with a Trusted Platform Module."          \
+            "#"                                                                     \
+            "TRUSTED_BOOT=\"yes\""                                                  \
+            ""                                                                      \
+            "## Path: System/Bootloader"                                            \
+            "## Description: Bootloader configuration"                              \
+            "## Type: yesno"                                                        \
+            "## Default: \"yes\""                                                   \
+            "#"                                                                     \
+            "# Update nvram boot settings (UEFI, OF)"                               \
+            "# Unset to preserve specific settings or workaround firmware issues."  \
+            "#"                                                                     \
+            "UPDATE_NVRAM=\"yes\""
     else
-        printf '%s\n' \
-        "" \
-        "## Path:	System/Bootloader" \
-        "## Description:	Bootloader configuration" \
-        "## Type:	list(grub,grub2,grub2-efi,systemd-boot,none)" \
-        "## Default:	grub2" \
-        "#" \
-        "# Type of bootloader in use." \
-        "# For making the change effect run bootloader configuration tool." \
-        "# and configure newly selected bootloader." \
-        "#" \
-        "#" \
-        "LOADER_TYPE=\"grub2\"" \
-        "" \
-        "## Path:	System/Bootloader" \
-        "## Description:	Bootloader configuration" \
-        "## Type:	yesno" \
-        "## Default:	\"no\"" \
-        "#" \
-        "# Enable Secure Boot support" \
-        "# Only available on UEFI systems and IBM z15+." \
-        "#" \
-        "#" \
-        "SECURE_BOOT=\"yes\"" \
-        "" \
-        "## Path:	System/Bootloader" \
-        "## Description:	Bootloader configuration" \
-        "## Type:	yesno" \
-        "## Default:	\"no\"" \
-        "#" \
-        "# Enable Trusted Boot support" \
-        "# Only available on hardware with a Trusted Platform Module." \
-        "#" \
-        "TRUSTED_BOOT=\"no\"" \
-        "" \
-        "## Path:	System/Bootloader" \
-        "## Description:	Bootloader configuration" \
-        "## Type:	yesno" \
-        "## Default:	\"yes\"" \
-        "#" \
-        "# Update nvram boot settings (UEFI, OF)" \
-        "# Unset to preserve specific settings or workaround firmware issues." \
-        "#" \
-        "UPDATE_NVRAM=\"yes\""
+        printf '%s\n'                                                               \
+            ""                                                                      \
+            "## Path: System/Bootloader"                                            \
+            "## Description: Bootloader configuration"                              \
+            "## Type: list(grub,grub2,grub2-efi,systemd-boot,none)"                 \
+            "## Default: grub2"                                                     \
+            "#"                                                                     \
+            "# Type of bootloader in use."                                          \
+            "# For making the change effect run bootloader configuration tool."     \
+            "# and configure newly selected bootloader."                            \
+            "#"                                                                     \
+            "#"                                                                     \
+            "LOADER_TYPE=\"grub2\""                                                 \
+            ""                                                                      \
+            "## Path: System/Bootloader"                                            \
+            "## Description: Bootloader configuration"                              \
+            "## Type: yesno"                                                        \
+            "## Default: \"no\""                                                    \
+            "#"                                                                     \
+            "# Enable Secure Boot support"                                          \
+            "# Only available on UEFI systems and IBM z15+."                        \
+            "#"                                                                     \
+            "#"                                                                     \
+            "SECURE_BOOT=\"yes\""                                                   \
+            ""                                                                      \
+            "## Path: System/Bootloader"                                            \
+            "## Description: Bootloader configuration"                              \
+            "## Type: yesno"                                                        \
+            "## Default: \"no\""                                                    \
+            "#"                                                                     \
+            "# Enable Trusted Boot support"                                         \
+            "# Only available on hardware with a Trusted Platform Module."          \
+            "#"                                                                     \
+            "TRUSTED_BOOT=\"no\""                                                   \
+            ""                                                                      \
+            "## Path: System/Bootloader"                                            \
+            "## Description: Bootloader configuration"                              \
+            "## Type: yesno"                                                        \
+            "## Default: \"yes\""                                                   \
+            "#"                                                                     \
+            "# Update nvram boot settings (UEFI, OF)"                               \
+            "# Unset to preserve specific settings or workaround firmware issues."  \
+            "#"                                                                     \
+            "UPDATE_NVRAM=\"yes\""
     fi
 }
 
@@ -465,6 +465,283 @@ ajustar_tema_icones_tela(){
     gtk-update-icon-cache -q -f $diretorio_base/Tela
     gtk-update-icon-cache -q -f $diretorio_base/Tela-light
     gtk-update-icon-cache -q -f $diretorio_base/Tela-dark
+}
+
+criar_esquema_chameleon_breeze_dark(){
+    printf '%s\n'                          \
+        '[ColorEffects:Disabled]'          \
+        'Color=112,111,110'                \
+        'ColorAmount=0'                    \
+        'ColorEffect=0'                    \
+        'ContrastAmount=0.65'              \
+        'ContrastEffect=1'                 \
+        'IntensityAmount=0.1'              \
+        'IntensityEffect=2'                \
+        ''                                 \
+        '[ColorEffects:Inactive]'          \
+        'ChangeSelectionColor=true'        \
+        'Color=112,111,110'                \
+        'ColorAmount=-0.9500000000000001'  \
+        'ColorEffect=0'                    \
+        'ContrastAmount=0.1'               \
+        'ContrastEffect=0'                 \
+        'Enable=false'                     \
+        'IntensityAmount=0'                \
+        'IntensityEffect=0'                \
+        ''                                 \
+        '[Colors:Button]'                  \
+        'BackgroundAlternate=20,25,31'     \
+        'BackgroundNormal=20,25,31'        \
+        'DecorationFocus=0,76,90'          \
+        'DecorationHover=0,164,137'        \
+        'ForegroundActive=222,222,222'     \
+        'ForegroundInactive=190,207,210'   \
+        'ForegroundLink=0,170,127'         \
+        'ForegroundNegative=255,85,127'    \
+        'ForegroundNeutral=0,129,149'      \
+        'ForegroundNormal=252,252,252'     \
+        'ForegroundPositive=0,164,137'     \
+        'ForegroundVisited=127,140,141'    \
+        ''                                 \
+        '[Colors:Complementary]'           \
+        'BackgroundAlternate=20,25,31'     \
+        'BackgroundNormal=22,27,34'        \
+        'DecorationFocus=0,76,90'          \
+        'DecorationHover=44,120,107'       \
+        'ForegroundActive=214,214,214'     \
+        'ForegroundInactive=163,183,188'   \
+        'ForegroundLink=44,120,107'        \
+        'ForegroundNegative=255,85,127'    \
+        'ForegroundNeutral=255,255,127'    \
+        'ForegroundPositive=61,174,233'    \
+        'ForegroundVisited=61,174,233'     \
+        ''                                 \
+        '[Colors:Selection]'               \
+        'BackgroundAlternate=20,25,31'     \
+        'BackgroundNormal=0,164,137'       \
+        'DecorationFocus=0,76,90'          \
+        'DecorationHover=0,164,137'        \
+        'ForegroundActive=190,207,210'     \
+        'ForegroundInactive=60,174,230'    \
+        'ForegroundLink=0,170,127'         \
+        'ForegroundNegative=255,85,127'    \
+        'ForegroundNeutral=0,129,149'      \
+        'ForegroundNormal=252,252,252'     \
+        'ForegroundPositive=0,164,137'     \
+        'ForegroundVisited=191,210,211'    \
+        ''                                 \
+        '[Colors:Tooltip]'                 \
+        'BackgroundAlternate=20,25,31'     \
+        'BackgroundNormal=25,32,40'        \
+        'DecorationFocus=0,76,90'          \
+        'DecorationHover=0,164,137'        \
+        'ForegroundActive=249,183,183'     \
+        'ForegroundInactive=190,207,210'   \
+        'ForegroundLink=0,170,127'         \
+        'ForegroundNegative=255,85,127'    \
+        'ForegroundNeutral=0,129,149'      \
+        'ForegroundNormal=190,207,210'     \
+        'ForegroundPositive=0,164,137'     \
+        'ForegroundVisited=127,140,141'    \
+        ''                                 \
+        '[Colors:View]'                    \
+        'BackgroundAlternate=20,25,31'     \
+        'BackgroundNormal=20,25,31'        \
+        'DecorationFocus=0,76,90'          \
+        'DecorationHover=0,164,137'        \
+        'ForegroundActive=222,222,222'     \
+        'ForegroundInactive=137,153,158'   \
+        'ForegroundLink=0,170,127'         \
+        'ForegroundNegative=255,85,127'    \
+        'ForegroundNeutral=0,129,149'      \
+        'ForegroundNormal=252,252,252'     \
+        'ForegroundPositive=0,164,137'     \
+        'ForegroundVisited=127,140,141'    \
+        ''                                 \
+        '[Colors:Window]'                  \
+        'BackgroundAlternate=20,25,31'     \
+        'BackgroundNormal=20,25,31'        \
+        'DecorationFocus=0,76,90'          \
+        'DecorationHover=0,164,137'        \
+        'ForegroundActive=207,207,207'     \
+        'ForegroundInactive=190,207,210'   \
+        'ForegroundLink=0,170,127'         \
+        'ForegroundNegative=255,85,127'    \
+        'ForegroundNeutral=0,129,149'      \
+        'ForegroundNormal=252,252,252'     \
+        'ForegroundPositive=0,164,137'     \
+        'ForegroundVisited=127,140,141'    \
+        ''                                 \
+        '[General]'                        \
+        'ColorScheme=ChameleonBreezeDark'  \
+        'Name=Chameleon Breeze Dark'       \
+        'TitlebarIsAccentColored=true'     \
+        'shadeSortColumn=true'             \
+        ''                                 \
+        '[KDE]'                            \
+        'contrast=4'                       \
+        ''                                 \
+        '[WM]'                             \
+        'activeBackground=20,25,31'        \
+        'activeBlend=20,25,31'             \
+        'activeForeground=190,207,210'     \
+        'inactiveBackground=20,25,31'      \
+        'inactiveBlend=20,25,31'           \
+        'inactiveForeground=127,140,141'
+}
+
+criar_arquivo_kdeglobals(){
+    printf '%s\n'                                                          \
+        '[ColorEffects:Disabled]'                                          \
+        'ChangeSelectionColor='                                            \
+        'Color=112,111,110'                                                \
+        'ColorAmount=0'                                                    \
+        'ColorEffect=0'                                                    \
+        'ContrastAmount=0.65'                                              \
+        'ContrastEffect=1'                                                 \
+        'Enable='                                                          \
+        'IntensityAmount=0.1'                                              \
+        'IntensityEffect=2'                                                \
+        ''                                                                 \
+        '[ColorEffects:Inactive]'                                          \
+        'ChangeSelectionColor=true'                                        \
+        'Color=112,111,110'                                                \
+        'ColorAmount=-0.9500000000000001'                                  \
+        'ColorEffect=0'                                                    \
+        'ContrastAmount=0.1'                                               \
+        'ContrastEffect=0'                                                 \
+        'Enable=false'                                                     \
+        'IntensityAmount=0'                                                \
+        'IntensityEffect=0'                                                \
+        ''                                                                 \
+        '[Colors:Button]'                                                  \
+        'BackgroundAlternate=20,25,31'                                     \
+        'BackgroundNormal=20,25,31'                                        \
+        'DecorationFocus=0,76,90'                                          \
+        'DecorationHover=0,164,137'                                        \
+        'ForegroundActive=222,222,222'                                     \
+        'ForegroundInactive=190,207,210'                                   \
+        'ForegroundLink=0,170,127'                                         \
+        'ForegroundNegative=255,85,127'                                    \
+        'ForegroundNeutral=0,129,149'                                      \
+        'ForegroundNormal=252,252,252'                                     \
+        'ForegroundPositive=0,164,137'                                     \
+        'ForegroundVisited=127,140,141'                                    \
+        ''                                                                 \
+        '[Colors:Complementary]'                                           \
+        'BackgroundAlternate=20,25,31'                                     \
+        'BackgroundNormal=22,27,34'                                        \
+        'DecorationFocus=0,76,90'                                          \
+        'DecorationHover=44,120,107'                                       \
+        'ForegroundActive=214,214,214'                                     \
+        'ForegroundInactive=163,183,188'                                   \
+        'ForegroundLink=44,120,107'                                        \
+        'ForegroundNegative=255,85,127'                                    \
+        'ForegroundNeutral=255,255,127'                                    \
+        'ForegroundPositive=61,174,233'                                    \
+        'ForegroundVisited=61,174,233'                                     \
+        ''                                                                 \
+        '[Colors:Selection]'                                               \
+        'BackgroundAlternate=20,25,31'                                     \
+        'BackgroundNormal=0,164,137'                                       \
+        'DecorationFocus=0,76,90'                                          \
+        'DecorationHover=0,164,137'                                        \
+        'ForegroundActive=190,207,210'                                     \
+        'ForegroundInactive=60,174,230'                                    \
+        'ForegroundLink=0,170,127'                                         \
+        'ForegroundNegative=255,85,127'                                    \
+        'ForegroundNeutral=0,129,149'                                      \
+        'ForegroundNormal=252,252,252'                                     \
+        'ForegroundPositive=0,164,137'                                     \
+        'ForegroundVisited=191,210,211'                                    \
+        ''                                                                 \
+        '[Colors:Tooltip]'                                                 \
+        'BackgroundAlternate=20,25,31'                                     \
+        'BackgroundNormal=25,32,40'                                        \
+        'DecorationFocus=0,76,90'                                          \
+        'DecorationHover=0,164,137'                                        \
+        'ForegroundActive=249,183,183'                                     \
+        'ForegroundInactive=190,207,210'                                   \
+        'ForegroundLink=0,170,127'                                         \
+        'ForegroundNegative=255,85,127'                                    \
+        'ForegroundNeutral=0,129,149'                                      \
+        'ForegroundNormal=190,207,210'                                     \
+        'ForegroundPositive=0,164,137'                                     \
+        'ForegroundVisited=127,140,141'                                    \
+        ''                                                                 \
+        '[Colors:View]'                                                    \
+        'BackgroundAlternate=20,25,31'                                     \
+        'BackgroundNormal=20,25,31'                                        \
+        'DecorationFocus=0,76,90'                                          \
+        'DecorationHover=0,164,137'                                        \
+        'ForegroundActive=222,222,222'                                     \
+        'ForegroundInactive=137,153,158'                                   \
+        'ForegroundLink=0,170,127'                                         \
+        'ForegroundNegative=255,85,127'                                    \
+        'ForegroundNeutral=0,129,149'                                      \
+        'ForegroundNormal=252,252,252'                                     \
+        'ForegroundPositive=0,164,137'                                     \
+        'ForegroundVisited=127,140,141'                                    \
+        ''                                                                 \
+        '[Colors:Window]'                                                  \
+        'BackgroundAlternate=20,25,31'                                     \
+        'BackgroundNormal=20,25,31'                                        \
+        'DecorationFocus=0,76,90'                                          \
+        'DecorationHover=0,164,137'                                        \
+        'ForegroundActive=207,207,207'                                     \
+        'ForegroundInactive=190,207,210'                                   \
+        'ForegroundLink=0,170,127'                                         \
+        'ForegroundNegative=255,85,127'                                    \
+        'ForegroundNeutral=0,129,149'                                      \
+        'ForegroundNormal=252,252,252'                                     \
+        'ForegroundPositive=0,164,137'                                     \
+        'ForegroundVisited=127,140,141'                                    \
+        ''                                                                 \
+        '[General]'                                                        \
+        'ColorSchemeHash=5508310af4509d3957ba12a0ade6f18efa27fbf5'         \
+        'LastUsedCustomAccentColor=233,58,154'                             \
+        'XftHintStyle=hintslight'                                          \
+        'XftSubPixel=rgb'                                                  \
+        'fixed=NotoMono Nerd Font Mono,9,-1,5,400,0,0,0,0,0,0,0,0,0,0,1'   \
+        'font=Open Sans,10,-1,5,400,0,0,0,0,0,0,0,0,0,0,1'                 \
+        'menuFont=Open Sans,10,-1,5,400,0,0,0,0,0,0,0,0,0,0,1'             \
+        'smallestReadableFont=Open Sans,9,-1,5,400,0,0,0,0,0,0,0,0,0,0,1'  \
+        'toolBarFont=Open Sans,10,-1,5,400,0,0,0,0,0,0,0,0,0,0,1'          \
+        ''                                                                 \
+        '[Icons]'                                                          \
+        'Theme=Tela-dark'                                                  \
+        ''                                                                 \
+        '[KDE]'                                                            \
+        'LookAndFeelPackage=org.kde.breezedark.desktop'                    \
+        ''                                                                 \
+        '[KFileDialog Settings]'                                           \
+        'Allow Expansion=false'                                            \
+        'Automatically select filename extension=true'                     \
+        'Breadcrumb Navigation=true'                                       \
+        'Decoration position=2'                                            \
+        'LocationCombo Completionmode=5'                                   \
+        'PathCombo Completionmode=5'                                       \
+        'Show Bookmarks=false'                                             \
+        'Show Full Path=false'                                             \
+        'Show Inline Previews=true'                                        \
+        'Show Preview=false'                                               \
+        'Show Speedbar=true'                                               \
+        'Show hidden files=false'                                          \
+        'Sort by=Name'                                                     \
+        'Sort directories first=true'                                      \
+        'Sort hidden files last=false'                                     \
+        'Sort reversed=false'                                              \
+        'Speedbar Width=144'                                               \
+        'View Style=DetailTree'                                            \
+        ''                                                                 \
+        '[WM]'                                                             \
+        'activeBackground=20,25,31'                                        \
+        'activeBlend=20,25,31'                                             \
+        'activeFont=Open Sans,11,-1,5,700,0,0,0,0,0,0,0,0,0,0,1,Bold'      \
+        'activeForeground=190,207,210'                                     \
+        'inactiveBackground=20,25,31'                                      \
+        'inactiveBlend=20,25,31'                                           \
+        'inactiveForeground=127,140,141'
 }
 
 ajuda(){
@@ -1289,6 +1566,34 @@ tentar "$comando_1" $tentivas_maximas
 mkdir -p $destino/usr/share/themes/Adapta
 tar -xf /tmp/adapta.tar.gz -C $destino/usr/share/themes
 
+### Instalando o tema Chameleon-Breeze-Dark ###
+echo -e "\nInstalando o tema Chameleon-Breeze-Dark\n"
+comando_1="wget -q --show-progress https://github.com/jpmsb/preparando-computador-para-engenharia-de-tele/raw/main/compactados/Chameleon-Breeze-Dark.tar.xz -O /tmp/Chameleon-Breeze-Dark.tar.xz"
+
+tentar "$comando_1" $tentivas_maximas
+
+tar -xf /tmp/Chameleon-Breeze-Dark.tar.xz -C $destino/usr/share/themes
+
+### Instalando o tema Chameleon-Darker ###
+echo -e "\nInstalando o tema Chameleon-Darker\n"
+comando_1="wget -q --show-progress https://github.com/jpmsb/preparando-computador-para-engenharia-de-tele/raw/main/compactados/Chameleon-Breeze-Darker.tar.xz -O /tmp/Chameleon-Breeze-Darker.tar.xz"
+
+tentar "$comando_1" $tentivas_maximas
+
+tar -xf /tmp/Chameleon-Breeze-Darker.tar.xz -C $destino/usr/share/themes
+
+### Criando tema de cores para o Qt5ct ###
+echo '[ColorScheme]
+active_colors=#ffffffff, #ff14191f, #ff979797, #ff5e5c5b, #ff9f9f9f, #ff4a4947, #ffffffff, #ffffffff, #ffffffff, #ff14191f, #ff14191f, #ffe7e4e0, #ff00a489, #fff9f9f9, #ff0986d3, #ffa70b06, #ff5c5b5a, #ffffffff, #ff3f3f36, #ffffffff, #80ffffff
+disabled_colors=#ff808080, #ff14191f, #ff979797, #ff5e5c5b, #ff9f9f9f, #ff4a4947, #ff808080, #ffffffff, #ff808080, #ff14191f, #ff14191f, #ffe7e4e0, #ff13181e, #ff808080, #ff0986d3, #ffa70b06, #ff5c5b5a, #ffffffff, #ff3f3f36, #ffffffff, #80ffffff
+inactive_colors=#ffffffff, #ff14191f, #ff979797, #ff5e5c5b, #ff9f9f9f, #ff4a4947, #ffffffff, #ffffffff, #ffffffff, #ff14191f, #ff14191f, #ffe7e4e0, #ff00a489, #fff9f9f9, #ff0986d3, #ffa70b06, #ff5c5b5a, #ffffffff, #ff3f3f36, #ffffffff, #80ffffff' > $destino/usr/share/qt5ct/colors/chameleon-dark.conf
+
+### Criando esquema de cor Chameleon Breeze Dark ###
+criar_esquema_chameleon_breeze_dark > $destino/usr/share/color-schemes/Chameleon-Breeze-Dark.colors
+
+### Criando o arquivo kdeglobals ###
+criar_arquivo_kdeglobals > $destino/etc/xdg/kdeglobals
+
 ### Habilitando a tela de boas vindas ###
 cp $destino/usr/share/applications/org.opensuse.opensuse_welcome.desktop $destino/etc/xdg/autostart/org.opensuse.opensuse_welcome.desktop
 
@@ -1329,7 +1634,7 @@ tpPattern=true' > "$destino/etc/skel/.config/nomacs/Image Lounge.conf"
 
 ### Tema de cores Breeze Dark para o Okular ###
 echo '[UiSettings]
-ColorScheme=Breeze Dark' > $destino/etc/skel/.config/okularrc
+ColorScheme=Chameleon Breeze Dark' > $destino/etc/skel/.config/okularrc
 
 ### Definindo configurações para o xfce4-terminal ###
 echo '<?xml version="1.0" encoding="UTF-8"?>
