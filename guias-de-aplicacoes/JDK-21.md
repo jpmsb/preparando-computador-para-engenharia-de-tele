@@ -1,5 +1,10 @@
 # JDK (Java Development Kit) 21
 
+### Tabela de Conteúdos
+
+- [Instalação](#instalação)
+- [Desinstalação](#desinstalação)
+
 ## Instalação
 
 Para instalar o JDK 21, basta executar o comando:
