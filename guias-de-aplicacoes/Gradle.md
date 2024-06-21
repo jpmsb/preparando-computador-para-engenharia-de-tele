@@ -6,13 +6,14 @@ O [Gradle](https://gradle.org/) é uma ferramenta de código aberto que fornece 
 
 - [Instalação](#instalação)
 - [Uso](#uso)
+- [Desinstalação](#desinstalação)
 
 ## Instalação
 
 Para o facilitar o processo de instalação do Gradle, foi criado um *script* que realiza tal processo, obtendo a versão mais recente da ferramenta. A rotina pode ser chamada com o comando
 
 ```bash
-instalar-gradle
+curl -sL https://github.com/jpmsb/preparando-computador-para-engenharia-de-tele/raw/main/scripts-auxiliares/instalar-gradle | bash
 ```
 
 Será perguntada pela sua senha de usuário definida durante a instalação do openSUSE. Após a instalação, você pode verificar se o Gradle foi instalado corretamente com o comando:
@@ -52,3 +53,14 @@ gradle run
 O programa será compilado e executado, exibindo a seguinte saída no terminal:
 
 ![](imagens/gradle_project_init_run.png)
+
+
+## Desinstalação
+
+Para desinstalar o Gradle, execute o comando:
+
+```bash
+sudo rm -r /opt/Gradle/gradle* /usr/local/bin/gradle
+```
+
+Caso o Java tenha sido instalado pela rotina deste guia, você pode consultar a documentação para desinstalar o JDK [aqui](JDK-21.md).
