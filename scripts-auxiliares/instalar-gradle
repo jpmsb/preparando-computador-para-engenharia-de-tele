@@ -32,7 +32,7 @@ fi
 echo -e "\n${verde}Instalando Gradle $versao...${normal}\n"
 
 if [ ! $(command -v java) ]; then
-    echo -e "\n${vermelho}Não foi encontrado o comando \"java\".${normal}\n"
+    echo -e "\n${vermelho}O comando \"java\" não foi encontrado.${normal}\n"
 
     while [[ "$resposta_instalar_java" != [sSnN] ]]; do
         read -p "Deseja instalar o OpenJDK 21? [s/n] " resposta_instalar_java < /dev/tty
