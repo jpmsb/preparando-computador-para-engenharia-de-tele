@@ -9,13 +9,19 @@ export SUBVERSAO="720"
 
 IFS='.' read -r -a PARTES <<< "$VERSAO"
 VERSAO_URL="${PARTES[0]}.${PARTES[1]}std.${PARTES[2]}"
-export URL_ARQUIVO="wget https://downloads.intel.com/akdlm/software/acdsinst/$VERSAO_URL/$SUBVERSAO/ib_tar/$PRODUTO-$VERSAO.$SUBVERSAO-linux.tar"
+export URL_ARQUIVO="https://downloads.intel.com/akdlm/software/acdsinst/$VERSAO_URL/$SUBVERSAO/ib_tar/$PRODUTO-$VERSAO.$SUBVERSAO-linux.tar"
 
 export NOME_ARQUIVO_DESKTOP="$(echo $NOME_IDE | tr 'A-Z ' 'a-z-')"
 export VERDE="\033[1;32m"
+export AMARELO="\033[1;33m"
 export NORMAL="\033[0m"
 export DIR_INSTALACAO="/opt/intelFPGA/$PRODUTO/$VERSAO"
 export DIR_TEMP="/opt/intelFPGA/$PRODUTO/temp"
+export DEPENDENCIAS=(glibc-32bit glibc-gconv-modules-extra-32bit libbrotlicommon1-32bit libbrotlidec1-32bit libbz2-1-32bit libexpat1-32bit libfontconfig1-32bit libfreetype6-32bit libpng16-16-32bit libX11-6-32bit libXau6-32bit libxcb1-32bit libXft2-32bit libXrender1-32bit libz1-32bit nss-mdns-32bit samba-client-32bit libXext6-32bit libgcc_s1-32bit)
+
+for DEPENDENCIA in "${DEPENDENCIAS[@]}"; do
+    rpm -q $DEPENDENCIA > /dev/null || export DEPENDENCIAS_FALTANDO="$DEPENDENCIAS_FALTANDO $DEPENDENCIA"
+done
 
 if [ -d "$DIR_INSTALACAO" ]; then
     echo "Esta versão do $NOME_IDE já está instalada."
@@ -32,11 +38,51 @@ echo -e "\n\n$VERDE--- Instalando $NOME_IDE $VERSAO ---$NORMAL\n\n"
 
 set -e
 sudo -E -- bash -c '
+    set -e
+    if [ ! -z "$DEPENDENCIAS_FALTANDO" ]; then
+        barra_rotativa() {
+            local barra_inicial="$1"
+
+            if [ -z "$barra_inicial" ]; then
+                echo "|"
+            elif [ "$barra_inicial" == "|" ]; then
+                echo "/"
+            elif [ "$barra_inicial" == "/" ]; then
+                echo "-"
+            elif [ "$barra_inicial" == "-" ]; then
+                echo "\\"
+            else
+                echo "|"
+            fi
+        }
+
+        echo -e "\n${AMARELO}Instalando dependências faltantes...${NORMAL}\n"
+        while [ -s /run/zypp.pid ]; do
+            barra="$(barra_rotativa "$barra")"
+            echo -ne "O gerenciador de pacotes está ocupado por outro processo. Aguardando liberação... [$barra]\r"
+            sleep 0.2
+        done
+
+        if [ ! -z "$barra" ]; then echo -e "\n"; fi
+
+        repositorios=$(zypper info ${DEPENDENCIAS_FALTANDO} | grep -E "Reposit.*:" | sed -n "s/^.*: *//p" | sort | uniq)
+        IFS=$'\''\n'\''; vetor_repositorios=( $(echo "$repositorios") );
+
+        comando_atualizar_repositorio="zypper --gpg-auto-import-keys refresh -f -r"
+        for repositorio in "${vetor_repositorios[@]}"; do
+            comando_atualizar_repositorio="$comando_atualizar_repositorio \"$repositorio\""
+        done
+
+        bash -c "$comando_atualizar_repositorio"
+        bash -c "zypper -n install -y $DEPENDENCIAS_FALTANDO"
+    fi
+
+    set +e
     echo -e "\n$VERDE--- Baixando $PRODUTO-$VERSAO.$SUBVERSAO-linux.tar ---$NORMAL\n"
     mkdir -p "$DIR_TEMP"
     ARQUIVO_BAIXADO="$DIR_TEMP/$PRODUTO-$VERSAO.$SUBVERSAO-linux.tar"
     wget -q --show-progress --read-timeout=5 --tries=0 -cO ${ARQUIVO_BAIXADO} ${URL_ARQUIVO}
-    
+
     set -e
     echo -e "\nExtraindo o arquivo baixado \"${ARQUIVO_BAIXADO}\" para \"$DIR_INSTALACAO/temp\"...\n"
     pv ${ARQUIVO_BAIXADO} | tar -x -C ${DIR_TEMP}
