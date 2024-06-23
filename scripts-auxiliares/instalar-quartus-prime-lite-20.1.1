@@ -38,8 +38,8 @@ echo -e "\n\n$VERDE--- Instalando $NOME_IDE $VERSAO ---$NORMAL\n\n"
 
 set -e
 sudo -E -- bash -c '
-    set -e
     if [ ! -z "$DEPENDENCIAS_FALTANDO" ]; then
+        set -e
         barra_rotativa() {
             local barra_inicial="$1"
 
@@ -75,9 +75,9 @@ sudo -E -- bash -c '
 
         bash -c "$comando_atualizar_repositorio"
         bash -c "zypper -n install -y $DEPENDENCIAS_FALTANDO"
+        set +e
     fi
 
-    set +e
     echo -e "\n$VERDE--- Baixando $PRODUTO-$VERSAO.$SUBVERSAO-linux.tar ---$NORMAL\n"
     mkdir -p "$DIR_TEMP"
     ARQUIVO_BAIXADO="$DIR_TEMP/$PRODUTO-$VERSAO.$SUBVERSAO-linux.tar"
