@@ -63,7 +63,7 @@ sudo -E -- bash -c '
             sleep 0.2
         done
 
-        if [ ! -z "$barra" ]; then echo -e "\n"; fi
+        if [ ! -z "$barra" ]; then echo -ne "\033[2K"; fi
 
         repositorios=$(zypper info ${DEPENDENCIAS_FALTANDO} | grep -E "Reposit.*:" | sed -n "s/^.*: *//p" | sort | uniq)
         IFS=$'\''\n'\''; vetor_repositorios=( $(echo "$repositorios") );
