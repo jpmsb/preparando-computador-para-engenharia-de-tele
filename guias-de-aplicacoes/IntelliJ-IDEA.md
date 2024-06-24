@@ -15,6 +15,8 @@ Para facilitar a instalação, foram criados *scripts* que automatizam o process
 
 Abaixo, será mostrado como instalar o IntelliJ IDEA Community e o IntelliJ IDEA Ultimate, podendo ambos serem instalados lado a lado sem problemas.
 
+**Observação**: Caso o [JDK (Java Development Kit)](JDK-21.md) não esteja instalado, consulte o guia de instalação do mesmo antes de prosseguir. Atente-se nas instruções referentes à variável de ambiente `JAVA_HOME`.
+
 ### IntelliJ IDEA Community
 
 Para instalar a versão Community do IntelliJ IDEA, execute o seguinte comando:
