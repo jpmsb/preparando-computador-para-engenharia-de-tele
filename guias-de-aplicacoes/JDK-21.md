@@ -10,14 +10,22 @@
 Para instalar o JDK 21, basta executar o comando:
 
 ```bash
-sudo zypper install java-21-openjdk
+sudo zypper install java-21-openjdk-devel
 ```
 
 Em seguida, defina a variável de ambiente `JAVA_HOME` com o comando:
 
-```fish
-set --export -U JAVA_HOME (dirname (dirname (readlink -f (which java))))
-```
+- Apenas para o usuário atual:
+
+    ```fish
+    set --export -U JAVA_HOME (dirname (dirname (readlink -f (which java))))
+    ```
+
+- Para todos os usuários:
+
+    ```fish
+    echo "if type -q java ; set --export JAVA_HOME (dirname (dirname (readlink -f (which java)))) ; end" | sudo tee /etc/fish/conf.d/java_home.fish > /dev/null
+    ```
 
 Você pode verificar se o JDK foi instalado corretamente com o comando:
 
@@ -39,6 +47,14 @@ sudo zypper remove -u java-21-openjdk
 
 Para limpar a variável de ambiente `JAVA_HOME`, execute o comando:
 
-```fish
-set --erase JAVA_HOME
-```
+ - Para o usuário atual:
+
+    ```fish
+    set --erase JAVA_HOME
+    ```
+
+ - Para todos os usuários:
+
+    ```fish
+    sudo rm /etc/fish/conf.d/java_home.fish
+    ```
