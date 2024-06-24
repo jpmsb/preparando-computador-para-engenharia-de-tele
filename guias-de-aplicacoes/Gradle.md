@@ -16,7 +16,7 @@ Para o facilitar o processo de instalação do Gradle, foi criado um *script* qu
 curl -sL https://github.com/jpmsb/preparando-computador-para-engenharia-de-tele/raw/main/scripts-auxiliares/instalar-gradle | bash
 ```
 
-Será perguntada pela sua senha de usuário definida durante a instalação do openSUSE. Após a instalação, você pode verificar se o Gradle foi instalado corretamente com o comando:
+Caso você não possua o [JDK (Java Development Kit)]((JDK-21.md)) instalado, a rotina questionará se você deseja instalá-lo. Será perguntada pela sua senha de usuário definida durante a instalação do openSUSE. Após a instalação, você pode verificar se o Gradle foi instalado corretamente com o comando:
 
 ```bash
 gradle --version
@@ -25,6 +25,8 @@ gradle --version
 A saída é semelhante à abaixo:
 
 ![](imagens/gradle_version.png)
+
+**Observação:** caso o JDK tenha sido instalado através desta rotina, é extremamente recomendado reiniciar a sessão para que as aplicações reconheçam a variável `JAVA_HOME` corretamente.
 
 ## Uso
 
