@@ -111,3 +111,7 @@ sudo -E -- bash -c '
 '
 
 echo -e "\n${verde}Instalação concluída. Você pode executar o comando \"gradle\" pelo terminal.${normal}\n"
+
+if [ "$instalar_java" = true ]; then
+    echo -e "${amarelo}Reinicie a sua sessão para que a variável de ambiente \"JAVA_HOME\" seja reconhecida por todas as aplicações.${normal}\n"
+fi
