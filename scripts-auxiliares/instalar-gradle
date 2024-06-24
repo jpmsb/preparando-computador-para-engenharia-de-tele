@@ -50,7 +50,7 @@ export dir_instalacao_base="/opt/Gradle"
 export dir_instalacao="$dir_instalacao_base/gradle-$versao"
 export dir_instalacao_simbolico="$dir_instalacao_base/gradle"
 export url_arquivo="https://services.gradle.org/distributions/gradle-$versao-bin.zip"
-export pacote_java="java-21-openjdk"
+export pacote_java="java-21-openjdk-devel"
 
 set -e
 sudo -E -- bash -c '
@@ -80,7 +80,7 @@ sudo -E -- bash -c '
             sleep 0.2
          done
 
-         if [ ! -z "$barra" ]; then echo -e "\033[2K"; fi
+         if [ ! -z "$barra" ]; then echo -ne "\033[2K"; fi
 
          echo -e "${amarelo}Atualizando a lista de pacotes...${normal}\n"
          repositorio="$(zypper info $pacote_java | grep -E "Reposit.*:" | sed -n "s/^.*: *//p")"
@@ -88,10 +88,9 @@ sudo -E -- bash -c '
          zypper --gpg-auto-import-keys refresh -f -r "$repositorio"
 
          echo -e "\n${amarelo}Instalando o OpenJDK 21...${normal}\n"
-         zypper -n install -y java-21-openjdk
+         zypper -n install -y $pacote_java
 
          echo -e "\n${amarelo}Definindo a variável de ambiente JAVA_HOME...${normal}\n"
-         sudo -u $SUDO_USER fish -c "set --export -U JAVA_HOME (dirname (dirname (readlink -f (which java))))"
          echo "if type -q java ; set --export JAVA_HOME (dirname (dirname (readlink -f (which java)))) ; end" > /etc/fish/conf.d/java_home.fish
          set +e
     fi
