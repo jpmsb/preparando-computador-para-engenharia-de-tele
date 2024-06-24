@@ -1618,14 +1618,6 @@ tentar "$comando_1" $tentivas_maximas
 
 tar -xf /tmp/skel.tar.xz -C $destino/etc/skel
 
-### Rotina para a instalação do Gradle ###
-echo -e "\nObtendo rotina que facilita a instalação do Gradle\n"
-comando_1="wget -q --show-progress https://github.com/jpmsb/preparando-computador-para-engenharia-de-tele/raw/main/scripts-auxiliares/instalar-gradle -O $destino/usr/local/bin/instalar-gradle"
-
-tentar "$comando_1" $tentivas_maximas
-
-chmod +x $destino/usr/local/bin/instalar-gradle
-
 ### Correção do tema de cores do nomacs - Image Lounge ###
 mkdir -p $destino/etc/skel/.config/nomacs
 echo '[DisplaySettings]
