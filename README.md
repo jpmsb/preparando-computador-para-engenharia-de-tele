@@ -30,6 +30,7 @@ Quando se inicia em um curso de tecnologia, nem sempre as ferramentas que serão
     - [Octave](guias-de-aplicacoes/Octave.md)
     - [PlatformIO](guias-de-aplicacoes/PlatformIO.md)
     - [Podman](guias-de-aplicacoes/Podman.md)
+    - [Quartus Prime Lite 20.1.1](guias-de-aplicacoes/Quartus-Prime-Lite-20.1.1.md)
 
 ## Sistema operacional
 
@@ -242,3 +243,4 @@ Abaixo estão listados guias onde será explicado como instalar algumas aplicaç
 - [Octave](guias-de-aplicacoes/Octave.md)
 - [PlatformIO](guias-de-aplicacoes/PlatformIO.md)
 - [Podman](guias-de-aplicacoes/Podman.md)
+- [Quartus Prime Lite 20.1.1](guias-de-aplicacoes/Quartus-Prime-Lite-20.1.1.md)

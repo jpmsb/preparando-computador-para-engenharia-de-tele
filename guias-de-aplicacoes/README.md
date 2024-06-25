@@ -15,3 +15,4 @@ Em cada um dos itens abaixo, estão os guias de instalação e uso das aplicaç�
 - [Octave](Octave.md)
 - [PlatformIO](PlatformIO.md)
 - [Podman](Podman.md)
+- [Quartus Prime Lite 20.1.1](Quartus-Prime-Lite-20.1.1.md)
