@@ -467,6 +467,162 @@ ajustar_tema_icones_tela(){
     gtk-update-icon-cache -q -f $diretorio_base/Tela-dark
 }
 
+criar_esquema_chameleon_breeze_dark(){
+    printf '%s\n'                          \
+        '[ColorEffects:Disabled]'          \
+        'ChangeSelectionColor='            \
+        'Color=56,56,56'                   \
+        'ColorAmount=0'                    \
+        'ColorEffect=0'                    \
+        'ContrastAmount=0.65'              \
+        'ContrastEffect=1'                 \
+        'Enable='                          \
+        'IntensityAmount=0.1'              \
+        'IntensityEffect=2'                \
+        ''                                 \
+        '[ColorEffects:Inactive]'          \
+        'ChangeSelectionColor=true'        \
+        'Color=112,111,110'                \
+        'ColorAmount=0.025'                \
+        'ColorEffect=2'                    \
+        'ContrastAmount=0.1'               \
+        'ContrastEffect=2'                 \
+        'Enable=false'                     \
+        'IntensityAmount=0'                \
+        'IntensityEffect=0'                \
+        ''                                 \
+        '[Colors:Button]'                  \
+        'BackgroundAlternate=14,131,113'   \
+        'BackgroundNormal=49,54,59'        \
+        'DecorationFocus=0,164,137'        \
+        'DecorationHover=0,164,137'        \
+        'ForegroundActive=0,164,137'       \
+        'ForegroundInactive=161,169,177'   \
+        'ForegroundLink=0,164,137'         \
+        'ForegroundNegative=218,68,83'     \
+        'ForegroundNeutral=246,116,0'      \
+        'ForegroundNormal=252,252,252'     \
+        'ForegroundPositive=39,174,96'     \
+        'ForegroundVisited=155,89,182'     \
+        ''                                 \
+        '[Colors:Complementary]'           \
+        'BackgroundAlternate=30,87,116'    \
+        'BackgroundNormal=42,46,50'        \
+        'DecorationFocus=0,164,137'        \
+        'DecorationHover=0,164,137'        \
+        'ForegroundActive=0,164,137'       \
+        'ForegroundInactive=161,169,177'   \
+        'ForegroundLink=0,164,137'         \
+        'ForegroundNegative=218,68,83'     \
+        'ForegroundNeutral=246,116,0'      \
+        'ForegroundNormal=252,252,252'     \
+        'ForegroundPositive=39,174,96'     \
+        'ForegroundVisited=155,89,182'     \
+        ''                                 \
+        '[Colors:Header]'                  \
+        'BackgroundAlternate=42,46,50'     \
+        'BackgroundNormal=49,54,59'        \
+        'DecorationFocus=0,164,137'        \
+        'DecorationHover=0,164,137'        \
+        'ForegroundActive=0,164,137'       \
+        'ForegroundInactive=161,169,177'   \
+        'ForegroundLink=0,164,137'         \
+        'ForegroundNegative=218,68,83'     \
+        'ForegroundNeutral=246,116,0'      \
+        'ForegroundNormal=252,252,252'     \
+        'ForegroundPositive=39,174,96'     \
+        'ForegroundVisited=155,89,182'     \
+        ''                                 \
+        '[Colors:Header][Inactive]'        \
+        'BackgroundAlternate=49,54,59'     \
+        'BackgroundNormal=42,46,50'        \
+        'DecorationFocus=61,174,233'       \
+        'DecorationHover=61,174,233'       \
+        'ForegroundActive=61,174,233'      \
+        'ForegroundInactive=161,169,177'   \
+        'ForegroundLink=29,153,243'        \
+        'ForegroundNegative=218,68,83'     \
+        'ForegroundNeutral=246,116,0'      \
+        'ForegroundNormal=252,252,252'     \
+        'ForegroundPositive=39,174,96'     \
+        'ForegroundVisited=155,89,182'     \
+        ''                                 \
+        '[Colors:Selection]'               \
+        'BackgroundAlternate=8,123,105'    \
+        'BackgroundNormal=8,123,105'       \
+        'DecorationFocus=0,164,137'        \
+        'DecorationHover=0,164,137'        \
+        'ForegroundActive=0,164,137'       \
+        'ForegroundInactive=255,255,255'   \
+        'ForegroundLink=0,164,137'         \
+        'ForegroundNegative=176,55,69'     \
+        'ForegroundNeutral=198,92,0'       \
+        'ForegroundNormal=255,255,255'     \
+        'ForegroundPositive=23,104,57'     \
+        'ForegroundVisited=155,89,182'     \
+        ''                                 \
+        '[Colors:Tooltip]'                 \
+        'BackgroundAlternate=42,46,50'     \
+        'BackgroundNormal=49,54,59'        \
+        'DecorationFocus=0,164,137'        \
+        'DecorationHover=0,164,137'        \
+        'ForegroundActive=0,164,137'       \
+        'ForegroundInactive=161,169,177'   \
+        'ForegroundLink=0,164,137'         \
+        'ForegroundNegative=218,68,83'     \
+        'ForegroundNeutral=246,116,0'      \
+        'ForegroundNormal=252,252,252'     \
+        'ForegroundPositive=39,174,96'     \
+        'ForegroundVisited=155,89,182'     \
+        ''                                 \
+        '[Colors:View]'                    \
+        'BackgroundAlternate=35,38,41'     \
+        'BackgroundNormal=27,30,32'        \
+        'DecorationFocus=0,164,137'        \
+        'DecorationHover=0,164,137'        \
+        'ForegroundActive=0,164,137'       \
+        'ForegroundInactive=161,169,177'   \
+        'ForegroundLink=0,164,137'         \
+        'ForegroundNegative=218,68,83'     \
+        'ForegroundNeutral=246,116,0'      \
+        'ForegroundNormal=252,252,252'     \
+        'ForegroundPositive=39,174,96'     \
+        'ForegroundVisited=155,89,182'     \
+        ''                                 \
+        '[Colors:Window]'                  \
+        'BackgroundAlternate=49,54,59'     \
+        'BackgroundNormal=42,46,50'        \
+        'DecorationFocus=0,164,137'        \
+        'DecorationHover=0,164,137'        \
+        'ForegroundActive=0,164,137'       \
+        'ForegroundInactive=161,169,177'   \
+        'ForegroundLink=0,164,137'         \
+        'ForegroundNegative=218,68,83'     \
+        'ForegroundNeutral=246,116,0'      \
+        'ForegroundNormal=252,252,252'     \
+        'ForegroundPositive=39,174,96'     \
+        'ForegroundVisited=155,89,182'     \
+        ''                                 \
+        '[General]'                        \
+        'ColorScheme=ChameleonBreezeDark'  \
+        'Name=Chameleon Breeze Dark'       \
+        'shadeSortColumn=true'             \
+        ''                                 \
+        '[KDE]'                            \
+        'contrast=4'                       \
+        ''                                 \
+        '[Icons]'                          \
+        'Theme=Tela-dark'                  \
+        ''                                 \
+        '[WM]'                             \
+        'activeBackground=49,54,59'        \
+        'activeBlend=252,252,252'          \
+        'activeForeground=252,252,252'     \
+        'inactiveBackground=42,46,50'      \
+        'inactiveBlend=161,169,177'        \
+        'inactiveForeground=161,169,177'
+}
+
 criar_esquema_chameleon_breeze_darker(){
     printf '%s\n'                            \
         '[ColorEffects:Disabled]'            \
@@ -1260,7 +1416,7 @@ componentes_graficos="xorg-x11-server-extra xorg-x11-driver-video xorg-x11-drive
 
 ambiente_XFCE="xfce4-panel-lang xfce4-panel-profiles xfce4-panel-restore-defaults xfce4-power-manager-lang xfce4-pulseaudio-plugin-lang pavucontrol-lang xfce4-screensaver xfce4-screenshooter-lang xfce4-session-lang xfce4-settings-lang xfce4-terminal-lang xfce4-datetime-plugin-lang xfce4-genmon-plugin-lang xfce4-kbdleds-plugin-lang xfce4-notifyd-lang xfce4-panel-lang xfce4-pulseaudio-plugin-lang xfce4-systemload-plugin-lang xfce4-notifyd-theme-adapta xfwm4-lang xfwm4-theme-adapta thunar-lang thunar-sendto-blueman thunar-plugin-media-tags-lang thunar-plugin-shares-lang thunar-volman-branding-openSUSE thunar-volman-lang thunar-plugin-archive-lang thunar-font-manager xfdesktop-lang xfce4-settings-color xfce4-sensors-plugin-lang xfce4-battery-plugin-lang xfce4-appfinder-lang xfce4-xkb-plugin-lang xfce4-weather-plugin-lang xfce4-docklike-plugin xfce4-whiskermenu-plugin-lang xfce4-panel-plugin-indicator-lang xfce4-power-manager-plugin xfce4-power-manager-branding-openSUSE ristretto-lang nomacs-lang"
 
-ferramentas_extras="myspell-dictionaries myspell-en myspell-en_US myspell-lightproof-en myspell-lightproof-pt_BR myspell-pt_BR okular-lang libKF6Archive6-lang vlc-qt vlc vlc-lang vlc-codecs vlc-codec-gstreamer vlc-vdpau gnome-calculator-lang kcolorchooser-lang gnome-disk-utility-lang libvirt-daemon-qemu qemu-linux-user qemu-linux-user libvirt-daemon-qemu virt-manager qt5ct kolourpaint-lang libqt5-qtxmlpatterns-imports libQt5WebChannel5-imports gparted-lang pluma-lang engrampa-lang libreoffice libreoffice-branding-openSUSE libreoffice-l10n-pt_BR libreoffice-l10n-en libreoffice-branding-openSUSE libreoffice-calc libreoffice-draw libreoffice-filters-optional libreoffice-gnome libreoffice-gtk3 libreoffice-icon-themes libreoffice-impress libreoffice-l10n-en libreoffice-l10n-pt_BR libreoffice-mailmerge libreoffice-math libreoffice-pyuno libreoffice-share-linker libreoffice-writer MozillaFirefox MozillaFirefox-branding-openSUSE MozillaFirefox-translations-common MozillaFirefox-translations-other transmission-gtk-lang baobab-lang code gearlever-lang"
+ferramentas_extras="myspell-dictionaries myspell-en myspell-en_US myspell-lightproof-en myspell-lightproof-pt_BR myspell-pt_BR okular-lang libKF6Archive6-lang vlc-qt vlc vlc-lang vlc-codec-gstreamer vlc-vdpau gnome-calculator-lang kcolorchooser-lang gnome-disk-utility-lang libvirt-daemon-qemu qemu-linux-user qemu-linux-user libvirt-daemon-qemu virt-manager qt5ct kolourpaint-lang libqt5-qtxmlpatterns-imports libQt5WebChannel5-imports gparted-lang pluma-lang engrampa-lang libreoffice libreoffice-branding-openSUSE libreoffice-l10n-pt_BR libreoffice-l10n-en libreoffice-branding-openSUSE libreoffice-calc libreoffice-draw libreoffice-filters-optional libreoffice-gnome libreoffice-gtk3 libreoffice-icon-themes libreoffice-impress libreoffice-l10n-en libreoffice-l10n-pt_BR libreoffice-mailmerge libreoffice-math libreoffice-pyuno libreoffice-share-linker libreoffice-writer MozillaFirefox MozillaFirefox-branding-openSUSE MozillaFirefox-translations-common MozillaFirefox-translations-other transmission-gtk-lang baobab-lang code gearlever-lang"
 
 ambiente_de_trabalho="$ambiente_XFCE"
 
@@ -1592,6 +1748,9 @@ echo '[ColorScheme]
 active_colors=#ffffffff, #ff14191f, #ff979797, #ff5e5c5b, #ff9f9f9f, #ff4a4947, #ffffffff, #ffffffff, #ffffffff, #ff14191f, #ff14191f, #ffe7e4e0, #ff00a489, #fff9f9f9, #ff0986d3, #ffa70b06, #ff5c5b5a, #ffffffff, #ff3f3f36, #ffffffff, #80ffffff
 disabled_colors=#ff808080, #ff14191f, #ff979797, #ff5e5c5b, #ff9f9f9f, #ff4a4947, #ff808080, #ffffffff, #ff808080, #ff14191f, #ff14191f, #ffe7e4e0, #ff13181e, #ff808080, #ff0986d3, #ffa70b06, #ff5c5b5a, #ffffffff, #ff3f3f36, #ffffffff, #80ffffff
 inactive_colors=#ffffffff, #ff14191f, #ff979797, #ff5e5c5b, #ff9f9f9f, #ff4a4947, #ffffffff, #ffffffff, #ffffffff, #ff14191f, #ff14191f, #ffe7e4e0, #ff00a489, #fff9f9f9, #ff0986d3, #ffa70b06, #ff5c5b5a, #ffffffff, #ff3f3f36, #ffffffff, #80ffffff' > $destino/usr/share/qt5ct/colors/chameleon-darker.conf
+
+### Criando esquema de cor Chameleon Breeze Dark ###
+criar_esquema_chameleon_breeze_dark > $destino/usr/share/color-schemes/Chameleon-Breeze-Dark.colors
 
 ### Criando esquema de cor Chameleon Breeze Darker ###
 criar_esquema_chameleon_breeze_darker > $destino/usr/share/color-schemes/Chameleon-Breeze-Darker.colors
