@@ -10,8 +10,28 @@ Para instalar o Podman juntamente com o `podman compose`, basta executar o coman
 sudo zypper install podman python311-podman-compose
 ```
 
+Você pode verificar se a instalação foi bem sucedida executando o comando:
+
+```bash
+podman ps -a
+```
+
 Caso queira disponibilizar o comando `docker` para o Podman, basta instalar o pacote `podman-docker` com o comando:
 
 ```bash
 sudo zypper install podman-docker
+```
+
+Isso permitirá que você execute comandos do Docker com o Podman, como por exemplo:
+
+```bash
+docker ps -a
+```
+
+## Desinstalação
+
+Para desinstalar o Podman, execute o comando:
+
+```bash
+sudo zypper remove -u podman python311-podman-compose
 ```
