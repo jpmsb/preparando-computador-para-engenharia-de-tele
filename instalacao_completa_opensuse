@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export LC_ALL=C.UTF-8
+
 ### Funções auxiliares ###
 desmontar_tudo(){
     local destino=$1
@@ -145,6 +147,46 @@ mostra_preenchido(){
         printf "$valor1"
         printf "$normal\n"
     fi
+}
+
+valida_pacotes(){
+    pacotes="$1"
+    arquivo_log_zypper="$2"
+    argumentos_extra="$3"
+
+    data_inicio=$(date +'%Y-%m-%d %H:%M:00')
+    zypper -n $argumentos_extra install --dry-run -y $pacotes > /dev/null 2>&1
+    data_fim=$(date +'%Y-%m-%d %H:%M:59')
+
+    # Verificando pacotes que não existem no repositório
+    pacotes_inexistentes=$(cat "$arquivo_log_zypper" | awk -v start="$data_inicio" -v end="$data_fim" '$0 >= start && $0 <= end' | grep -oE '.*\[zypper:req\].*not found$' | awk '{print $(NF-3)}' | sort | uniq | sed 's/-[0-9].*//' | tr '\n' ' ')
+
+    # Filtrando pacotes inexistentes
+    IFS=' ' read -r -a pacotes_array <<< "$pacotes"
+    IFS=' ' read -r -a pacotes_inexistentes_array <<< "$pacotes_inexistentes"
+
+    for pacote in "${pacotes_array[@]}"; do
+        if [[ ! " ${pacotes_inexistentes_array[@]} " =~ " ${pacote} " ]]; then
+            pacotes_restantes="$pacotes_restantes $pacote"
+        fi
+    done
+
+    # Verificação dos pacotes restantes
+    data_inicio=$(date +'%Y-%m-%d %H:%M:00')
+    zypper -n $argumentos_extra install --dry-run -y $pacotes_restantes > /dev/null 2>&1
+    data_fim=$(date +'%Y-%m-%d %H:%M:59')
+
+    # Verificando pacotes que possuam algum conflito de dependência
+    pacotes_conflitantes=$(cat "$arquivo_log_zypper" | awk -v start="$data_inicio" -v end="$data_fim" '$0 >= start && $0 <= end' | grep -oE '.*do not install.*' | grep -oE '\S+$' | sort | uniq | sed 's/-[0-9].*//' | tr '\n' ' ')
+
+    # Filtrando pacotes conflitantes
+    for pacote in ${pacotes_restantes}; do
+        if [[ ! "${pacotes_conflitantes}" == *"${pacote}"* ]]; then
+            pacotes_validados="$pacotes_validados $pacote"
+        fi
+    done
+
+    echo "$pacotes_validados"
 }
 
 arquivo_bootloader(){
@@ -912,6 +954,7 @@ ajuda(){
 
 ### Variáveis preparatórias ###
 destino=/mnt
+log_zypper="/var/log/zypper.log"
 tentivas_maximas=5
 verde='\033[1;32m'
 magenta='\033[1;35m'
@@ -1416,13 +1459,15 @@ componentes_graficos="xorg-x11-server-extra xorg-x11-driver-video xorg-x11-drive
 
 ambiente_XFCE="xfce4-panel-lang xfce4-panel-profiles xfce4-panel-restore-defaults xfce4-power-manager-lang xfce4-pulseaudio-plugin-lang pavucontrol-lang xfce4-screensaver xfce4-screenshooter-lang xfce4-session-lang xfce4-settings-lang xfce4-terminal-lang xfce4-datetime-plugin-lang xfce4-genmon-plugin-lang xfce4-kbdleds-plugin-lang xfce4-notifyd-lang xfce4-panel-lang xfce4-pulseaudio-plugin-lang xfce4-systemload-plugin-lang xfce4-notifyd-theme-adapta xfwm4-lang xfwm4-theme-adapta thunar-lang thunar-sendto-blueman thunar-plugin-media-tags-lang thunar-plugin-shares-lang thunar-volman-branding-openSUSE thunar-volman-lang thunar-plugin-archive-lang thunar-font-manager xfdesktop-lang xfce4-settings-color xfce4-sensors-plugin-lang xfce4-battery-plugin-lang xfce4-appfinder-lang xfce4-xkb-plugin-lang xfce4-weather-plugin-lang xfce4-docklike-plugin xfce4-whiskermenu-plugin-lang xfce4-panel-plugin-indicator-lang xfce4-power-manager-plugin xfce4-power-manager-branding-openSUSE ristretto-lang nomacs-lang"
 
-ferramentas_extras="myspell-dictionaries myspell-en myspell-en_US myspell-lightproof-en myspell-lightproof-pt_BR myspell-pt_BR okular-lang libKF6Archive6-lang vlc-qt vlc vlc-lang vlc-codec-gstreamer vlc-vdpau gnome-calculator-lang kcolorchooser-lang gnome-disk-utility-lang libvirt-daemon-qemu qemu-linux-user qemu-linux-user libvirt-daemon-qemu virt-manager qt5ct kolourpaint-lang libqt5-qtxmlpatterns-imports libQt5WebChannel5-imports gparted-lang pluma-lang engrampa-lang libreoffice libreoffice-branding-openSUSE libreoffice-l10n-pt_BR libreoffice-l10n-en libreoffice-branding-openSUSE libreoffice-calc libreoffice-draw libreoffice-filters-optional libreoffice-gnome libreoffice-gtk3 libreoffice-icon-themes libreoffice-impress libreoffice-l10n-en libreoffice-l10n-pt_BR libreoffice-mailmerge libreoffice-math libreoffice-pyuno libreoffice-share-linker libreoffice-writer MozillaFirefox MozillaFirefox-branding-openSUSE MozillaFirefox-translations-common MozillaFirefox-translations-other transmission-gtk-lang baobab-lang code gearlever-lang"
+ferramentas_extras="myspell-dictionaries myspell-en myspell-en_US myspell-lightproof-en myspell-lightproof-pt_BR myspell-pt_BR okular-lang libKF6Archive6-lang vlc-qt vlc vlc-lang vlc-codec-gstreamer vlc-vdpau vlc-codecs gnome-calculator-lang kcolorchooser-lang gnome-disk-utility-lang libvirt-daemon-qemu qemu-linux-user qemu-linux-user libvirt-daemon-qemu virt-manager qt5ct kolourpaint-lang libqt5-qtxmlpatterns-imports libQt5WebChannel5-imports gparted-lang pluma-lang engrampa-lang libreoffice libreoffice-branding-openSUSE libreoffice-l10n-pt_BR libreoffice-l10n-en libreoffice-branding-openSUSE libreoffice-calc libreoffice-draw libreoffice-filters-optional libreoffice-gnome libreoffice-gtk3 libreoffice-icon-themes libreoffice-impress libreoffice-l10n-en libreoffice-l10n-pt_BR libreoffice-mailmerge libreoffice-math libreoffice-pyuno libreoffice-share-linker libreoffice-writer MozillaFirefox MozillaFirefox-branding-openSUSE MozillaFirefox-translations-common MozillaFirefox-translations-other transmission-gtk-lang baobab-lang code gearlever-lang"
 
 ambiente_de_trabalho="$ambiente_XFCE"
 
+pacotes_validados=$(valida_pacotes "$pacotes_base $componentes_graficos $ambiente_de_trabalho $ferramentas_extras" "$log_zypper" "--root $destino")
+
 comando_1="zypper -n --root $destino --gpg-auto-import-keys refresh -f"
 comando_2="zypper -n --root $destino dist-upgrade -y --download-in-advance --allow-vendor-change --no-recommends"
-comando_3="zypper -n --root $destino install -y --allow-vendor-change --download-in-advance $pacotes_base $componentes_graficos $ambiente_de_trabalho $ferramentas_extras"
+comando_3="zypper -n --root $destino install -y --allow-vendor-change --download-in-advance $pacotes_validados"
 comando_4="zypper -n --root $destino install -y --allow-vendor-change --download-in-advance -t pattern apparmor fonts x11_yast x11"
 
 tentar "$comando_1 ; $comando_2 && $comando_3 && $comando_4" $tentivas_maximas
