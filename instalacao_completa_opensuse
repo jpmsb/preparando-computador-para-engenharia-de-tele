@@ -189,6 +189,53 @@ valida_pacotes(){
     echo "$pacotes_validados"
 }
 
+barra_rotativa() {
+    local barra_inicial="$1"
+
+    if [ -z "$barra_inicial" ]; then
+        echo "|"
+    elif [ "$barra_inicial" == "|" ]; then
+        echo "/"
+    elif [ "$barra_inicial" == "/" ]; then
+        echo "-"
+    elif [ "$barra_inicial" == "-" ]; then
+        echo "\\"
+    else
+        echo "|"
+    fi
+}
+
+mostra_espera(){
+    texto="$1"
+    arquivo_sinalizador="$2"
+
+    while [ -f "$arquivo_sinalizador" ]; do
+        barra_atual="$(barra_rotativa "$barra_atual")"
+        echo -ne "$texto [$barra_atual]\r"
+        sleep 0.1
+    done
+
+    if [ ! -z "$barra_atual" ]; then echo -ne "\033[2Ki\r"; fi
+
+    echo -e "$texto [✔]\n"
+}
+
+valida_pacotes_visualizado(){
+    texto_titulo="$1"
+    pacotes="$2"
+    arquivo_log_zypper="$3"
+    argumentos_extra="$4"
+    variavel_exportada="$5"
+    arquivo_sinalizador="$(mktemp)"
+
+    mostra_espera "$texto_titulo" "$arquivo_sinalizador" &
+    espera_pid=$!
+    pacotes_validados="$(valida_pacotes "$pacotes" "$arquivo_log_zypper" "$argumentos_extra")"
+    export $variavel_exportada="$pacotes_validados"
+    rm "$arquivo_sinalizador"
+    wait $espera_pid
+}
+
 arquivo_bootloader(){
     if [ -d /sys/firmware/efi ]; then
         printf '%s\n'                                                               \
@@ -1462,8 +1509,9 @@ ambiente_XFCE="xfce4-panel-lang xfce4-panel-profiles xfce4-panel-restore-default
 ferramentas_extras="myspell-dictionaries myspell-en myspell-en_US myspell-lightproof-en myspell-lightproof-pt_BR myspell-pt_BR okular-lang libKF6Archive6-lang vlc-qt vlc vlc-lang vlc-codec-gstreamer vlc-vdpau vlc-codecs gnome-calculator-lang kcolorchooser-lang gnome-disk-utility-lang libvirt-daemon-qemu qemu-linux-user qemu-linux-user libvirt-daemon-qemu virt-manager qt5ct kolourpaint-lang libqt5-qtxmlpatterns-imports libQt5WebChannel5-imports gparted-lang pluma-lang engrampa-lang libreoffice libreoffice-branding-openSUSE libreoffice-l10n-pt_BR libreoffice-l10n-en libreoffice-branding-openSUSE libreoffice-calc libreoffice-draw libreoffice-filters-optional libreoffice-gnome libreoffice-gtk3 libreoffice-icon-themes libreoffice-impress libreoffice-l10n-en libreoffice-l10n-pt_BR libreoffice-mailmerge libreoffice-math libreoffice-pyuno libreoffice-share-linker libreoffice-writer MozillaFirefox MozillaFirefox-branding-openSUSE MozillaFirefox-translations-common MozillaFirefox-translations-other transmission-gtk-lang baobab-lang code gearlever-lang"
 
 ambiente_de_trabalho="$ambiente_XFCE"
+pacotes="$pacotes_base $componentes_graficos $ambiente_de_trabalho $ferramentas_extras"
 
-pacotes_validados=$(valida_pacotes "$pacotes_base $componentes_graficos $ambiente_de_trabalho $ferramentas_extras" "$log_zypper" "--root $destino")
+valida_pacotes_visualizado "Validando os pacotes a serem instalados..." "$pacotes" "$log_zypper" "--root $destino" "pacotes_validados"
 
 comando_1="zypper -n --root $destino --gpg-auto-import-keys refresh -f"
 comando_2="zypper -n --root $destino dist-upgrade -y --download-in-advance --allow-vendor-change --no-recommends"
