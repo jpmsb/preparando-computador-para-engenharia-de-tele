@@ -216,8 +216,6 @@ mostra_espera(){
     done
 
     if [ ! -z "$barra_atual" ]; then echo -ne "\033[2Ki\r"; fi
-
-    echo -e "$texto [✔]\n"
 }
 
 valida_pacotes_visualizado(){
@@ -1511,7 +1509,7 @@ ferramentas_extras="myspell-dictionaries myspell-en myspell-en_US myspell-lightp
 ambiente_de_trabalho="$ambiente_XFCE"
 pacotes="$pacotes_base $componentes_graficos $ambiente_de_trabalho $ferramentas_extras"
 
-valida_pacotes_visualizado "Validando os pacotes a serem instalados..." "$pacotes" "$log_zypper" "--root $destino" "pacotes_validados"
+valida_pacotes_visualizado "Validando os pacotes a serem instalados. Por favor, aguarde..." "$pacotes" "$log_zypper" "--root $destino" "pacotes_validados"
 
 comando_1="zypper -n --root $destino --gpg-auto-import-keys refresh -f"
 comando_2="zypper -n --root $destino dist-upgrade -y --download-in-advance --allow-vendor-change --no-recommends"
