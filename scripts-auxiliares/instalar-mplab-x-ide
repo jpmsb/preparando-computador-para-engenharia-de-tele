@@ -1,0 +1,69 @@
+#!/bin/bash
+
+export VERDE="\033[1;32m"
+export VERMELHO="\033[1;31m"
+export AMARELO="\033[1;33m"
+export NORMAL="\033[0m"
+
+export NOME_IDE="MPLAB X IDE"
+export BIN_IDE="mplab_ide"
+export NOME_COMPILADOR="XC8 Compiler"
+URL_MICROCHIP="https://www.microchip.com"
+export URL_IDE="$(curl -A '' -sL 'https://www.microchip.com/en-us/tools-resources/develop/mplab-x-ide' | grep -oP 'https://[^"]*MPLABX-[^"]*linux-installer[^"]*')"
+export ULTIMA_VERSAO="v$(basename $URL_IDE | grep -oP '\d+(\.\d+)*')"
+export URL_ARQUIVO_IDE="${URL_MICROCHIP}$(curl -A '' -sL $URL_IDE | grep -oP '(?<=href=")[^"]*download[^"]*')"
+
+URLS_XC8="$(curl -A '' -sL 'https://www.microchip.com/en-us/tools-resources/archives/mplab-ecosystem' | grep -oE 'https?://.*xc8.*linux.*.run')"
+export ULTIMA_VERSAO_XC8="v$(echo "$URLS_XC8" | grep -Eo 'xc8-v[0-9]+\.[0-9]+' | sed -E 's/xc8-v([0-9]+\.[0-9]+)/\1/' | sort -V | tail -n1)"
+export URL_ARQUIVO_XC8="$(echo "$URLS_XC8" | grep "xc8-${ULTIMA_VERSAO_XC8}")"
+
+export DIR_INSTALACAO_IDE="/opt/microchip/mplabx/${ULTIMA_VERSAO}"
+export DIR_INSTALACAO_XC8="/opt/microchip/xc8/${ULTIMA_VERSAO_XC8}"
+export DIR_TEMP="/opt/microchip/temp"
+
+if [ -d "$DIR_INSTALACAO_IDE" ]; then
+    echo "A versão mais recente já está instalada."
+    echo "Versão atual: ${ULTIMA_VERSAO}"
+    
+    while [[ "$RESPOSTA_INSTALAR_MPLABX" != [sSnN] ]]; do
+        read -p "Deseja reinstalar? [s/n] " RESPOSTA_INSTALAR_MPLABX < /dev/tty
+    done
+
+    if [[ "$RESPOSTA_INSTALAR_MPLABX" == [nN] ]]; then
+        exit 0
+    fi
+fi
+
+echo -e "\n${VERDE}Instalando $NOME_IDE ${ULTIMA_VERSAO}...${NORMAL}\n"
+
+set -e
+sudo -E -- bash -c '
+    echo -e "\nBaixando $NOME_IDE $ULTIMA_VERSAO...\n"
+    mkdir -p $DIR_TEMP
+    ARQUIVO_BAIXADO_IDE="$DIR_TEMP/$(basename $URL_IDE)"
+    wget -q -U "" --show-progress --read-timeout=5 --tries=0 -cO ${ARQUIVO_BAIXADO_IDE} ${URL_ARQUIVO_IDE}
+
+    echo -e "\nExtraindo o arquivo baixado \"$ARQUIVO_BAIXADO_IDE\" para \"$DIR_INSTALACAO_IDE\"...\n"
+    pv ${ARQUIVO_BAIXADO_IDE} | tar -x -C "${DIR_TEMP}"
+  
+    echo -e "\nInstalando $NOME_IDE $ULTIMA_VERSAO em \"$DIR_INSTALACAO_IDE\". Este processo pode levar vários minutos. Por favor, aguarde...\n" 
+    rm -rf "$DIR_INSTALACAO_IDE"
+    mkdir -p "$DIR_INSTALACAO_IDE"
+    bash ${DIR_TEMP}/MPLABX-${ULTIMA_VERSAO}-linux-installer.sh -- --mode unattended --unattendedmodeui minimal --installdir ${DIR_INSTALACAO_IDE} --installer-language pt_BR --collectInfo 0 --collectMyMicrochipInfo 0 2>/dev/null
+
+    echo -e "\nBaixando $NOME_COMPILADOR $ULTIMA_VERSAO_XC8...\n"
+    ARQUIVO_BAIXADO_XC8="$DIR_TEMP/$(basename $URL_ARQUIVO_XC8)"
+    wget -q -U "" --show-progress --read-timeout=5 --tries=0 -cO ${ARQUIVO_BAIXADO_XC8} ${URL_ARQUIVO_XC8}
+    chmod +x ${ARQUIVO_BAIXADO_XC8}
+
+    echo -e "\nInstalando $NOME_COMPILADOR $ULTIMA_VERSAO_XC8. Este processo pode levar vários minutos. Por favor, aguarde...\n"
+    rm -rf "$DIR_INSTALACAO_XC8"
+    mkdir -p "$DIR_INSTALACAO_XC8"
+    bash -c "${ARQUIVO_BAIXADO_XC8} --mode unattended --unattendedmodeui minimalWithDialogs --installer-language pt_BR --prefix ${DIR_INSTALACAO_XC8} --netservername localhost" 2>/dev/null
+
+    rm -f ${DIR_TEMP}/*
+'
+
+echo -e "O $NOME_IDE $ULTIMA_VERSAO e $NOME_COMPILADOR $ULTIMA_VERSAO_XC8 foram instalados com sucesso.\n"
+
+echo -e "${VERDE}Você pode iniciar o $NOME_IDE $ULTIMA_VERSAO a partir do menu ou executando o comando \"$BIN_IDE\" no terminal.${NORMAL}"
