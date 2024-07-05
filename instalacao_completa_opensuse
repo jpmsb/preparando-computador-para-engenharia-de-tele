@@ -159,7 +159,7 @@ valida_pacotes(){
     data_fim=$(date +'%Y-%m-%d %H:%M:59')
 
     # Verificando pacotes que não existem no repositório
-    pacotes_inexistentes=$(cat "$arquivo_log_zypper" | awk -v start="$data_inicio" -v end="$data_fim" '$0 >= start && $0 <= end' | grep -oE '.*\[zypper:req\].*not found$' | awk '{print $(NF-3)}' | sort | uniq | sed 's/-[0-9].*//' | tr '\n' ' ')
+    pacotes_inexistentes=$(cat "$arquivo_log_zypper" | awk -v start="$data_inicio" -v end="$data_fim" '$0 >= start && $0 <= end' | grep -oE '.*\[zypper:req\].*not found$' | cut -d ' ' -f 7 | sort | uniq | sed 's/-[0-9].*//' | tr '\n' ' ')
 
     # Filtrando pacotes inexistentes
     IFS=' ' read -r -a pacotes_array <<< "$pacotes"
