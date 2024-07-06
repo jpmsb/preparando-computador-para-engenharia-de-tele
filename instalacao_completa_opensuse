@@ -1832,8 +1832,8 @@ tar -xf /tmp/Chameleon-Breeze-Darker.tar.xz -C $destino/usr/share/themes
 ### Criando tema de cores para o Qt5ct ###
 echo '[ColorScheme]
 active_colors=#ffffffff, #ff31363b, #ff979797, #ff5e5c5b, #ff9f9f9f, #ff4a4947, #ffffffff, #ffffffff, #ffffffff, #ff1b1e20, #ff2a2e32, #ffe7e4e0, #ff00a489, #fff9f9f9, #ff0986d3, #ffa70b06, #ff5c5b5a, #ffffffff, #ff3f3f36, #ffffffff, #80ffffff
-disabled_colors=#ff808080, #ff31363b, #ff979797, #ff5e5c5b, #ff9f9f9f, #ff4a4947, #ff808080, #ffffffff, #ff808080, #ff2a2e32, #ff2a2e32, #ffe7e4e0, #ff13181e, #ff808080, #ff0986d3, #ffa70b06, #ff5c5b5a, #ffffffff, #ff3f3f36, #ffffffff, #80ffffff
-inactive_colors=#ffffffff, #ff31363b, #ff979797, #ff5e5c5b, #ff9f9f9f, #ff4a4947, #ffffffff, #ffffffff, #ffffffff, #ff2a2e32, #ff2a2e32, #ffe7e4e0, #ff00a489, #fff9f9f9, #ff0986d3, #ffa70b06, #ff5c5b5a, #ffffffff, #ff3f3f36, #ffffffff, #80ffffff' > $destino/usr/share/qt5ct/colors/chameleon-dark.conf
+disabled_colors=#ff808080, #ff31363b, #ff979797, #ff5e5c5b, #ff9f9f9f, #ff4a4947, #ff808080, #ffffffff, #ff808080, #ff1b1e20, #ff2a2e32, #ffe7e4e0, #ff13181e, #ff808080, #ff0986d3, #ffa70b06, #ff5c5b5a, #ffffffff, #ff3f3f36, #ffffffff, #80ffffff
+inactive_colors=#ffffffff, #ff31363b, #ff979797, #ff5e5c5b, #ff9f9f9f, #ff4a4947, #ffffffff, #ffffffff, #ffffffff, #ff1b1e20, #ff2a2e32, #ffe7e4e0, #ff00a489, #fff9f9f9, #ff0986d3, #ffa70b06, #ff5c5b5a, #ffffffff, #ff3f3f36, #ffffffff, #80ffffff' > $destino/usr/share/qt5ct/colors/chameleon-dark.conf
 
 echo '[ColorScheme]
 active_colors=#ffffffff, #ff14191f, #ff979797, #ff5e5c5b, #ff9f9f9f, #ff4a4947, #ffffffff, #ffffffff, #ffffffff, #ff14191f, #ff14191f, #ffe7e4e0, #ff00a489, #fff9f9f9, #ff0986d3, #ffa70b06, #ff5c5b5a, #ffffffff, #ff3f3f36, #ffffffff, #80ffffff
