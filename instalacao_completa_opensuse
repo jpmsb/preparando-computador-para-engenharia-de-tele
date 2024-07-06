@@ -155,33 +155,18 @@ valida_pacotes(){
     argumentos_extra="$3"
 
     data_inicio=$(date +'%Y-%m-%d %H:%M:00')
-    zypper -n $argumentos_extra install --dry-run -y $pacotes > /dev/null 2>&1
+    zypper -n --ignore-unknown $argumentos_extra install --dry-run -y $pacotes > /dev/null 2>&1
     data_fim=$(date +'%Y-%m-%d %H:%M:59')
 
     # Verificando pacotes que não existem no repositório
     pacotes_inexistentes=$(cat "$arquivo_log_zypper" | awk -v start="$data_inicio" -v end="$data_fim" '$0 >= start && $0 <= end' | grep -oE '.*\[zypper:req\].*not found$' | cut -d ' ' -f 7 | sort | uniq | sed 's/-[0-9].*//' | tr '\n' ' ')
 
-    # Filtrando pacotes inexistentes
-    IFS=' ' read -r -a pacotes_array <<< "$pacotes"
-    IFS=' ' read -r -a pacotes_inexistentes_array <<< "$pacotes_inexistentes"
-
-    for pacote in "${pacotes_array[@]}"; do
-        if [[ ! " ${pacotes_inexistentes_array[@]} " =~ " ${pacote} " ]]; then
-            pacotes_restantes="$pacotes_restantes $pacote"
-        fi
-    done
-
-    # Verificação dos pacotes restantes
-    data_inicio=$(date +'%Y-%m-%d %H:%M:00')
-    zypper -n $argumentos_extra install --dry-run -y $pacotes_restantes > /dev/null 2>&1
-    data_fim=$(date +'%Y-%m-%d %H:%M:59')
-
     # Verificando pacotes que possuam algum conflito de dependência
     pacotes_conflitantes=$(cat "$arquivo_log_zypper" | awk -v start="$data_inicio" -v end="$data_fim" '$0 >= start && $0 <= end' | grep -oE '.*do not install.*' | grep -oE '\S+$' | sort | uniq | sed 's/-[0-9].*//' | tr '\n' ' ')
 
-    # Filtrando pacotes conflitantes
-    for pacote in ${pacotes_restantes}; do
-        if [[ ! "${pacotes_conflitantes}" == *"${pacote}"* ]]; then
+    # Filtrando pacotes
+    for pacote in ${pacotes}; do
+        if [[ ! "${pacotes_inexistentes}" == *"${pacote}"* ]] && [[ ! "${pacotes_conflitantes}" == *"${pacote}"* ]]; then
             pacotes_validados="$pacotes_validados $pacote"
         fi
     done
