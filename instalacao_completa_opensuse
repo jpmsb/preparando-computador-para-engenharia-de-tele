@@ -1304,8 +1304,8 @@ mount $particao_raiz $destino
 pacotes_iniciais="libz1 libz1-x86-64-v3 zypper-needs-restarting systemd-lang systemd-container ca-certificates ca-certificates-mozilla curl gawk grep-lang sed-lang tar-lang xz-lang gzip procps-lang procps which systemd-presets-branding-openSUSE suse-module-tools suse-module-tools-scriptlets diffutils-lang man man-pages man-pages-posix man-pages-pt_BR tlp"
 
 comando_1="zypper refresh -f"
-comando_2="zypper -n --installroot $destino install -y -t product openSUSE"
-comando_3="zypper -n --installroot $destino install -y $pacotes_iniciais"
+comando_2="zypper -n --ignore-unknown --installroot $destino install -y -t product openSUSE"
+comando_3="zypper -n --ignore-unknown --installroot $destino install -y $pacotes_iniciais"
 comando_4="zypper -n --installroot $destino addlocale pt_BR"
 
 tentar "$comando_1 && $comando_2 && $comando_3 && $comando_4" $tentivas_maximas
@@ -1369,7 +1369,7 @@ keeppackages=0' > $destino/etc/zypp/repos.d/Debug_Packages.repo
 echo -e "\nInstalando padrões do sistema base.\n"
 
 comando_1="zypper -n --root $destino --gpg-auto-import-keys refresh -f"
-comando_2="zypper -n --root $destino install --download-in-advance -y -t pattern base enhanced_base minimal_base basesystem"
+comando_2="zypper -n --ignore-unknown --root $destino install --download-in-advance -y -t pattern base enhanced_base minimal_base basesystem"
 
 tentar "$comando_1 && $comando_2" $tentivas_maximas
 
@@ -1498,8 +1498,8 @@ valida_pacotes_visualizado "Validando os pacotes a serem instalados. Por favor, 
 
 comando_1="zypper -n --root $destino --gpg-auto-import-keys refresh -f"
 comando_2="zypper -n --root $destino dist-upgrade -y --download-in-advance --allow-vendor-change --no-recommends"
-comando_3="zypper -n --root $destino install -y --allow-vendor-change --download-in-advance $pacotes_validados"
-comando_4="zypper -n --root $destino install -y --allow-vendor-change --download-in-advance -t pattern apparmor fonts x11_yast x11"
+comando_3="zypper -n --ignore-unknown --root $destino install -y --allow-vendor-change --download-in-advance $pacotes_validados"
+comando_4="zypper -n --ignore-unknown --root $destino install -y --allow-vendor-change --download-in-advance -t pattern apparmor fonts x11_yast x11"
 
 tentar "$comando_1 ; $comando_2 && $comando_3 && $comando_4" $tentivas_maximas
 
@@ -1510,7 +1510,7 @@ wpa_supplicant_2_9_rpm=$(echo "$pesquisa" | grep -oE '>[^<]+<' | sed 's/[^>]*>\(
 wpa_supplicant_2_9_url="https://download.opensuse.org/distribution/leap/15.4/repo/oss/x86_64/$wpa_supplicant_2_9_rpm"
 
 comando_1="zypper -n --root $destino refresh -f"
-comando_2="zypper -n --root $destino install --oldpackage -y --allow-vendor-change $wpa_supplicant_2_9_url"
+comando_2="zypper -n --ignore-unknown --root $destino install --oldpackage -y --allow-vendor-change $wpa_supplicant_2_9_url"
 
 tentar "$comando_1 ; $comando_2" $tentivas_maximas
 zypper --root $destino addlock wpa_supplicant
@@ -1521,7 +1521,7 @@ comando_1="zypper -n --root $destino refresh -f"
 
 if [ -d /sys/firmware/efi ]; then
     echo -e "\nInstalando o GRUB em modo UEFI\n"
-    comando_2="zypper -n --root $destino install -y --download-in-advance efitools efivar grub2-x86_64-efi-extras"
+    comando_2="zypper -n --ignore-unknown --root $destino install -y --download-in-advance efitools efivar grub2-x86_64-efi-extras"
     tentar "$comando_1 ; $comando_2" $tentivas_maximas
 
     mount $particao_EFI $destino/boot/efi
@@ -1530,7 +1530,7 @@ if [ -d /sys/firmware/efi ]; then
     opensuse_secureboot=(chroot $destino /usr/sbin/shim-install --config-file=/boot/grub2/grub.cfg)
 else
     echo -e "\nInstalando o GRUB em modo BIOS\n"
-    comando_2="zypper -n --root $destino install -y --download-in-advance grub2-i386-pc-extras"
+    comando_2="zypper -n --ignore-unknown --root $destino install -y --download-in-advance grub2-i386-pc-extras"
     tentar "$comando_1 ; $comando_2" $tentivas_maximas
     chroot $destino /usr/sbin/grub2-install $dispositivo_boot
 fi
@@ -1571,7 +1571,7 @@ zypper --root $destino addlock package-update-indicator package-update-indicator
 if [[ $instalar_nvidia == "Sim" ]]; then
     echo -e "\nInstalando os drivers da NVIDIA\n"
     comando_1="zypper -n --root $destino refresh -f"
-    comando_2="zypper -n --root $destino install -y --download-in-advance --auto-agree-with-licenses nvidia-compute-G06 nvidia-compute-G06-32bit nvidia-compute-utils-G06 nvidia-driver-G06-kmp-default nvidia-drivers-G06 nvidia-gl-G06 nvidia-gl-G06-32bit nvidia-utils-G06 nvidia-video-G06 nvidia-video-G06-32bit"
+    comando_2="zypper -n --ignore-unknown --root $destino install -y --download-in-advance --auto-agree-with-licenses nvidia-compute-G06 nvidia-compute-G06-32bit nvidia-compute-utils-G06 nvidia-driver-G06-kmp-default nvidia-drivers-G06 nvidia-gl-G06 nvidia-gl-G06-32bit nvidia-utils-G06 nvidia-video-G06 nvidia-video-G06-32bit"
 
     tentar "$comando_1 ; $comando_2" $tentivas_maximas
 
@@ -1593,15 +1593,15 @@ if [[ "$laptop" == [sS] ]]; then
     fi
  
     comando_1="zypper -n --root $destino refresh -f"
-    comando_2="zypper -n --root $destino install -y --download-in-advance -t pattern laptop"
-    comando_3="zypper -n --root $destino install -y --download-in-advance touchegg $switcheroo_control tlpui"
+    comando_2="zypper -n --ignore-unknown --root $destino install -y --download-in-advance -t pattern laptop"
+    comando_3="zypper -n --ignore-unknown --root $destino install -y --download-in-advance touchegg $switcheroo_control tlpui"
 
     tentar "$comando_1 ; $comando_2 && $comando_3" $tentivas_maximas
 
     if [[ $instalar_nvidia == "Sim" ]]; then
         echo -e "\nInstalando o SUSE Prime e ajustando para não desligar o áudio do HDMI\n"
         comando_1="zypper -n --root $destino refresh -f"
-        comando_2="zypper -n --root $destino install -y --download-in-advance suse-prime suseprime-appindicator"
+        comando_2="zypper -n --ignore-unknown --root $destino install -y --download-in-advance suse-prime suseprime-appindicator"
 
         tentar "$comando_1 ; $comando_2" $tentivas_maximas
 
@@ -1775,7 +1775,7 @@ echo -e "\nAtualizando pacotes obsoletos\n"
 pacotes_orfaos="$(zypper -n --root $destino search -s --installed-only -t package | grep -E "\(.*\)" | awk '{print $3}' | grep -v "wpa_supplicant" | tr '\n' ' ')"
 
 comando_1="zypper -n --root $destino refresh -f"
-comando_2="zypper -n --root $destino install -y --download-in-advance --force --repo \"Open Source Software\" $pacotes_orfaos"
+comando_2="zypper -n --ignore-unknown --root $destino install -y --download-in-advance --force --repo \"Open Source Software\" $pacotes_orfaos"
 comando_3="zypper -n --root $destino dist-upgrade -y --download-in-advance --from \"Packman Repository\" --allow-vendor-change"
 comando_4="zypper -n --root $destino dist-upgrade -y --download-in-advance"
 
