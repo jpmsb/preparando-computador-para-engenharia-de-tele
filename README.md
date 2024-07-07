@@ -83,15 +83,20 @@ Você pode fechar a janela de boas-vindas. Para acessar o terminal, clique no "M
 
 ![Terminal Emulator](imagens/opensuse_tumbleweed_xfce_live_cd_terminal.png)
 
-Com o terminal aberto, instale o `gparted` com o seguinte comando:
+
+Com o terminal aberto, copie e cole (botão direito &rarr; "paste" ou Ctrl+Shift+V) o conteúdo abaixo para preparar o ambiente:
 
 ```bash
-sudo zypper install gparted
+sudo -n zypper install -y --force glibc-locale glibc-locale-base gparted; gtk-launch xfce4-terminal.desktop ; exit
 ```
 
-![](imagens/opensuse_tumbleweed_xfce_live_cd_instalar_gparted.png)
+![](imagens/opensuse_tumbleweed_xfce_live_cd_preparar_ambiente.png)
 
-Após a instalação, execute o `gparted` com o comando:
+Após o processo ser finalizado, uma nova janela de terminal vazia será aberta:
+
+![](imagens/opensuse_tumbleweed_xfce_live_cd_terminal_aberto_vazio.png)
+
+Execute o `gparted` com o comando:
 
 ```bash
 gparted
@@ -101,17 +106,19 @@ Com o `gparted` aberto, você poderá redimensionar as partições do seu armaze
 
 ![](imagens/opensuse_tumbleweed_xfce_live_cd_gparted.png)
 
-É preciso ter cautela ao redimensionar as partições, pois qualquer erro pode resultar na perda de dados. Caso você não tenha experiência com particionamento de discos, é recomendável pedir ajuda. Caso você esteja no começo do curso, **recomenda-se pelo menos 200 GB** para o sistema. **A instalação completa do sistema ocupa cerca de 10 GB.**
+É preciso ter cautela ao redimensionar as partições, pois qualquer erro pode resultar na perda de dados. Caso você não tenha experiência com particionamento de discos, é recomendável pedir ajuda. Se você estiver no começo do curso, **recomenda-se uma partição de pelo menos 200 GB**. **A instalação completa do sistema seguindo este guia ocupa cerca de 10 GB.**
 
 Com relação ao tipo de partição, você pode escolher entre EXT4 e BTRFS. O BTRFS é um sistema de arquivos mais moderno e com mais recursos, como snapshots, compressão de dados, entre outros. Entretanto, o EXT4 é mais estável e mais utilizado. **Caso você não tenha certeza, escolha o EXT4**.
 
-Se você possuir o Windows instalado, basta clicar com o botão direito em cima da partição do tipo NTFS e selecionar a opção "Rezise/Move". Em seguida, arraste a barra para redimensionar a partição. Após isso, clique no botão "-> Resize/Move" para aplicar as mudanças. Na imagem abaixo, é mostrado um exemplo da tela de redimensionamento de uma partição NTFS:
+Se você possuir o Windows instalado, basta clicar com o botão direito em cima da partição do tipo NTFS e selecionar a opção "Rezise/Move". Em seguida, arraste a barra para redimensionar a partição. Após isso, clique no botão "&rarr; Resize/Move" para aplicar as mudanças. Na imagem abaixo, é mostrado um exemplo da tela de redimensionamento de uma partição NTFS:
 
 ![](imagens/gparted_redimensionar_ntfs.png)
 
 Após realizadas as mudanças, você pode fechar o `gparted`. Voltando ao terminal, baixe o *script* de instalação com o comando:
 
 ### Instalação do openSUSE através do script
+
+Para baixar a rotina de instalação, utilize o comando abaixo no terminal:
 
 ```bash
 wget https://raw.githubusercontent.com/jpmsb/preparando-computador-para-engenharia-de-tele/main/instalacao_completa_opensuse -O instalacao_completa_opensuse
@@ -135,7 +142,7 @@ Abaixo, é explicado o significado de algumas perguntas:
  - **Nome do computador:**: não pode conter espaços e identificará o seu computador na rede. No exemplo da imagem acima, o nome do computador é `um-teste`;
  - **A instalação será realizada em um notebook? [S/N]**: caso você esteja instalando em um notebook, digite "S" e confirme com "Enter".
 
-Após confirmar que os dados estão corretos, digite "S" e confirme com "Enter". Basta esperar a rotina finalizar o processo de instalação, que leva cerca de 60 minutos. É preciso manter a conexão com a internet ativa durante todo o processo.
+Após confirmar que os dados estão corretos, digite "S" e confirme com "Enter". Basta esperar a rotina finalizar o processo de instalação, que leva cerca de 60 minutos e esse tempo pode variar de acordo com a velocidade de *download* da sua Internet, velocidade do seu processador, ou seja você utiliza HD ou SSD como armazenamento. É preciso manter a conexão com a internet ativa durante todo o processo.
 
 Ao final da rotina de instalação, caso veja a mensagem:
 
