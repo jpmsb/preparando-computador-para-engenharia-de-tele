@@ -8,6 +8,17 @@ else
     RODAR_PRIVILEGIADO="/usr/bin/sudo"
 fi
 
+verifica_usuario_logado(){
+    local usuario="$1"
+    sessoes="$(loginctl list-sessions --no-legend | grep "$usuario" | awk '{print $1}' | xargs -I {} loginctl show-session -p Type --value {} | grep -E 'x11|wayland' | sort | uniq)"
+
+    if [ ! -z "$sessoes" ]; then
+        return
+    fi
+
+    false
+}
+
 script_atualizador(){
     printf '%s\n'                                                                      \
     '#!/bin/bash'                                                                      \
@@ -83,14 +94,16 @@ script_atualizador(){
 if [ -z $1 ] && [ "$RODAR_PRIVILEGIADO" = "/usr/bin/pkexec" ]; then
     /usr/bin/xfce4-terminal --hide-menubar --hide-toolbar --zoom 1.5 --maximize -e "$0 0" -T "Instalar atualizações"
 
-    killall -q package-update-indicator -9
-    while ! pgrep -f "/usr/bin/package-update-indicator" > /dev/null; do
-        nohup /usr/bin/package-update-indicator > /dev/null 2>&1 &
-        sleep 0.1
-    done
 else
     script_atualizador > $script_temporario
     $RODAR_PRIVILEGIADO bash $script_temporario
     rm -f $script_temporario
 
+    if verifica_usuario_logado "$USER"; then
+        killall -q package-update-indicator -9
+        while ! pgrep -f "/usr/bin/package-update-indicator" > /dev/null; do
+            DISPLAY=:0 nohup /usr/bin/package-update-indicator > /dev/null 2>&1 &
+            sleep 0.1
+        done
+    fi
 fi
