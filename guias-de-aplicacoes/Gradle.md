@@ -6,6 +6,7 @@ O [Gradle](https://gradle.org/) é uma ferramenta de código aberto que fornece 
 
 - [Instalação](#instalação)
 - [Uso](#uso)
+    - [Ajustando a entrada padrão para receber dados do teclado](#ajustando-a-entrada-padrão-para-receber-dados-do-teclado)
 - [Desinstalação](#desinstalação)
 
 ## Instalação
@@ -56,6 +57,17 @@ O programa será compilado e executado, exibindo a seguinte saída no terminal:
 
 ![](imagens/gradle_project_init_run.png)
 
+### Ajustando a entrada padrão para receber dados do teclado
+
+Nas versões mais recentes do Gradle, é preciso ajustar a entrada padrão no arquivo `build.gradle` para que a aplicação possa receber dados do teclado. Para isso, adicione a seguinte linha ao arquivo:
+
+```groovy
+run {
+    standardInput = System.in
+}
+```
+
+Isso permitirá que classes como `Scanner` possam ser utilizadas para receber dados do teclado.
 
 ## Desinstalação
 
