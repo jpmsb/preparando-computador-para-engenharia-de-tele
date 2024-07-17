@@ -59,7 +59,7 @@ O programa será compilado e executado, exibindo a seguinte saída no terminal:
 
 ### Ajustando a entrada padrão para receber dados do teclado
 
-Nas versões mais recentes do Gradle, é preciso ajustar a entrada padrão no arquivo `build.gradle` para que a aplicação possa receber dados do teclado. Para isso, adicione a seguinte linha ao arquivo:
+Nas versões mais recentes do Gradle, é preciso ajustar a entrada padrão no arquivo `build.gradle` para que a aplicação possa receber dados do teclado. Para isso, adicione o seguinte conteúdo ao final do arquivo:
 
 ```groovy
 run {
