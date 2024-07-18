@@ -7,6 +7,7 @@ O [Gradle](https://gradle.org/) é uma ferramenta de código aberto que fornece 
 - [Instalação](#instalação)
 - [Uso](#uso)
     - [Ajustando a entrada padrão para receber dados do teclado](#ajustando-a-entrada-padrão-para-receber-dados-do-teclado)
+    - [Empacotamento da aplicação em um arquivo JAR](#empacotamento-da-aplicação-em-um-arquivo-jar)
 - [Desinstalação](#desinstalação)
 
 ## Instalação
@@ -68,6 +69,52 @@ run {
 ```
 
 Isso permitirá que classes como `Scanner` possam ser utilizadas para receber dados do teclado.
+
+### Empacotamento da aplicação em um arquivo JAR
+
+O formato `.jar` permite que você consiga executar a sua aplicação através de um único arquivo. Para construir o arquivo `.jar`, primeiramente, adicione as seguintes linhas ao final do seu arquivo `build.gradle`:
+
+```groovy
+jar {
+    manifest {
+        attributes(
+            'Main-Class': 'engtelecom.std.Principal'
+        )
+    }
+}
+```
+
+No exemplo acima, o atributo `engtelecom.std.Principal` deve ser substituído pelo nome da classe principal do seu projeto. Feito isso, para gerar o arquivo `.jar`, execute o comando:
+
+```bash
+./gradlew installDist
+```
+
+ou
+
+```bash
+gradle installDist
+```
+
+O arquivo `.jar` gerado será:
+
+```bash
+app/build/libs/app.jar
+```
+
+O nome de arquivo `app.jar` é o padrão do projeto. Caso queira que o arquivo seja gerado com outro nome, adicione a seguinte linha ao arquivo `settings.gradle`, localizado na raiz do seu projeto:
+
+```groovy
+rootProject.name = 'nome_desejado'
+```
+
+Substitua `nome_desejado` pelo nome desejado para o arquivo `.jar`.
+
+Para executar o arquivo `.jar` pela JVM, utilize o comando:
+
+```bash
+java -jar arquivo.jar
+```
 
 ## Desinstalação
 
