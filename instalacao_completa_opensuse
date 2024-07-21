@@ -25,7 +25,7 @@ tentar(){
         bash -c "$comando" && break
 
         echo -e "\nOcorreu um erro, tentando novamente em $espera segundos...\n"
-        tentativa_atual=$((tentativa_atual + 1))
+        local tentativa_atual=$((tentativa_atual + 1))
         sleep $espera
 
         if [ $tentativa_atual -eq $tentativas ]; then
@@ -38,7 +38,7 @@ tentar(){
             done
 
             if [[ "$tentar_novamente" == [sS] ]]; then
-                tentativa_atual=0
+                local tentativa_atual=0
                 unset tentar_novamente
             else
                 echo ""
@@ -57,43 +57,43 @@ tentar(){
 }
 
 tipo_particao(){
-    particao="$1"
+    local particao="$1"
     echo "$(/usr/sbin/blkid $particao | awk -F 'TYPE="' '{print $2}' | awk -F '"' '{print $1}')"
 }
 
 tamanho_particao(){
-    particao="$1"
+    local particao="$1"
     echo "$(/usr/bin/lsblk -b $particao --output SIZE | grep -oP '\d+' | awk '{print $1}')"
 }
 
 converte_para_bytes() {
-    entrada="$1"
-    numero=$(echo "$entrada" | sed 's/[KMG]\?$//')
-    unidade=$(echo "$entrada" | sed 's/[0-9]*\([KMG]\?\)$/\1/')
+    local entrada="$1"
+    local numero=$(echo "$entrada" | sed 's/[KMG]\?$//')
+    local unidade=$(echo "$entrada" | sed 's/[0-9]*\([KMG]\?\)$/\1/')
 
     case "$unidade" in
-        "K") fator=1024 ;;
-        "M") fator=$((1024 * 1024)) ;;
-        "G") fator=$((1024 * 1024 * 1024)) ;;
-        "T") fator=$((1024 * 1024 * 1024 * 1024)) ;;
-        *) fator=1 ;;
+        "K") local fator=1024 ;;
+        "M") local fator=$((1024 * 1024)) ;;
+        "G") local fator=$((1024 * 1024 * 1024)) ;;
+        "T") local fator=$((1024 * 1024 * 1024 * 1024)) ;;
+        *)   local fator=1 ;;
     esac
 
-    valor_em_bytes=$((numero * fator))
+    local valor_em_bytes=$((numero * fator))
     echo "$valor_em_bytes"
 }
 
 valida_particao(){
-    particao_informada="/dev/$1"
-    tipo_particao_desejado="$2"
-    capacidade_minima="$3"
-    capacidade_minima_em_bytes="$(converte_para_bytes $3)"
+    local particao_informada="/dev/$1"
+    local tipo_particao_desejado="$2"
+    local capacidade_minima="$3"
+    local capacidade_minima_em_bytes="$(converte_para_bytes $3)"
 
     if [[ -b "$particao_informada" ]]; then
-       particao_identificada="$(tipo_particao $particao_informada)"
+       local particao_identificada="$(tipo_particao $particao_informada)"
  
        if [[ "$tipo_particao_desejado" == *"$particao_identificada"* ]]; then
-           capacidade_particao="$(tamanho_particao $particao_informada)"
+           local capacidade_particao="$(tamanho_particao $particao_informada)"
   
            if [[ "$capacidade_particao" -lt "$capacidade_minima_em_bytes" ]]; then
                printf "$vermelho"
@@ -117,10 +117,10 @@ valida_particao(){
 }
 
 valida_dispositivo(){
-    dispositivo_informado="/dev/$1"
+    local dispositivo_informado="/dev/$1"
 
     if [[ -b "$dispositivo_informado" ]]; then
-        procura=$(ls -1 $dispositivo_informado* 2>/dev/null | wc -l)
+        local procura=$(ls -1 $dispositivo_informado* 2>/dev/null | wc -l)
         
         if [ $procura -gt 1 ]; then
             echo "$dispositivo_informado"
@@ -137,9 +137,9 @@ valida_dispositivo(){
 }
 
 mostra_preenchido(){
-    valor1="$1"
-    valor2="$2"
-    texto="$3"
+    local valor1="$1"
+    local valor2="$2"
+    local texto="$3"
 
     if [ ! -z "$valor1" ] && [ ! -z "$valor2" ]; then
         printf "$texto"
@@ -150,24 +150,25 @@ mostra_preenchido(){
 }
 
 valida_pacotes(){
-    pacotes="$1"
-    arquivo_log_zypper="$2"
-    argumentos_extra="$3"
+    local pacotes="$1"
+    local arquivo_log_zypper="$2"
+    local argumentos_extra="$3"
+    unset pacotes_validados
 
-    data_inicio=$(date +'%Y-%m-%d %H:%M:00')
+    local data_inicio=$(date +'%Y-%m-%d %H:%M:00')
     zypper -n --ignore-unknown $argumentos_extra install --dry-run -y $pacotes > /dev/null 2>&1
-    data_fim=$(date +'%Y-%m-%d %H:%M:59')
+    local data_fim=$(date +'%Y-%m-%d %H:%M:59')
 
     # Verificando pacotes que não existem no repositório
-    pacotes_inexistentes=$(cat "$arquivo_log_zypper" | awk -v start="$data_inicio" -v end="$data_fim" '$0 >= start && $0 <= end' | grep -oE '.*\[zypper:req\].*not found$' | cut -d ' ' -f 7 | sort | uniq | sed 's/-[0-9].*//' | tr '\n' ' ')
+    local pacotes_inexistentes=$(cat "$arquivo_log_zypper" | awk -v start="$data_inicio" -v end="$data_fim" '$0 >= start && $0 <= end' | grep -oE '.*\[zypper:req\].*not found$' | cut -d ' ' -f 7 | sort | uniq | sed 's/-[0-9].*//' | tr '\n' ' ')
 
     # Verificando pacotes que possuam algum conflito de dependência
-    pacotes_conflitantes=$(cat "$arquivo_log_zypper" | awk -v start="$data_inicio" -v end="$data_fim" '$0 >= start && $0 <= end' | grep -oE '.*do not install.*' | grep -oE '\S+$' | sort | uniq | sed 's/-[0-9].*//' | tr '\n' ' ')
+    local pacotes_conflitantes=$(cat "$arquivo_log_zypper" | awk -v start="$data_inicio" -v end="$data_fim" '$0 >= start && $0 <= end' | grep -oE '.*do not install.*' | grep -oE '\S+$' | sort | uniq | sed 's/-[0-9].*//' | tr '\n' ' ')
 
     # Filtrando pacotes
     for pacote in ${pacotes}; do
-        if [[ ! "${pacotes_inexistentes}" == *"${pacote}"* ]] && [[ ! "${pacotes_conflitantes}" == *"${pacote}"* ]]; then
-            pacotes_validados="$pacotes_validados $pacote"
+        if ! echo "${pacotes_inexistentes}" | grep -wq "${pacote}" && ! echo "${pacotes_conflitantes}" | grep -wq "${pacote}"; then
+            local pacotes_validados="$pacotes_validados $pacote"
         fi
     done
 
@@ -191,30 +192,29 @@ barra_rotativa() {
 }
 
 mostra_espera(){
-    texto="$1"
-    arquivo_sinalizador="$2"
+    local texto="$1"
+    local arquivo_sinalizador="$2"
 
     while [ -f "$arquivo_sinalizador" ]; do
-        barra_atual="$(barra_rotativa "$barra_atual")"
+        local barra_atual="$(barra_rotativa "$barra_atual")"
         echo -ne "$texto [$barra_atual]\r"
         sleep 0.1
     done
 
-    if [ ! -z "$barra_atual" ]; then echo -ne "\033[2Ki\r"; fi
+    if [ ! -z "$barra_atual" ]; then echo -ne "\033[2K\r"; fi
 }
 
 valida_pacotes_visualizado(){
-    texto_titulo="$1"
-    pacotes="$2"
-    arquivo_log_zypper="$3"
-    argumentos_extra="$4"
-    variavel_exportada="$5"
-    arquivo_sinalizador="$(mktemp)"
+    local texto_titulo="$1"
+    local pacotes="$2"
+    local arquivo_log_zypper="$3"
+    local argumentos_extra="$4"
+    local variavel_exportada="$5"
+    local arquivo_sinalizador="$(mktemp)"
 
     mostra_espera "$texto_titulo" "$arquivo_sinalizador" &
-    espera_pid=$!
-    pacotes_validados="$(valida_pacotes "$pacotes" "$arquivo_log_zypper" "$argumentos_extra")"
-    export $variavel_exportada="$pacotes_validados"
+    local espera_pid=$!
+    export $variavel_exportada="$(valida_pacotes "$pacotes" "$arquivo_log_zypper" "$argumentos_extra")"
     rm "$arquivo_sinalizador"
     wait $espera_pid
 }
@@ -314,7 +314,7 @@ arquivo_bootloader(){
 }
 
 ajustar_tema_icones_tela(){
-    diretorio_base="$1"
+    local diretorio_base="$1"
 
     #### Ajuste no ícone de rede ####
     sed -i '/<rect style="fill:currentColor;" class="ColorScheme-Text" x="5" y="6" width="2" height="3" rx="0" ry="0"\/>/d; /<rect style="fill:currentColor;" class="ColorScheme-Text" x="9" y="6" width="2" height="3" rx="0" ry="0"\/>/d' $diretorio_base/Tela-dark/16/devices/network-wired-activated.svg
@@ -1474,6 +1474,9 @@ comando_1="chroot $destino /usr/bin/rpm --import https://packages.microsoft.com/
 
 tentar "$comando_1" $tentivas_maximas
 
+### Atualizando a lista de pacotes com aceitação automática das chaves GPG ###
+zypper -n --root $destino --gpg-auto-import-keys refresh -f
+
 ### Atualizando lista de pacotes, aplicando atualizações,  ###
 ### instalando o restante do sistema base, instalando      ###
 ### componentes gráficos, a área de trabalho e ferramentas ###
@@ -1774,8 +1777,10 @@ zypper --root $destino removerepo "Open Source Software Leap"
 echo -e "\nAtualizando pacotes obsoletos\n"
 pacotes_orfaos="$(zypper -n --root $destino search -s --installed-only -t package | grep -E "\(.*\)" | awk '{print $3}' | grep -v "wpa_supplicant" | tr '\n' ' ')"
 
+valida_pacotes_visualizado "Validando os pacotes a serem instalados. Por favor, aguarde..." "$pacotes_orfaos" "$log_zypper" "" "pacotes_orfaos_validados"
+
 comando_1="zypper -n --root $destino refresh -f"
-comando_2="zypper -n --ignore-unknown --root $destino install -y --download-in-advance --force --repo \"Open Source Software\" $pacotes_orfaos"
+comando_2="zypper -n --ignore-unknown --root $destino install -y --download-in-advance --force --repo \"Open Source Software\" $pacotes_orfaos_validados"
 comando_3="zypper -n --root $destino dist-upgrade -y --download-in-advance --from \"Packman Repository\" --allow-vendor-change"
 comando_4="zypper -n --root $destino dist-upgrade -y --download-in-advance"
 
