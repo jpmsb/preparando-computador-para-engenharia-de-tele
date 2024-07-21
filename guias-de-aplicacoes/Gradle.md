@@ -8,6 +8,7 @@ O [Gradle](https://gradle.org/) é uma ferramenta de código aberto que fornece 
 - [Uso](#uso)
     - [Ajustando a entrada padrão para receber dados do teclado](#ajustando-a-entrada-padrão-para-receber-dados-do-teclado)
     - [Empacotamento da aplicação em um arquivo JAR](#empacotamento-da-aplicação-em-um-arquivo-jar)
+    - [Silenciar as mensagens de log no terminal](#silenciar-as-mensagens-de-log-no-terminal)
 - [Desinstalação](#desinstalação)
 
 ## Instalação
@@ -115,6 +116,17 @@ Para executar o arquivo `.jar` pela JVM, utilize o comando:
 ```bash
 java -jar arquivo.jar
 ```
+
+### Silenciar as mensagens de log no terminal
+
+Para silenciar as mensagens de log no terminal, adicione as seguintes linhas ao arquivo `gradle.properties`, localizado na raiz do seu projeto:
+
+```
+org.gradle.logging.level=quiet
+org.gradle.console=plain
+```
+
+Isso fará com que apenas o que você deseja exibir seja mostrado no terminal.
 
 ## Desinstalação
 
