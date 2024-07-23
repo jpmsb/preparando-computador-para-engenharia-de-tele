@@ -22,7 +22,7 @@ tentar(){
     local espera=5
 
     until [ $tentativa_atual -ge $tentativas ]; do
-        bash -c "$comando" && break
+        eval "$comando" && break
 
         echo -e "\nOcorreu um erro, tentando novamente em $espera segundos...\n"
         local tentativa_atual=$((tentativa_atual + 1))
