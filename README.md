@@ -235,6 +235,12 @@ Você **não** precisará executar o comando de atualização manualmente. Assim
 
 Como o openSUSE Tumbleweed é uma distribuição *rolling release*, é comum receber notificação de atualizações diariamente e até múltiplas vezes ao dia. Entretanto, você não precisa atualizar de imediado, podendo fazê-lo quando for mais conveniente, como, por exemplo, uma vez por semana, uma vez a cada duas semanas ou até mesmo até uma vez por mês.
 
+Ao tentar atualizar o sistema, caso ocorra o erro abaixo:
+
+![](imagens/opensuse_tumbleweed_atualizacao_erro.png)
+
+basta tentar novamente dentro de alguns dias. Isso ocorre por conta de alguns repositórios ainda não terem sincronizado. Nenhuma outra ação é necessária.
+
 ## Guias para instalação e uso de aplicações
 
 Abaixo estão listados guias onde será explicado como instalar algumas aplicações utilizadas ao longo do curso, além de ferramentas adicionais. O objetivo é descomplicar o processo de deixar essas ferramentas preparadas para uso.
