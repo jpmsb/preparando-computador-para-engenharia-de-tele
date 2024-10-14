@@ -1304,8 +1304,8 @@ mount $particao_raiz $destino
 pacotes_iniciais="libz1 libz1-x86-64-v3 zypper-needs-restarting systemd-lang systemd-container ca-certificates ca-certificates-mozilla curl gawk grep-lang sed-lang tar-lang xz-lang gzip procps-lang procps which systemd-presets-branding-openSUSE suse-module-tools suse-module-tools-scriptlets diffutils-lang man man-pages man-pages-posix man-pages-pt_BR tlp"
 
 comando_1="zypper refresh -f"
-comando_2="zypper -n --ignore-unknown --installroot $destino install -y -t product openSUSE"
-comando_3="zypper -n --ignore-unknown --installroot $destino install -y $pacotes_iniciais"
+comando_2="zypper -n --ignore-unknown --installroot $destino install -y --auto-agree-with-licenses -t product openSUSE"
+comando_3="zypper -n --ignore-unknown --installroot $destino install -y --auto-agree-with-licenses $pacotes_iniciais"
 comando_4="zypper -n --installroot $destino addlocale pt_BR"
 
 tentar "$comando_1 && $comando_2 && $comando_3 && $comando_4" $tentivas_maximas
@@ -1369,7 +1369,7 @@ keeppackages=0' > $destino/etc/zypp/repos.d/Debug_Packages.repo
 echo -e "\nInstalando padrões do sistema base.\n"
 
 comando_1="zypper -n --root $destino --gpg-auto-import-keys refresh -f"
-comando_2="zypper -n --ignore-unknown --root $destino install --download-in-advance -y -t pattern base enhanced_base minimal_base basesystem"
+comando_2="zypper -n --ignore-unknown --root $destino install --download-in-advance -y --auto-agree-with-licenses -t pattern base enhanced_base minimal_base basesystem"
 
 tentar "$comando_1 && $comando_2" $tentivas_maximas
 
@@ -1500,9 +1500,9 @@ pacotes="$pacotes_base $componentes_graficos $ambiente_de_trabalho $ferramentas_
 valida_pacotes_visualizado "Validando os pacotes a serem instalados. Por favor, aguarde..." "$pacotes" "$log_zypper" "--root $destino" "pacotes_validados"
 
 comando_1="zypper -n --root $destino --gpg-auto-import-keys refresh -f"
-comando_2="zypper -n --root $destino dist-upgrade -y --download-in-advance --allow-vendor-change --no-recommends"
-comando_3="zypper -n --ignore-unknown --root $destino install -y --allow-vendor-change --download-in-advance $pacotes_validados"
-comando_4="zypper -n --ignore-unknown --root $destino install -y --allow-vendor-change --download-in-advance -t pattern apparmor fonts x11_yast x11"
+comando_2="zypper -n --root $destino dist-upgrade -y --download-in-advance --allow-vendor-change --no-recommends --auto-agree-with-licenses"
+comando_3="zypper -n --ignore-unknown --root $destino install -y --allow-vendor-change --download-in-advance --auto-agree-with-licenses $pacotes_validados"
+comando_4="zypper -n --ignore-unknown --root $destino install -y --allow-vendor-change --download-in-advance --auto-agree-with-licenses -t pattern apparmor fonts x11_yast x11"
 
 tentar "$comando_1 ; $comando_2 && $comando_3 && $comando_4" $tentivas_maximas
 
