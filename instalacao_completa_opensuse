@@ -1528,7 +1528,7 @@ else
     chroot $destino /usr/sbin/grub2-install $dispositivo_boot
 fi
 
-sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT=""/GRUB_CMDLINE_LINUX_DEFAULT="quiet splash security=apparmor loglevel=3 nosimplefb=1"/' $destino/etc/default/grub
+sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT=/s/GRUB_CMDLINE_LINUX_DEFAULT=".*"/GRUB_CMDLINE_LINUX_DEFAULT="quiet splash security=apparmor loglevel=3 nosimplefb=1"/' $destino/etc/default/grub
 sed -i 's/.*GRUB_TERMINAL.*/GRUB_TERMINAL=gfxterm/' $destino/etc/default/grub
 sed -i 's/.*GRUB_GFXMODE.*/GRUB_GFXMODE=auto/' $destino/etc/default/grub
 echo "GRUB_DISABLE_OS_PROBER=\"false\"" >> $destino/etc/default/grub
