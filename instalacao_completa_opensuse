@@ -165,6 +165,18 @@ valida_pacotes(){
     # Verificando pacotes que possuam algum conflito de dependência
     local pacotes_conflitantes=$(cat "$arquivo_log_zypper" | awk -v start="$data_inicio" -v end="$data_fim" '$0 >= start && $0 <= end' | grep -oE '.*do not install.*' | grep -oE '\S+$' | sort | uniq | sed 's/-[0-9].*//' | tr '\n' ' ')
 
+    rm -f pacotes_pulados
+    if [ ! -z "$pacotes_inexistentes" ]; then
+        echo "Pacotes inexistentes:" > pacotes_pulados
+        echo "$pacotes_inexistentes" | tr ' ' '\n' >> pacotes_pulados
+        echo "" >> pacotes_pulados
+    fi
+
+    if [ ! -z "$pacotes_conflitantes" ]; then
+        echo "Pacotes conflitantes:" >> pacotes_pulados
+        echo "$pacotes_conflitantes" | tr ' ' '\n' >> pacotes_pulados
+    fi
+
     # Filtrando pacotes
     for pacote in ${pacotes}; do
         if ! echo "${pacotes_inexistentes}" | grep -wq "${pacote}" && ! echo "${pacotes_conflitantes}" | grep -wq "${pacote}"; then
