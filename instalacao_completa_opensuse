@@ -153,6 +153,7 @@ valida_pacotes(){
     local pacotes="$1"
     local arquivo_log_zypper="$2"
     local argumentos_extra="$3"
+    local arquivo_de_resultado="$4"
     unset pacotes_validados
 
     local data_inicio=$(date +'%Y-%m-%d %H:%M:00')
@@ -165,16 +166,18 @@ valida_pacotes(){
     # Verificando pacotes que possuam algum conflito de dependência
     local pacotes_conflitantes=$(cat "$arquivo_log_zypper" | awk -v start="$data_inicio" -v end="$data_fim" '$0 >= start && $0 <= end' | grep -oE '.*do not install.*' | grep -oE '\S+$' | sort | uniq | sed 's/-[0-9].*//' | tr '\n' ' ')
 
-    rm -f pacotes_pulados
-    if [ ! -z "$pacotes_inexistentes" ]; then
-        echo "Pacotes inexistentes:" > pacotes_pulados
-        echo "$pacotes_inexistentes" | tr ' ' '\n' >> pacotes_pulados
-        echo "" >> pacotes_pulados
-    fi
+    if [ ! -z "$arquivo_de_resultado" ]; then
+        rm -f "$arquivo_de_resultado"
+        if [ ! -z "$pacotes_inexistentes" ]; then
+            echo "Pacotes inexistentes:" > "$arquivo_de_resultado"
+            echo "$pacotes_inexistentes" | tr ' ' '\n' >> "$arquivo_de_resultado"
+            echo "" >> "$arquivo_de_resultado"
+        fi
 
-    if [ ! -z "$pacotes_conflitantes" ]; then
-        echo "Pacotes conflitantes:" >> pacotes_pulados
-        echo "$pacotes_conflitantes" | tr ' ' '\n' >> pacotes_pulados
+        if [ ! -z "$pacotes_conflitantes" ]; then
+            echo "Pacotes conflitantes:" >> "$arquivo_de_resultado"
+            echo "$pacotes_conflitantes" | tr ' ' '\n' >> "$arquivo_de_resultado"
+        fi
     fi
 
     # Filtrando pacotes
@@ -222,11 +225,12 @@ valida_pacotes_visualizado(){
     local arquivo_log_zypper="$3"
     local argumentos_extra="$4"
     local variavel_exportada="$5"
+    local arquivo_de_resultado="$6"
     local arquivo_sinalizador="$(mktemp)"
 
     mostra_espera "$texto_titulo" "$arquivo_sinalizador" &
     local espera_pid=$!
-    export $variavel_exportada="$(valida_pacotes "$pacotes" "$arquivo_log_zypper" "$argumentos_extra")"
+    export $variavel_exportada="$(valida_pacotes "$pacotes" "$arquivo_log_zypper" "$argumentos_extra" "$arquivo_de_resultado")"
     rm "$arquivo_sinalizador"
     wait $espera_pid
 }
@@ -1509,7 +1513,7 @@ ferramentas_extras="myspell-dictionaries myspell-en myspell-en_US myspell-lightp
 ambiente_de_trabalho="$ambiente_XFCE"
 pacotes="$pacotes_base $componentes_graficos $ambiente_de_trabalho $ferramentas_extras"
 
-valida_pacotes_visualizado "Validando os pacotes a serem instalados. Por favor, aguarde..." "$pacotes" "$log_zypper" "--root $destino" "pacotes_validados"
+valida_pacotes_visualizado "Validando os pacotes a serem instalados. Por favor, aguarde..." "$pacotes" "$log_zypper" "--root $destino" "pacotes_validados" "pacotes_pulados"
 
 comando_1="zypper -n --root $destino --gpg-auto-import-keys refresh -f"
 comando_2="zypper -n --root $destino dist-upgrade -y --download-in-advance --allow-vendor-change --no-recommends --auto-agree-with-licenses"
