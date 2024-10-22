@@ -8,13 +8,7 @@ export normal="\033[0m"
 versao=0
 urls="$(curl -sL https://gradle.org/releases/ | grep 'https://services.gradle.org/distributions/gradle-' | grep -v 'all' | awk '{print $4}' | cut -f 2 -d '=')"
 
-for url in $urls
-do
-    versao_atual="$(echo "$url" | grep -oP '(?<=gradle-)\d+\.\d+')"
-    if (( $(echo "$versao_atual > $versao" | bc -l) )); then
-        export versao=$versao_atual
-    fi
-done
+export versao=$(echo "$urls" | sort -V | tail -n 1 | grep -oP '(?<=gradle-)[0-9.]+(?=-bin\.zip)')
 
 if [ -d /opt/Gradle/gradle-$versao ]; then
     echo "A versão mais recente já está instalada."
