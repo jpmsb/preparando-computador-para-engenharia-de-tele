@@ -193,10 +193,10 @@ Após a instalação, reinicie o sistema. Você verá que a tela de login estar�
 
 ##### Instalação do KDE
 
-O KDE (chamado de Plasma) é outra interface que é muito popular e é mais customizável que o GNOME. Além disso, é mais familiar ao Windows. Para instalar o KDE, basta executar o comando:
+O KDE (chamado de Plasma) é outra interface que é muito popular e é mais customizável que o GNOME. Além disso, é mais familiar ao Windows. Para instalar o KDE Plasma, basta executar o comando:
 
 ```bash
-sudo zypper install -t pattern kde
+sudo zypper install -t pattern kde_plasma
 ```
 
 Após a instalação, reinicie o sistema. Você verá que a tela de login estará diferente. O gestor de login que é instalado nesse processo é o SDDM.
