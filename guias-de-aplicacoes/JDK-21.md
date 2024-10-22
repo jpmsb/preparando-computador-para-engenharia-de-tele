@@ -44,7 +44,7 @@ A saída é semelhante à abaixo:
 Para desinstalar o JDK 21 e demais pacotes instalados com o comando acima, execute o comando:
 
 ```bash
-sudo zypper remove -u java-21-openjdk
+sudo zypper remove -u java-21-openjdk java-21-openjdk-devel
 ```
 
 Para limpar a variável de ambiente `JAVA_HOME`, execute o comando:
