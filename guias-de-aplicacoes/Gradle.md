@@ -13,7 +13,7 @@ O [Gradle](https://gradle.org/) é uma ferramenta de código aberto que fornece 
 
 ## Instalação
 
-Para o facilitar o processo de instalação do Gradle, foi criado um *script* que realiza tal processo, obtendo a versão mais recente da ferramenta. A rotina pode ser chamada com o comando
+Para o facilitar o processo de instalação do Gradle, foi criado um *script* que realiza tal ação, obtendo a versão mais recente da ferramenta. A rotina pode ser chamada com o comando
 
 ```bash
 curl -sL https://github.com/jpmsb/preparando-computador-para-engenharia-de-tele/raw/main/scripts-auxiliares/instalar-gradle | bash
@@ -133,7 +133,7 @@ Isso fará com que apenas o que você deseja exibir seja mostrado no terminal.
 Para desinstalar o Gradle, execute o comando:
 
 ```bash
-sudo rm -r /opt/Gradle/gradle* /usr/local/bin/gradle
+sudo rm -r /opt/Gradle /usr/local/bin/gradle
 ```
 
 Caso o Java tenha sido instalado pela rotina deste guia, você pode consultar a documentação para desinstalar o JDK [aqui](JDK-21.md).
