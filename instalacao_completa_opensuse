@@ -209,10 +209,14 @@ barra_rotativa() {
 mostra_espera(){
     local texto="$1"
     local arquivo_sinalizador="$2"
+    local mensagem="$texto"
 
     while [ -f "$arquivo_sinalizador" ]; do
+        if [ -z "$texto" ]; then
+            mensagem="$(cat "$arquivo_sinalizador")"
+        fi
         local barra_atual="$(barra_rotativa "$barra_atual")"
-        echo -ne "$texto [$barra_atual]\r"
+        echo -ne "$mensagem [$barra_atual]\r"
         sleep 0.1
     done
 
@@ -233,6 +237,281 @@ valida_pacotes_visualizado(){
     export $variavel_exportada="$(valida_pacotes "$pacotes" "$arquivo_log_zypper" "$argumentos_extra" "$arquivo_de_resultado")"
     rm "$arquivo_sinalizador"
     wait $espera_pid
+}
+
+encontra_todos_pacotes(){
+    local comando_zypper=${1}
+    local pacotes=""
+
+    xml_string=$(eval "${comando_zypper}" 2>/dev/null)
+
+    pacotes=$(echo "$xml_string" | xmllint --recover --xpath "//to-install/solvable[not(@type='pattern') and not(@type='product')]/@name | \
+                                                              //to-install/solvable[not(@type='pattern') and not(@type='product')]/@edition | \
+                                                              //to-install/solvable[not(@type='pattern') and not(@type='product')]/@arch | \
+                                                              //to-install/solvable[not(@type='pattern') and not(@type='product')]/@repository | \
+                                                              //to-upgrade/solvable[not(@type='pattern') and not(@type='product')]/@name | \
+                                                              //to-upgrade/solvable[not(@type='pattern') and not(@type='product')]/@edition | \
+                                                              //to-upgrade/solvable[not(@type='pattern') and not(@type='product')]/@arch | \
+                                                              //to-upgrade/solvable[not(@type='pattern') and not(@type='product')]/@repository | \
+                                                              //to-change-arch/solvable[not(@type='pattern') and not(@type='product')]/@name | \
+                                                              //to-change-arch/solvable[not(@type='pattern') and not(@type='product')]/@edition | \
+                                                              //to-change-arch/solvable[not(@type='pattern') and not(@type='product')]/@arch | \
+                                                              //to-change-arch/solvable[not(@type='pattern') and not(@type='product')]/@repository" - 2>/dev/null | \
+                                           sed -e 's/name="/pacote:/g' -e 's/edition="/versao:/g' -e 's/arch="/arquitetura:/g' -e 's/repository="/repositorio:/g' -e 's/"//g' | \
+                                           awk '/pacote:/{p=$0} /versao:/{v=$0} /arquitetura:/{a=$0} /repositorio:/{print p "," v "," a "," $0}' | \
+                                           sed 's/pacote://g; s/versao://g; s/arquitetura://g; s/repositorio://g' | \
+                                           awk -F',' '{gsub(/^[ \t]+|[ \t]+$/, "", $1); gsub(/^[ \t]+|[ \t]+$/, "", $2); gsub(/^[ \t]+|[ \t]+$/, "", $3); gsub(/^[ \t]+|[ \t]+$/, "", $4); gsub(/^[ \t]+|[ \t]+$/, "", $5); printf "\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"\n", $1, $2, $3, $4, $1 "-" $2 "." $3 ".rpm"}')
+
+
+    if [ -n "$pacotes" ]; then
+        echo "$pacotes"
+    fi
+}
+
+exibir_progresso() {
+    local total=$1
+    local baixados_count=$2
+    local quantidade_paralelo=$3
+
+    local progresso=$((100 * baixados_count / total))
+    local restantes=$((total - baixados_count))
+
+    # Limpa e atualiza apenas a linha de progresso na saída
+    printf "\rProgresso: ${progresso}%% (${baixados_count} de ${total} pacotes baixados, restando ${restantes} pacotes e baixando $quantidade_paralelo em paralelo)"
+}
+
+comando_zypper_download(){
+    local item=${1}
+    local dir_cache=${2}
+    local args_extra=${3}
+
+    if [ ! -z "${dir_cache}" ]; then
+        local arg_pkg_cache_dir="--pkg-cache-dir ${dir_cache}"
+    fi
+
+    chroot --userspec=installer $destino /bin/bash -c "export HOME=/home/installer; export USER=installer; export LOGNAME=installer; export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin; zypper -q -n ${arg_pkg_cache_dir} ${dir_cache} download ${args_extra} ${item} &>/dev/null"
+}
+
+exibir_tabela(){
+    local nome_pacote=${1}
+    local versao_pacote=${2}
+    local arquitetura_pacote=${3}
+    local repositorio=${4}
+    local largura_coluna_nome=${5}
+    local largura_coluna_versao=${6}
+    local largura_coluna_arquitetura=${7}
+    local largura_coluna_repositorio=${8}
+    local largura_coluna_arquivo=${9}
+    local nivel=${10}
+    local titulo_nome="Nome do pacote"
+    local titulo_versao="Versão"
+    local titulo_arquitetura="Arquitetura"
+    local titulo_repositorio="Repositório"
+    local titulo_arquivo="Nome do arquivo"
+    local largura_col_dados=""
+    local largura_col_divisoria=""
+    local largura_col_titulo=""
+    local divisoria=()
+    local titulo=()
+    local conteudo=()
+
+    # Verificando se a largura da coluna é maior que o tamanho do cabeçalho
+    if [ ${largura_coluna_nome} -lt ${#titulo_nome} ]; then
+        largura_coluna_nome=${#titulo_nome}
+    fi
+
+    if [ ${largura_coluna_versao} -lt ${#titulo_versao} ]; then
+        largura_coluna_versao=${#titulo_versao}
+    fi
+
+    if [ ${largura_coluna_arquitetura} -lt ${#titulo_arquitetura} ]; then
+        largura_coluna_arquitetura=${#titulo_arquitetura}
+    fi
+
+    if [ ${largura_coluna_repositorio} -lt ${#titulo_repositorio} ]; then
+        largura_coluna_repositorio=${#titulo_repositorio}
+    fi
+
+    if [ ${largura_coluna_arquivo} -lt ${#titulo_arquivo} ]; then
+        largura_coluna_arquivo=${#titulo_arquivo}
+    fi
+
+    # Imprimindo no modelo
+    # | pacote         | versão | arquitetura | repositorio | nome do arquvio |
+    # |----------------|--------|-------------|-------------|-----------------|
+    # | Nome do pacote | Versão | Arquitetura | Repositório | Nome do arquivo | <= cabeçalho
+
+    # Níveis de exibição
+    # Nível 1: exibe somente o nome do pacote
+    # Nível 2: exibe o nome do pacote e a versão
+    # Nível 3: exibe o nome do pacote, a versão e a arquitetura
+    # Nível 4: exibe o nome do pacote, a versão, a arquitetura e o repositório
+    # Nível 5: exibe o nome do pacote, a versão, a arquitetura, o repositório e o nome do arquivo
+    if [ ${nivel} -gt 0 ]; then
+        largura_col_dados="| %-${largura_coluna_nome}s"
+        conteudo=( "${nome_pacote}" )
+
+        largura_col_divisoria="|-%-${largura_coluna_nome}s"
+        divisoria=( "$(printf '%*s' "${largura_coluna_nome}" '' | tr ' ' '-')" )
+
+        largura_col_titulo="| %-${largura_coluna_nome}s"
+        titulo=( "$(printf '%-*s' "${largura_coluna_nome}" "${titulo_nome}")" )
+    fi
+
+    if [ ${nivel} -gt 1 ]; then
+        largura_col_dados="$largura_col_dados | %-${largura_coluna_versao}s"
+        conteudo+=( "${versao_pacote}" )
+
+        largura_col_divisoria="$largura_col_divisoria-|-%-${largura_coluna_versao}s"
+        divisoria+=( "$(printf '%*s' "${largura_coluna_versao}" '' | tr ' ' '-')" )
+
+        largura_col_titulo="$largura_col_titulo | %-${largura_coluna_versao}s "
+        titulo+=( "$(printf '%-*s' "${largura_coluna_versao}" "${titulo_versao}")" )
+    fi
+
+    if [ ${nivel} -gt 2 ]; then
+        largura_col_dados="$largura_col_dados | %-${largura_coluna_arquitetura}s"
+        conteudo+=( "${arquitetura_pacote}" )
+
+        largura_col_divisoria="$largura_col_divisoria-|-%-${largura_coluna_arquitetura}s"
+        divisoria+=( "$(printf '%*s' "${largura_coluna_arquitetura}" '' | tr ' ' '-')" )
+
+        largura_col_titulo="$largura_col_titulo | %-${largura_coluna_arquitetura}s"
+        titulo+=( "$(printf '%-*s' "${largura_coluna_arquitetura}" "${titulo_arquitetura}")" )
+    fi
+
+    if [ ${nivel} -gt 3 ]; then
+        largura_col_dados="$largura_col_dados | %-${largura_coluna_repositorio}s"
+        conteudo+=( "${repositorio}" )
+
+        largura_col_divisoria="$largura_col_divisoria-|-%-${largura_coluna_repositorio}s"
+        divisoria+=( "$(printf '%*s' "${largura_coluna_repositorio}" '' | tr ' ' '-')" )
+
+        largura_col_titulo="$largura_col_titulo | %-${largura_coluna_repositorio}s "
+        titulo+=( "$(printf '%-*s' "${largura_coluna_repositorio}" "${titulo_repositorio}")" )
+    fi
+
+    if [ ${nivel} -gt 4 ]; then
+        largura_col_dados="$largura_col_dados | %-${largura_coluna_arquivo}s"
+        conteudo+=( "${nome_pacote}-${versao_pacote}.${arquitetura_pacote}.rpm" )
+
+        largura_col_divisoria="$largura_col_divisoria-|-%-${largura_coluna_arquivo}s"
+        divisoria+=( "$(printf '%*s' "${largura_coluna_arquivo}" '' | tr ' ' '-')" )
+
+        largura_col_titulo="$largura_col_titulo | %-${largura_coluna_arquivo}s"
+        titulo+=( "$(printf '%-*s' "${largura_coluna_arquivo}" "${titulo_arquivo}")" )
+    fi
+
+    largura_col_dados="$largura_col_dados |\n"
+    largura_col_divisoria="$largura_col_divisoria-|\n"
+    largura_col_titulo="$largura_col_titulo |\n"
+
+    # Linha de conteúdo
+    printf "\033[K"
+    printf "$largura_col_dados" "${conteudo[@]}"
+
+    # # Linha de separação
+    printf "\033[K"
+    printf "$largura_col_divisoria" "${divisoria[@]}"
+
+    # # Cabeçalho
+    printf "\033[K"
+    printf "$largura_col_titulo" "${titulo[@]}"
+}
+
+mostra_progresso_animado(){
+    local arquivo_sinalizador="${1}"
+    local texto=$(cat "$arquivo_sinalizador")
+
+    mostra_espera "$texto" "$arquivo_sinalizador"
+}
+
+baixar_paralelo() {
+    local pacotes=${1}
+    local dir_cache=${2}
+    local args_extra=${3}
+    local quantidade_pacotes=$(echo "${pacotes}" | wc -l)
+    local max_paralelo=$(nproc)
+    local limiar_aumento=$((quantidade_pacotes / 2))
+    local contagem=0
+    local limiar=0
+    local baixados=()
+
+    echo -e "\nBaixando pacotes...\n\n\n"
+
+    # Encontra os maiores tamanhos de strings
+    maior_tamanho_nome=$(echo "${pacotes}" | awk -F',' '{print $1}' | sed 's/"//g' | wc -L)
+    maior_tamanho_versao=$(echo "${pacotes}" | awk -F',' '{print $2}' | sed 's/"//g' | wc -L)
+    maior_tamanho_arquitetura=$(echo "${pacotes}" | awk -F',' '{print $3}' | sed 's/"//g' | wc -L)
+    maior_tamanho_repositorio=$(echo "${pacotes}" | awk -F',' '{print $4}' | sed 's/"//g' | wc -L)
+    maior_tamanho_nome_arquivo=$(echo "${pacotes}" | awk -F',' '{print $5}' | sed 's/"//g' | wc -L)
+
+    largura_min_tab5=$((maior_tamanho_nome + maior_tamanho_versao + maior_tamanho_arquitetura + maior_tamanho_repositorio + maior_tamanho_nome_arquivo + 20))
+    largura_min_tab4=$((maior_tamanho_nome + maior_tamanho_versao + maior_tamanho_arquitetura + maior_tamanho_repositorio + 17))
+    largura_min_tab3=$((maior_tamanho_nome + maior_tamanho_versao + arquitetura_pacote + 20))
+    largura_min_tab2=$((maior_tamanho_nome + maior_tamanho_versao + 7))
+    largura_min_tab1=$((maior_tamanho_nome + 5))
+
+    arquivo_sinalizador="$(mktemp /tmp/sinalizador.XXXXXX)"
+    mostra_progresso_animado "${arquivo_sinalizador}" &
+
+    while read item; do
+        # Divide o item em nome, versão, arquitetura e repositório,
+        # removendo as aspas duplas e espaços em branco
+        nome_pacote=$(echo "${item}" | awk -F',' '{print $1}' | sed 's/"//g')
+        versao_pacote=$(echo "${item}" | awk -F',' '{print $2}' | sed 's/"//g')
+        arquitetura_pacote=$(echo "${item}" | awk -F',' '{print $3}' | sed 's/"//g')
+        repositorio=$(echo "${item}" | awk -F',' '{print $4}' | sed 's/"//g')
+
+        # Inicia o download do pacote em segundo plano
+        comando_zypper_download "${nome_pacote}" "${dir_cache}" "${args_extra}" &
+
+        # Incrementa o contador de pacotes baixados
+        baixados+=("${nome_pacote} (${repositorio})")
+        contagem=$((contagem + 1))
+
+        # Volta duas linhas acima limpando a mesma
+        printf "\n\033[3A\033[K"
+
+        # Exibe o nome do pacote baixado com repositório
+        largura_terminal=$(tput cols)
+
+        if [ $largura_terminal -gt $largura_min_tab5 ]; then
+            nivel=5
+        elif [ $largura_terminal -gt $largura_min_tab4 ]; then
+            nivel=4
+        elif [ $largura_terminal -gt $largura_min_tab3 ]; then
+            nivel=3
+        elif [ $largura_terminal -gt $largura_min_tab2 ]; then
+            nivel=2
+        elif [ $largura_terminal -gt $largura_min_tab1 ]; then
+            nivel=1
+        else
+            nivel=0
+        fi
+
+        exibir_tabela "${nome_pacote}" "${versao_pacote}" "${arquitetura_pacote}" "${repositorio}" "${maior_tamanho_nome}" "${maior_tamanho_versao}" "${maior_tamanho_arquitetura}" "${maior_tamanho_repositorio}" "${maior_tamanho_nome_arquivo}" "${nivel}"
+
+        # Atualiza a linha de progresso na última linha
+        exibir_progresso "${quantidade_pacotes}" "${contagem}" "${max_paralelo}" > $arquivo_sinalizador
+
+        # Controle de paralelismo
+        if [ "$contagem" -eq $limiar_aumento ] && [ "$max_paralelo" -lt 8 ]; then
+            max_paralelo=$((max_paralelo * 2))
+        fi
+
+        limiar=$((limiar + 1))
+        if [ $limiar -ge $max_paralelo ]; then
+            wait -n
+            limiar=$((limiar - 1))
+        fi
+    done <<< "${pacotes}"
+
+    rm -f "$arquivo_sinalizador"
+    wait  # Aguarda a conclusão de todos os downloads
+
+    # Exibe a barra de progresso final em uma nova linha ao concluir
+    echo -e "\nBaixados ${contagem} pacotes.\n"
 }
 
 arquivo_bootloader(){
@@ -1006,6 +1285,9 @@ verde='\033[1;32m'
 magenta='\033[1;35m'
 vermelho='\033[1;31m'
 normal='\033[0m'
+contagem=0
+limiar=0
+baixados=()
 
 
 # Verifica se o comando zypper está presente
@@ -1343,6 +1625,9 @@ mkdir $destino/boot/efi
 ### Atualizando os certificados SSL ###
 chroot $destino /usr/sbin/update-ca-certificates
 
+### Ajustando o servidor de DNS ###
+echo "nameserver 8.8.8.8" > $destino/etc/resolv.conf
+
 ### Adicionando os repositórios principais ###
 echo -e "\nAdicionando repositórios principais.\n"
 
@@ -1385,11 +1670,25 @@ keeppackages=0' > $destino/etc/zypp/repos.d/Debug_Packages.repo
 
 ### Instalando o restante dos pacotes do sistema base ###
 echo -e "\nInstalando padrões do sistema base.\n"
+useradd --root $destino -u 1111 installer
+
+comando_zypper_install_dry_run="zypper -n --ignore-unknown --xmlout --root $destino install --dry-run -y --download-in-advance --auto-agree-with-licenses -t pattern base enhanced_base minimal_base basesystem"
+arquivo_todos_pacotes=$(mktemp /tmp/todos_pacotes.XXXXXX)
 
 comando_1="zypper -n --root $destino --gpg-auto-import-keys refresh -f"
-comando_2="zypper -n --ignore-unknown --root $destino install --download-in-advance -y --auto-agree-with-licenses -t pattern base enhanced_base minimal_base basesystem"
+comando_2="encontra_todos_pacotes \"$comando_zypper_install_dry_run\" > $arquivo_todos_pacotes"
+comando_3="baixar_paralelo \"\$(cat $arquivo_todos_pacotes)\""
+comando_4="zypper -n --ignore-unknown --root $destino install --download-in-advance -y --auto-agree-with-licenses -t pattern base enhanced_base minimal_base basesystem"
 
-tentar "$comando_1 && $comando_2" $tentivas_maximas
+tentar "$comando_1 && $comando_2 && $comando_3" $tentivas_maximas
+
+rm -rf $destino/var/cache/zypp/packages/
+mv $destino/home/installer/.cache/zypp/packages/ $destino/var/cache/zypp/ > /dev/null 2>&1
+chown -R root:root $destino/var/cache/zypp/
+
+tentar "$comando_4" $tentivas_maximas
+
+rm -f $arquivo_todos_pacotes
 
 ### Adicionando os repositórios extras ###
 echo -e "\nAdicionando repositórios extras.\n"
@@ -1484,9 +1783,6 @@ gpgkey=http://dl.google.com/linux/linux_signing_key.pub
 type=rpm-md
 keeppackages=0' > $destino/etc/zypp/repos.d/google-chrome.repo
 
-### Ajustando o servidor de DNS ###
-echo "nameserver 8.8.8.8" > $destino/etc/resolv.conf
-
 ### Importando a chave do repositório do Visual Studio Code ###
 comando_1="chroot $destino /usr/bin/rpm --import https://packages.microsoft.com/keys/microsoft.asc"
 
@@ -1517,12 +1813,28 @@ pacotes="$pacotes_base $componentes_graficos $ambiente_de_trabalho $ferramentas_
 
 valida_pacotes_visualizado "Validando os pacotes a serem instalados. Por favor, aguarde..." "$pacotes" "$log_zypper" "--root $destino" "pacotes_validados" "pacotes_pulados"
 
+comando_zypper_install_dry_run="zypper -n --ignore-unknown --xmlout --root $destino install --dry-run -y --allow-vendor-change --download-in-advance --auto-agree-with-licenses $pacotes_validados"
+arquivo_todos_pacotes=$(mktemp /tmp/todos_pacotes.XXXXXX)
+
 comando_1="zypper -n --root $destino --gpg-auto-import-keys refresh -f"
 comando_2="zypper -n --root $destino dist-upgrade -y --download-in-advance --allow-vendor-change --no-recommends --auto-agree-with-licenses"
-comando_3="zypper -n --ignore-unknown --root $destino install -y --allow-vendor-change --download-in-advance --auto-agree-with-licenses $pacotes_validados"
-comando_4="zypper -n --ignore-unknown --root $destino install -y --allow-vendor-change --download-in-advance --auto-agree-with-licenses -t pattern apparmor fonts x11_yast x11"
+comando_3="encontra_todos_pacotes \"$comando_zypper_install_dry_run\" > $arquivo_todos_pacotes"
+comando_4="baixar_paralelo \"\$(cat $arquivo_todos_pacotes)\""
+comando_5="zypper -n --ignore-unknown --root $destino install -y --allow-vendor-change --download-in-advance --auto-agree-with-licenses $pacotes_validados"
+comando_6="zypper -n --root $destino refresh -f -r \"Open_Source_Software\""
+comando_7="zypper -n --ignore-unknown --root $destino install -y --allow-vendor-change --download-in-advance --auto-agree-with-licenses -t pattern apparmor fonts x11_yast x11"
 
-tentar "$comando_1 ; $comando_2 && $comando_3 && $comando_4" $tentivas_maximas
+tentar "$comando_1 ; $comando_2 ; $comando_3 && $comando_4" $tentivas_maximas
+
+rm -rf $destino/var/cache/zypp/packages/
+mv $destino/home/installer/.cache/zypp/packages/ $destino/var/cache/zypp/
+chown -R root:root $destino/var/cache/zypp/
+rm -f $arquivo_todos_pacotes
+userdel --root $destino installer
+rm -rf $destino/home/installer
+
+tentar "$comando_5" $tentivas_maximas
+tentar "$comando_6 && $comando_7" $tentivas_maximas
 
 ### Garantia de compatibilidade com versões de criptografia antigas ###
 chroot $destino /usr/bin/update-crypto-policies --set LEGACY
