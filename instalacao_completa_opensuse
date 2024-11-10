@@ -439,12 +439,19 @@ baixar_paralelo() {
 
     echo -e "\nBaixando pacotes...\n\n\n"
 
+    # Separa cada coluna em um array
+    nomes_pacotes=( $(echo "${pacotes}" | awk -F',' '{print $1}' | sed 's/"//g') )
+    versoes=( $(echo "${pacotes}" | awk -F',' '{print $2}' | sed 's/"//g') )
+    arquiteturas=( $(echo "${pacotes}" | awk -F',' '{print $3}' | sed 's/"//g') )
+    repositorios=( $(echo "${pacotes}" | awk -F',' '{print $4}' | sed 's/"//g') )
+    nomes_arquivos=( $(echo "${pacotes}" | awk -F',' '{print $5}' | sed 's/"//g') )
+
     # Encontra os maiores tamanhos de strings
-    maior_tamanho_nome=$(echo "${pacotes}" | awk -F',' '{print $1}' | sed 's/"//g' | wc -L)
-    maior_tamanho_versao=$(echo "${pacotes}" | awk -F',' '{print $2}' | sed 's/"//g' | wc -L)
-    maior_tamanho_arquitetura=$(echo "${pacotes}" | awk -F',' '{print $3}' | sed 's/"//g' | wc -L)
-    maior_tamanho_repositorio=$(echo "${pacotes}" | awk -F',' '{print $4}' | sed 's/"//g' | wc -L)
-    maior_tamanho_nome_arquivo=$(echo "${pacotes}" | awk -F',' '{print $5}' | sed 's/"//g' | wc -L)
+    maior_tamanho_nome=$(printf '%s\n' "${nomes_pacotes[@]}" | wc -L)
+    maior_tamanho_versao=$(printf '%s\n' "${versoes[@]}" | wc -L)
+    maior_tamanho_arquitetura=$(printf '%s\n' "${arquiteturas[@]}" | wc -L)
+    maior_tamanho_repositorio=$(printf '%s\n' "${repositorios[@]}" | wc -L)
+    maior_tamanho_nome_arquivo=$(printf '%s\n' "${nomes_arquivos[@]}" | wc -L)
 
     largura_min_tab5=$((maior_tamanho_nome + maior_tamanho_versao + maior_tamanho_arquitetura + maior_tamanho_repositorio + maior_tamanho_nome_arquivo + 20))
     largura_min_tab4=$((maior_tamanho_nome + maior_tamanho_versao + maior_tamanho_arquitetura + maior_tamanho_repositorio + 17))
@@ -455,13 +462,12 @@ baixar_paralelo() {
     arquivo_sinalizador="$(mktemp /tmp/sinalizador.XXXXXX)"
     mostra_progresso_animado "${arquivo_sinalizador}" &
 
-    while read item; do
-        # Divide o item em nome, versão, arquitetura e repositório,
-        # removendo as aspas duplas e espaços em branco
-        nome_pacote=$(echo "${item}" | awk -F',' '{print $1}' | sed 's/"//g')
-        versao_pacote=$(echo "${item}" | awk -F',' '{print $2}' | sed 's/"//g')
-        arquitetura_pacote=$(echo "${item}" | awk -F',' '{print $3}' | sed 's/"//g')
-        repositorio=$(echo "${item}" | awk -F',' '{print $4}' | sed 's/"//g')
+    for ((i = 0; i < quantidade_pacotes; i++)); do
+        # Divide o item em nome, versão, arquitetura e repositório
+        nome_pacote=$(echo "${nomes_pacotes[$i]}")
+        versao_pacote=$(echo "${versoes[$i]}")
+        arquitetura_pacote=$(echo "${arquiteturas[$i]}")
+        repositorio=$(echo "${repositorios[$i]}")
 
         # Inicia o download do pacote em segundo plano
         comando_zypper_download "${nome_pacote}" "${dir_cache}" "${args_extra}" &
@@ -505,7 +511,7 @@ baixar_paralelo() {
             wait -n
             limiar=$((limiar - 1))
         fi
-    done <<< "${pacotes}"
+    done
 
     rm -f "$arquivo_sinalizador"
     wait  # Aguarda a conclusão de todos os downloads
@@ -1833,7 +1839,7 @@ rm -f $arquivo_todos_pacotes
 userdel --root $destino installer
 rm -rf $destino/home/installer
 
-tentar "$comando_5" $tentivas_maximas
+tentar "$comando_1 ; $comando_5" $tentivas_maximas
 tentar "$comando_6 && $comando_7" $tentivas_maximas
 
 ### Garantia de compatibilidade com versões de criptografia antigas ###
