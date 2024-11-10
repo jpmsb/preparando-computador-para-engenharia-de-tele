@@ -1672,13 +1672,13 @@ keeppackages=0' > $destino/etc/zypp/repos.d/Debug_Packages.repo
 echo -e "\nInstalando padrões do sistema base.\n"
 useradd --root $destino -u 1111 installer
 
-comando_zypper_install_dry_run="zypper -n --ignore-unknown --xmlout --root $destino install --dry-run -y --download-in-advance --auto-agree-with-licenses -t pattern base enhanced_base minimal_base basesystem"
+comando_zypper_install_dry_run="zypper -n --no-refresh --ignore-unknown --xmlout --root $destino install --dry-run -y --download-in-advance --auto-agree-with-licenses -t pattern base enhanced_base minimal_base basesystem"
 arquivo_todos_pacotes=$(mktemp /tmp/todos_pacotes.XXXXXX)
 
 comando_1="zypper -n --root $destino --gpg-auto-import-keys refresh -f"
 comando_2="encontra_todos_pacotes \"$comando_zypper_install_dry_run\" > $arquivo_todos_pacotes"
 comando_3="baixar_paralelo \"\$(cat $arquivo_todos_pacotes)\""
-comando_4="zypper -n --ignore-unknown --root $destino install --download-in-advance -y --auto-agree-with-licenses -t pattern base enhanced_base minimal_base basesystem"
+comando_4="zypper -n --no-refresh --ignore-unknown --root $destino install --download-in-advance -y --auto-agree-with-licenses -t pattern base enhanced_base minimal_base basesystem"
 
 tentar "$comando_1 && $comando_2 && $comando_3" $tentivas_maximas
 
@@ -1813,16 +1813,16 @@ pacotes="$pacotes_base $componentes_graficos $ambiente_de_trabalho $ferramentas_
 
 valida_pacotes_visualizado "Validando os pacotes a serem instalados. Por favor, aguarde..." "$pacotes" "$log_zypper" "--root $destino" "pacotes_validados" "pacotes_pulados"
 
-comando_zypper_install_dry_run="zypper -n --ignore-unknown --xmlout --root $destino install --dry-run -y --allow-vendor-change --download-in-advance --auto-agree-with-licenses $pacotes_validados"
+comando_zypper_install_dry_run="zypper -n --no-refresh --ignore-unknown --xmlout --root $destino install --dry-run -y --allow-vendor-change --download-in-advance --auto-agree-with-licenses $pacotes_validados"
 arquivo_todos_pacotes=$(mktemp /tmp/todos_pacotes.XXXXXX)
 
 comando_1="zypper -n --root $destino --gpg-auto-import-keys refresh -f"
-comando_2="zypper -n --root $destino dist-upgrade -y --download-in-advance --allow-vendor-change --no-recommends --auto-agree-with-licenses"
+comando_2="zypper -n --no-refresh --root $destino dist-upgrade -y --download-in-advance --allow-vendor-change --no-recommends --auto-agree-with-licenses"
 comando_3="encontra_todos_pacotes \"$comando_zypper_install_dry_run\" > $arquivo_todos_pacotes"
 comando_4="baixar_paralelo \"\$(cat $arquivo_todos_pacotes)\""
-comando_5="zypper -n --ignore-unknown --root $destino install -y --allow-vendor-change --download-in-advance --auto-agree-with-licenses $pacotes_validados"
+comando_5="zypper -n --no-refresh --ignore-unknown --root $destino install -y --allow-vendor-change --download-in-advance --auto-agree-with-licenses $pacotes_validados"
 comando_6="zypper -n --root $destino refresh -f -r \"Open_Source_Software\""
-comando_7="zypper -n --ignore-unknown --root $destino install -y --allow-vendor-change --download-in-advance --auto-agree-with-licenses -t pattern apparmor fonts x11_yast x11"
+comando_7="zypper -n --no-refresh --ignore-unknown --root $destino install -y --allow-vendor-change --download-in-advance --auto-agree-with-licenses -t pattern apparmor fonts x11_yast x11"
 
 tentar "$comando_1 ; $comando_2 ; $comando_3 && $comando_4" $tentivas_maximas
 
@@ -1844,7 +1844,7 @@ comando_1="zypper -n --root $destino refresh -f -r \"Open_Source_Software\""
 
 if [ -d /sys/firmware/efi ]; then
     echo -e "\nInstalando o GRUB em modo UEFI\n"
-    comando_2="zypper -n --ignore-unknown --root $destino install -y --download-in-advance efitools efivar grub2-x86_64-efi-extras"
+    comando_2="zypper -n --no-refresh --ignore-unknown --root $destino install -y --download-in-advance efitools efivar grub2-x86_64-efi-extras"
     tentar "$comando_1 ; $comando_2" $tentivas_maximas
 
     mount $particao_EFI $destino/boot/efi
@@ -1853,7 +1853,7 @@ if [ -d /sys/firmware/efi ]; then
     opensuse_secureboot=(chroot $destino /usr/sbin/shim-install --config-file=/boot/grub2/grub.cfg)
 else
     echo -e "\nInstalando o GRUB em modo BIOS\n"
-    comando_2="zypper -n --ignore-unknown --root $destino install -y --download-in-advance grub2-i386-pc-extras"
+    comando_2="zypper -n --no-refresh --ignore-unknown --root $destino install -y --download-in-advance grub2-i386-pc-extras"
     tentar "$comando_1 ; $comando_2" $tentivas_maximas
     chroot $destino /usr/sbin/grub2-install $dispositivo_boot
 fi
@@ -1899,15 +1899,15 @@ if [[ "$laptop" == [sS] ]]; then
     fi
  
     comando_1="zypper -n --root $destino refresh -f -r \"Open_Source_Software\""
-    comando_2="zypper -n --ignore-unknown --root $destino install -y --download-in-advance -t pattern laptop"
-    comando_3="zypper -n --ignore-unknown --root $destino install -y --download-in-advance touchegg $switcheroo_control tlpui"
+    comando_2="zypper -n --no-refresh --ignore-unknown --root $destino install -y --download-in-advance -t pattern laptop"
+    comando_3="zypper -n --no-refresh --ignore-unknown --root $destino install -y --download-in-advance touchegg $switcheroo_control tlpui"
 
     tentar "$comando_1 ; $comando_2 && $comando_3" $tentivas_maximas
 
     if [[ $instalar_nvidia == "Sim" ]]; then
         echo -e "\nInstalando o SUSE Prime e ajustando para não desligar o áudio do HDMI\n"
         comando_1="zypper -n --root $destino refresh -f -r \"Open_Source_Software\""
-        comando_2="zypper -n --ignore-unknown --root $destino install -y --download-in-advance suse-prime suseprime-appindicator"
+        comando_2="zypper -n --no-refresh --ignore-unknown --root $destino install -y --download-in-advance suse-prime suseprime-appindicator"
 
         tentar "$comando_1 ; $comando_2" $tentivas_maximas
 
@@ -2083,9 +2083,9 @@ pacotes_orfaos="$(zypper -n --root $destino search -s --installed-only -t packag
 valida_pacotes_visualizado "Validando os pacotes a serem instalados. Por favor, aguarde..." "$pacotes_orfaos" "$log_zypper" "" "pacotes_orfaos_validados"
 
 comando_1="zypper -n --root $destino refresh -f -r \"Open Source Software\" -r \"Packman Repository\""
-comando_2="zypper -n --ignore-unknown --root $destino install -y --download-in-advance --force --repo \"Open Source Software\" $pacotes_orfaos_validados"
-comando_3="zypper -n --root $destino dist-upgrade -y --download-in-advance --from \"Packman Repository\" --allow-vendor-change"
-comando_4="zypper -n --root $destino dist-upgrade -y --download-in-advance"
+comando_2="zypper -n --no-refresh --ignore-unknown --root $destino install -y --download-in-advance --force --repo \"Open Source Software\" $pacotes_orfaos_validados"
+comando_3="zypper -n --no-refresh --root $destino dist-upgrade -y --download-in-advance --from \"Packman Repository\" --allow-vendor-change"
+comando_4="zypper -n --no-refresh --root $destino dist-upgrade -y --download-in-advance"
 
 tentar "$comando_1 ; $comando_2 && $comando_3 && $comando_4" $tentivas_maximas
 
