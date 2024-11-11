@@ -20,6 +20,12 @@ Em seguida, inicialize o serviço do Docker:
 sudo systemctl start docker
 ```
 
+Caso queira que o serviço do Docker seja iniciado junto com o sistema operacional, execute:
+
+```bash
+sudo systemctl enable docker
+```
+
 Adicione o seu usuário ao grupo `docker` para que não seja necessário executar comandos com `sudo`:
 
 ```bash
@@ -32,12 +38,6 @@ Após o ajustes acima, você pode verificar se o Docker foi instalado corretamen
 
 ```bash
 docker ps -a
-```
-
-Caso queira que o serviço do Docker seja iniciado junto com o sistema, execute:
-
-```bash
-sudo systemctl enable docker
 ```
 
 **Observação**: Caso o serviço do Docker não seja habilitado para iniciar junto com o sistema, será necessário inicializá-lo manualmente sempre que o seu computador for reiniciado.
