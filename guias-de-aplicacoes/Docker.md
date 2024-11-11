@@ -8,6 +8,12 @@ Como o openSUSE Tumbleweed é uma distribuição de lançamento contínuo, a ver
 sudo zypper install docker docker-compose
 ```
 
+**Caso ocorra erro, atualize a lista de pacotes com o comando abaixo e execute o comando acima novamente**:
+
+```bash
+sudo zypper refresh -f
+```
+
 Em seguida, inicialize o serviço do Docker:
 
 ```bash
