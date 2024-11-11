@@ -437,7 +437,7 @@ baixar_paralelo() {
     local limiar=0
     local baixados=()
 
-    echo -e "\nBaixando pacotes...\n\n\n"
+    echo -e "\nBaixando ${quantidade_pacotes} pacotes...\n\n\n"
 
     # Separa cada coluna em um array
     nomes_pacotes=( $(echo "${pacotes}" | awk -F',' '{print $1}' | sed 's/"//g') )
@@ -462,19 +462,18 @@ baixar_paralelo() {
     arquivo_sinalizador="$(mktemp /tmp/sinalizador.XXXXXX)"
     mostra_progresso_animado "${arquivo_sinalizador}" &
 
-    for ((i = 0; i < quantidade_pacotes; i++)); do
+    for ((contagem = 0; contagem < quantidade_pacotes; contagem++)); do
         # Divide o item em nome, versão, arquitetura e repositório
-        nome_pacote=$(echo "${nomes_pacotes[$i]}")
-        versao_pacote=$(echo "${versoes[$i]}")
-        arquitetura_pacote=$(echo "${arquiteturas[$i]}")
-        repositorio=$(echo "${repositorios[$i]}")
+        nome_pacote=$(echo "${nomes_pacotes[$contagem]}")
+        versao_pacote=$(echo "${versoes[$contagem]}")
+        arquitetura_pacote=$(echo "${arquiteturas[$contagem]}")
+        repositorio=$(echo "${repositorios[$contagem]}")
 
         # Inicia o download do pacote em segundo plano
         comando_zypper_download "${nome_pacote}" "${dir_cache}" "${args_extra}" &
 
         # Incrementa o contador de pacotes baixados
         baixados+=("${nome_pacote} (${repositorio})")
-        contagem=$((contagem + 1))
 
         # Volta duas linhas acima limpando a mesma
         printf "\n\033[3A\033[K"
@@ -499,10 +498,10 @@ baixar_paralelo() {
         exibir_tabela "${nome_pacote}" "${versao_pacote}" "${arquitetura_pacote}" "${repositorio}" "${maior_tamanho_nome}" "${maior_tamanho_versao}" "${maior_tamanho_arquitetura}" "${maior_tamanho_repositorio}" "${maior_tamanho_nome_arquivo}" "${nivel}"
 
         # Atualiza a linha de progresso na última linha
-        exibir_progresso "${quantidade_pacotes}" "${contagem}" "${max_paralelo}" > $arquivo_sinalizador
+        exibir_progresso "${quantidade_pacotes}" "$((contagem+1))" "${max_paralelo}" > $arquivo_sinalizador
 
         # Controle de paralelismo
-        if [ "$contagem" -eq $limiar_aumento ] && [ "$max_paralelo" -lt 8 ]; then
+        if [ "$((contagem+1))" -eq $limiar_aumento ] && [ "$max_paralelo" -lt 8 ]; then
             max_paralelo=$((max_paralelo * 2))
         fi
 
@@ -517,7 +516,7 @@ baixar_paralelo() {
     wait  # Aguarda a conclusão de todos os downloads
 
     # Exibe a barra de progresso final em uma nova linha ao concluir
-    echo -e "\nBaixados ${contagem} pacotes.\n"
+    echo -e "\nBaixados $quantidade_pacotes pacotes.\n"
 }
 
 arquivo_bootloader(){
@@ -1607,14 +1606,15 @@ fi
 mount $particao_raiz $destino
 
 ### Instalação do sistema base ###
-pacotes_iniciais="libz1 libz1-x86-64-v3 zypper-needs-restarting systemd-lang systemd-container ca-certificates ca-certificates-mozilla curl gawk grep-lang sed-lang tar-lang xz-lang gzip procps-lang procps which systemd-presets-branding-openSUSE suse-module-tools suse-module-tools-scriptlets diffutils-lang man man-pages man-pages-posix man-pages-pt_BR tlp"
+pacotes_iniciais="libz1 libz1-x86-64-v3 zypper-needs-restarting systemd-lang systemd-container ca-certificates ca-certificates-mozilla curl gawk grep-lang sed-lang tar-lang xz-lang gzip procps-lang procps which systemd-presets-branding-openSUSE suse-module-tools suse-module-tools-scriptlets diffutils-lang man man-pages man-pages-posix man-pages-pt_BR tlp rpm-repos-openSUSE-Tumbleweed openSUSE-repos-Tumbleweed"
 
 comando_1="zypper refresh -f"
 comando_2="zypper -n --ignore-unknown --installroot $destino install -y --auto-agree-with-licenses -t product openSUSE"
 comando_3="zypper -n --ignore-unknown --installroot $destino install -y --auto-agree-with-licenses $pacotes_iniciais"
 comando_4="zypper -n --installroot $destino addlocale pt_BR"
+comando_5="zypper -n --installroot $destino modifyrepo --priority 80 --all"
 
-tentar "$comando_1 && $comando_2 && $comando_3 && $comando_4" $tentivas_maximas
+tentar "$comando_1 && $comando_2 && $comando_3 && $comando_4 && $comando_5" $tentivas_maximas
 
 ### Criação do arquivo de configuração do gestor de inicialização ###
 arquivo_bootloader > $destino/etc/sysconfig/bootloader
@@ -1633,46 +1633,6 @@ chroot $destino /usr/sbin/update-ca-certificates
 
 ### Ajustando o servidor de DNS ###
 echo "nameserver 8.8.8.8" > $destino/etc/resolv.conf
-
-### Adicionando os repositórios principais ###
-echo -e "\nAdicionando repositórios principais.\n"
-
-echo '[Open_Source_Software]
-name=Open Source Software
-enabled=1
-autorefresh=1
-baseurl=http://download.opensuse.org/tumbleweed/repo/oss/
-path=/
-type=rpm-md
-priority=80
-keeppackages=0' > $destino/etc/zypp/repos.d/Open_Source_Software.repo
-
-echo '[Non_Open_Source_Software]
-name=Non Open Source Software
-enabled=1
-autorefresh=1
-baseurl=http://download.opensuse.org/tumbleweed/repo/non-oss/
-path=/
-type=rpm-md
-priority=80
-keeppackages=0' > $destino/etc/zypp/repos.d/Non_Open_Source_Software.repo
-
-echo '[Update]
-name=Update
-enabled=1
-autorefresh=1
-baseurl=http://download.opensuse.org/update/tumbleweed/
-type=rpm-md
-priority=70
-keeppackages=0' > $destino/etc/zypp/repos.d/Update.repo
-
-echo '[Debug Packages]
-name=Debug Packages
-enabled=1
-autorefresh=0
-baseurl=http://download.opensuse.org/tumbleweed/repo/debug/
-path=/
-keeppackages=0' > $destino/etc/zypp/repos.d/Debug_Packages.repo
 
 ### Instalando o restante dos pacotes do sistema base ###
 echo -e "\nInstalando padrões do sistema base.\n"
@@ -1706,36 +1666,28 @@ autorefresh=1
 baseurl=http://download.opensuse.org/distribution/openSUSE-stable/repo/oss/
 path=/
 type=rpm-md
-priority=99
+priority=199
 keeppackages=0' > $destino/etc/zypp/repos.d/Open_Source_Software_Leap.repo
 
 echo "[Emulators]
 name=Emulators
-enabled=1
+enabled=0
 autorefresh=1
 baseurl=http://download.opensuse.org/repositories/Emulators/openSUSE_Tumbleweed/
 path=/
 type=rpm-md
-priority=60
+priority=100
 keeppackages=0" > $destino/etc/zypp/repos.d/Emulators.repo
 
 echo '[Multimedia_Proaudio]
 name=Multimedia Proaudio
 baseurl=http://download.opensuse.org/repositories/multimedia:/proaudio/openSUSE_Tumbleweed/
-enabled=1
+enabled=0
 type=rpm-md
 gpgcheck=1
+priority=100
 gpgkey=https://download.opensuse.org/repositories/multimedia:/proaudio/openSUSE_Tumbleweed/repodata/repomd.xml.key
 autorefresh=1' > $destino/etc/zypp/repos.d/Multimedia_Proaudio.repo
-
-echo '[OpenH.264]
-name=OpenH.264
-enabled=1
-autorefresh=1
-baseurl=http://codecs.opensuse.org/openh264/openSUSE_Tumbleweed/
-path=/
-type=rpm-md
-keeppackages=0' > $destino/etc/zypp/repos.d/OpenH.264.repo
 
 if [[ $instalar_nvidia = "Sim" ]]; then
     echo -e '[NVIDIA]\nname=NVIDIA\nenabled=1\nautorefresh=1\nbaseurl=http://download.nvidia.com/opensuse/tumbleweed\ntype=rpm-md\nkeeppackages=0' > $destino/etc/zypp/repos.d/NVIDIA.repo
@@ -1757,7 +1709,7 @@ enabled=1
 autorefresh=1
 baseurl=https://packages.microsoft.com/yumrepos/vscode
 type=rpm-md
-priority=99
+priority=100
 keeppackages=0' > $destino/etc/zypp/repos.d/vscode.repo
 
 echo '[X2go]
@@ -1766,7 +1718,7 @@ enabled=1
 autorefresh=1
 baseurl=http://download.opensuse.org/repositories/X11:/RemoteDesktop:/x2go/openSUSE_Tumbleweed
 type=rpm-md
-priority=99
+priority=100
 keeppackages=0' > $destino/etc/zypp/repos.d/X2Go.repo
 
 echo '[libdvdcss]
@@ -1776,7 +1728,7 @@ autorefresh=1
 baseurl=http://opensuse-guide.org/repo/openSUSE_Tumbleweed/
 path=/
 type=rpm-md
-priority=99
+priority=100
 keeppackages=0' > $destino/etc/zypp/repos.d/libdvdcss.repo
 
 echo '[google-chrome]
@@ -1827,7 +1779,7 @@ comando_2="zypper -n --no-refresh --root $destino dist-upgrade -y --download-in-
 comando_3="encontra_todos_pacotes \"$comando_zypper_install_dry_run\" > $arquivo_todos_pacotes"
 comando_4="baixar_paralelo \"\$(cat $arquivo_todos_pacotes)\""
 comando_5="zypper -n --no-refresh --ignore-unknown --root $destino install -y --allow-vendor-change --download-in-advance --auto-agree-with-licenses $pacotes_validados"
-comando_6="zypper -n --root $destino refresh -f -r \"Open_Source_Software\""
+comando_6="zypper -n --root $destino refresh -f -r \"repo-oss\""
 comando_7="zypper -n --no-refresh --ignore-unknown --root $destino install -y --allow-vendor-change --download-in-advance --auto-agree-with-licenses -t pattern apparmor fonts x11_yast x11"
 
 tentar "$comando_1 ; $comando_2 ; $comando_3 && $comando_4" $tentivas_maximas
@@ -1846,7 +1798,7 @@ tentar "$comando_6 && $comando_7" $tentivas_maximas
 chroot $destino /usr/bin/update-crypto-policies --set LEGACY
 
 ### Instalação do grub (UEFI ou BIOS) ###
-comando_1="zypper -n --root $destino refresh -f -r \"Open_Source_Software\""
+comando_1="zypper -n --root $destino refresh -f -r \"repo-oss\""
 
 if [ -d /sys/firmware/efi ]; then
     echo -e "\nInstalando o GRUB em modo UEFI\n"
@@ -1904,7 +1856,7 @@ if [[ "$laptop" == [sS] ]]; then
         switcheroo_control="switcheroo-control"
     fi
  
-    comando_1="zypper -n --root $destino refresh -f -r \"Open_Source_Software\""
+    comando_1="zypper -n --root $destino refresh -f -r \"repo-oss\""
     comando_2="zypper -n --no-refresh --ignore-unknown --root $destino install -y --download-in-advance -t pattern laptop"
     comando_3="zypper -n --no-refresh --ignore-unknown --root $destino install -y --download-in-advance touchegg $switcheroo_control tlpui"
 
@@ -1912,7 +1864,7 @@ if [[ "$laptop" == [sS] ]]; then
 
     if [[ $instalar_nvidia == "Sim" ]]; then
         echo -e "\nInstalando o SUSE Prime e ajustando para não desligar o áudio do HDMI\n"
-        comando_1="zypper -n --root $destino refresh -f -r \"Open_Source_Software\""
+        comando_1="zypper -n --root $destino refresh -f -r \"repo-oss\""
         comando_2="zypper -n --no-refresh --ignore-unknown --root $destino install -y --download-in-advance suse-prime suseprime-appindicator"
 
         tentar "$comando_1 ; $comando_2" $tentivas_maximas
@@ -2088,12 +2040,19 @@ pacotes_orfaos="$(zypper -n --root $destino search -s --installed-only -t packag
 
 valida_pacotes_visualizado "Validando os pacotes a serem instalados. Por favor, aguarde..." "$pacotes_orfaos" "$log_zypper" "" "pacotes_orfaos_validados"
 
-comando_1="zypper -n --root $destino refresh -f -r \"Open Source Software\" -r \"Packman Repository\""
-comando_2="zypper -n --no-refresh --ignore-unknown --root $destino install -y --download-in-advance --force --repo \"Open Source Software\" $pacotes_orfaos_validados"
+comando_1="zypper -n --root $destino refresh -f -r \"repo-oss\" -r \"Packman Repository\""
+comando_2="zypper -n --no-refresh --ignore-unknown --root $destino install -y --download-in-advance --force --repo \"repo-oss\" $pacotes_orfaos_validados"
 comando_3="zypper -n --no-refresh --root $destino dist-upgrade -y --download-in-advance --from \"Packman Repository\" --allow-vendor-change"
 comando_4="zypper -n --no-refresh --root $destino dist-upgrade -y --download-in-advance"
 
 tentar "$comando_1 ; $comando_2 && $comando_3 && $comando_4" $tentivas_maximas
+
+### Habilitando os reposótios Emulators e Multimedia Pro Audio ###
+echo -e "\nHabilitando os repositórios Emulators e Multimedia Pro Audio\n"
+zypper --root $destino modifyrepo --enable "Emulators"
+zypper --root $destino modifyrepo --enable "Multimedia Proaudio"
+
+zypper --root $destino --gpg-auto-import-keys refresh -f
 
 ### Ajustando para que o zypper não mude o fornecedor de pacotes por padrão ###
 echo -e "\nAjustando para que o zypper não mude o fornecedor de pacotes por padrão\n"
