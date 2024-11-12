@@ -2,16 +2,20 @@
 
 ## Instalação
 
-Como o openSUSE Tumbleweed é uma distribuição de lançamento contínuo, a versão do pacote do Docker presente nos repositórios oficiais costuma acompanhar a mais recente. Para instalar o Docker, juntamente com o Docker Compose, basta executar o comando:
+Como o openSUSE Tumbleweed é uma distribuição de lançamento contínuo, a versão do pacote do Docker presente nos repositórios oficiais costuma acompanhar a mais recente.
+
+Inicialmente, garanta que o sistema está atualizado. Para tal, utilize o comando abaixo:
+
+```bash
+atualizar-sistema
+```
+
+O comando acima abrirá uma janela de terminal, bastando seguir as instruções exibidas.
+
+Após o processo acima, para instalar o Docker, juntamente com o Docker Compose, execute o comando:
 
 ```bash
 sudo zypper install docker docker-compose
-```
-
-**Caso ocorra erro, atualize a lista de pacotes com o comando abaixo e execute o comando acima novamente**:
-
-```bash
-sudo zypper refresh -f
 ```
 
 Em seguida, inicialize o serviço do Docker:
