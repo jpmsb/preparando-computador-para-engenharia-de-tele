@@ -1612,7 +1612,7 @@ comando_1="zypper refresh -f"
 comando_2="zypper -n --ignore-unknown --installroot $destino install -y --auto-agree-with-licenses -t product openSUSE"
 comando_3="zypper -n --ignore-unknown --installroot $destino install -y --auto-agree-with-licenses $pacotes_iniciais"
 comando_4="zypper -n --installroot $destino addlocale pt_BR"
-comando_5="zypper -n --installroot $destino modifyrepo --priority 80 --all"
+comando_5="zypper -n --root $destino modifyrepo --priority 80 --all"
 
 tentar "$comando_1 && $comando_2 && $comando_3 && $comando_4 && $comando_5" $tentivas_maximas
 
