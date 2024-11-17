@@ -1997,7 +1997,7 @@ echo "Section \"InputClass\"
         Option \"XkbOptions\" \"terminate:ctrl_alt_bksp\"
 EndSection" > $destino/etc/X11/xorg.conf.d/00-keyboard.conf
 
-echo "KEYMAP=br-abnt2
+echo "KEYMAP=br
 FONT=ter-v22b
 FONT_MAP=
 FONT_UNIMAP=" > $destino/etc/vconsole.conf
