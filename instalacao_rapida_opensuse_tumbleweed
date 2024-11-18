@@ -1,0 +1,668 @@
+#!/bin/bash
+
+export LC_ALL=C.UTF-8
+
+### Funções auxiliares ###
+desmontar_tudo(){
+    local destino=$1
+
+    ### Desmontando diretórios ###
+    umount $destino/sys/firmware/efi/efivars
+    umount $destino/boot/efi
+    umount $destino/dev
+    umount $destino/proc
+    umount $destino/sys
+    umount $destino
+}
+
+tentar(){
+    local comando="$1"
+    local tentativas=$2
+    local tentativa_atual=0
+    local espera=5
+
+    until [ $tentativa_atual -ge $tentativas ]; do
+        eval "$comando" && break
+
+        echo -e "\nOcorreu um erro, tentando novamente em $espera segundos...\n"
+        local tentativa_atual=$((tentativa_atual + 1))
+        sleep $espera
+
+        if [ $tentativa_atual -eq $tentativas ]; then
+            echo -e "\nApós $tentativas tentativas, o comando de instalação finalizou com erro."
+            echo "Verifique se você está conectado a Internet e se há espaço suficiente na partição onde o sistema será instalado."
+
+            echo ""
+            while [[ "$tentar_novamente" != [sSnN] ]]; do
+                read -p "Você deseja tentar repetir o passo que falhou? [S/N] " tentar_novamente
+            done
+
+            if [[ "$tentar_novamente" == [sS] ]]; then
+                local tentativa_atual=0
+                unset tentar_novamente
+            else
+                echo ""
+                echo "╔══════════════════════════════════════════════════════════════════════════════════════════╗"
+                echo "║                                                                                          ║" 
+                echo "║ Você pode tentar executar esse script novamente para reiniciar o processo de instalação. ║"
+                echo "║                                                                                          ║" 
+                echo "╚══════════════════════════════════════════════════════════════════════════════════════════╝"
+                echo ""
+                echo "Atenção: é preciso limpar a partição \"$particao_raiz\" afim de evitar conflitos."
+                echo ""
+                exit 1
+            fi
+        fi
+    done
+}
+
+tipo_particao(){
+    local particao="$1"
+    echo "$(/usr/sbin/blkid $particao | awk -F 'TYPE="' '{print $2}' | awk -F '"' '{print $1}')"
+}
+
+tamanho_particao(){
+    local particao="$1"
+    echo "$(/usr/bin/lsblk -b $particao --output SIZE | grep -oP '\d+' | awk '{print $1}')"
+}
+
+converte_para_bytes() {
+    local entrada="$1"
+    local numero=$(echo "$entrada" | sed 's/[KMG]\?$//')
+    local unidade=$(echo "$entrada" | sed 's/[0-9]*\([KMG]\?\)$/\1/')
+
+    case "$unidade" in
+        "K") local fator=1024 ;;
+        "M") local fator=$((1024 * 1024)) ;;
+        "G") local fator=$((1024 * 1024 * 1024)) ;;
+        "T") local fator=$((1024 * 1024 * 1024 * 1024)) ;;
+        *)   local fator=1 ;;
+    esac
+
+    local valor_em_bytes=$((numero * fator))
+    echo "$valor_em_bytes"
+}
+
+valida_particao(){
+    local particao_informada="/dev/$1"
+    local tipo_particao_desejado="$2"
+    local capacidade_minima="$3"
+    local capacidade_minima_em_bytes="$(converte_para_bytes $3)"
+
+    if [[ -b "$particao_informada" ]]; then
+       local particao_identificada="$(tipo_particao $particao_informada)"
+ 
+       if [[ "$tipo_particao_desejado" == *"$particao_identificada"* ]]; then
+           local capacidade_particao="$(tamanho_particao $particao_informada)"
+  
+           if [[ "$capacidade_particao" -lt "$capacidade_minima_em_bytes" ]]; then
+               printf "$vermelho"
+               printf "\nA partição informada possui capacidade menor do que ${capacidade_minima}B.\n"
+               printf "Por favor, informe uma partição com pelo menos $magenta${capacidade_minima}B$normal$vermelho de capacidade.\n"
+               printf "$normal"
+           else
+               echo "$particao_informada"
+           fi
+       else
+           printf "$vermelho"
+           printf "\nA partição informada não está formatada como ${tipo_particao_desejado// / ou }.\n"
+           printf "Por favor, informe uma partição válida ou formate-a para que fique de acordo.\n"
+           printf "$normal"
+       fi
+    elif [ ! -z "$particao_informada" ]; then
+        printf "$vermelho"
+        printf "\nA partição informada não existe. Por favor, informe uma partição válida.\n"
+        printf "$normal"
+    fi
+}
+
+valida_dispositivo(){
+    local dispositivo_informado="/dev/$1"
+
+    if [[ -b "$dispositivo_informado" ]]; then
+        local procura=$(ls -1 $dispositivo_informado* 2>/dev/null | wc -l)
+        
+        if [ $procura -gt 1 ]; then
+            echo "$dispositivo_informado"
+        else
+            printf "$vermelho"
+	    echo "\nO dispositivo informado é uma partição. Por favor, informe o dispositivo que contém a partição.\n"
+            printf "$normal"
+	fi
+    else
+        printf "$vermelho"
+        printf "\nO dispositivo informado não existe. Por favor, informe um dispositivo válido.\n"
+        printf "$normal"
+    fi
+}
+
+mostra_preenchido(){
+    local valor1="$1"
+    local valor2="$2"
+    local texto="$3"
+
+    if [ ! -z "$valor1" ] && [ ! -z "$valor2" ]; then
+        printf "$texto"
+        printf "$verde"
+        printf "$valor1"
+        printf "$normal\n"
+    fi
+}
+
+ajuda(){
+    echo -e "Seu comando não possui todos os argumentos necessários. Veja o uso e exemplo abaixo:\n"
+    echo -e "Uso:\n"
+    echo "    ./$0 \"partição onde o sistema será instalado\" \"partição EFI\" \"nome de usuário\" \"seu nome completo\""
+    echo -e "\nEXEMPLO:\n"
+    echo "    ./$0 /mnt /dev/sda1 joao \"João Pedro\""
+    echo
+}
+
+
+### Variáveis preparatórias ###
+destino=/mnt
+log_zypper="/var/log/zypper.log"
+tentivas_maximas=5
+verde='\033[1;32m'
+magenta='\033[1;35m'
+vermelho='\033[1;31m'
+normal='\033[0m'
+contagem=0
+limiar=0
+baixados=()
+
+
+# Verifica se o comando zypper está presente
+if ! command -v "zypper" &> /dev/null; then
+    printf "$vermelho"
+    echo -e "\n O comando \"zypper\" não foi encontrado. Este script foi feito para ser executado em sistemas openSUSE.$normal\n"
+    printf "$verde"
+    echo -e " No link abaixo, pode baixar um ISO Live CD do openSUSE Tumbleweed:"
+    echo -e "     https://download.opensuse.org/tumbleweed/iso/openSUSE-Tumbleweed-XFCE-Live-x86_64-Current.iso\n"
+    echo -e " Após baixar o ISO, grave-o em um pendrive e dê boot por ele. Em seguida, abra um terminal execute este script.\n"
+    printf "$normal"
+    exit 1
+fi
+
+# Verifica se o usuário é o root
+if [ "$EUID" -ne 0 ]; then
+    printf "$vermelho"
+    echo -e "\n Este script precisa ser executado como root.\n"
+    printf "$verde"
+    echo -e " Para tal, utilize o comando \"sudo $0\" ou"
+    echo -e " execute-o como usuário root, usando os comandos:\n"
+    echo -e " \"sudo su\" e em seguida \"$0\".\n"
+    printf "$normal"
+    exit 1
+fi
+
+
+### Mensagem de boas vindas ###
+echo -e "\nOlá!! Este é o script de instalação rápida do openSUSE Tumbleweed! Nesse tipo de instalação, uma raiz já pré-configurada será baixada e extraída para a partição informada. Isso acelera o processo de instalação e configuração do sistema operacional. Além disso, será realizada a instalação de pacotes específicos para o seu computador.\n"
+
+echo -e "\nNo mais, aproveite!!\n"
+
+particao_raiz_informada=$1
+
+## UEFI ou BIOS
+if [ -d /sys/firmware/efi ]; then
+    particao_EFI_informada=$2
+else
+    dispositivo_boot_informado=$2
+fi
+
+senha_root=$3
+usuario=$4
+senha=$5
+nome_completo=$6
+nome_computador=$7
+laptop=$8
+
+
+### Identificação da CPUs presentes ###
+cpu_info=$(grep -o -m 1 'vendor_id.*' /proc/cpuinfo | cut -d ':' -f 2 | tr -d '[:space:]')
+
+if [ "$cpu_info" == "GenuineIntel" ]; then
+    iGPU="intel"
+    pacotes_intel_cpu="ucode-intel thermald thermal-monitor"
+elif [ "$cpu_info" == "AuthenticAMD" ]; then
+    iGPU="amd"
+    pacotes_amd_cpu="ucode-amd"
+fi
+
+### Identificação das GPUs presentes ###
+gpu_info=$(lspci | grep -E "VGA|3D controller")
+num_gpus=$(echo "$gpu_info" | wc -l)
+
+if echo "$gpu_info" | grep -qi 'Intel'; then
+    pacotes_intel_gpu="intel-gpu-tools intel-media-driver intel-hybrid-driver intel-vaapi-driver"
+fi
+
+if echo "$gpu_info" | grep -qi 'AMD'; then
+    pacotes_amd_gpu="radeontop radeontop-lang libvulkan_radeon libvdpau_radeonsi"
+fi
+
+if echo "$gpu_info" | grep -qi 'NVIDIA'; then
+    # Nesse caso, os pacotes vêm de um repositório
+    # próprio que será adicionado adiante
+    instalar_nvidia="Sim"
+fi
+
+
+### Interação com o usuário para coletar os dados iniciais ###
+# ajuda
+
+echo "════════════════════════════════════════════════════════"
+
+while [[ -z $particao_raiz ]]; do
+    if [ -z "$particao_raiz_informada" ]; then
+        read -p "Partição onde o sistema será instalado [ex.: sda2]: " particao_raiz_informada
+    else
+        particao_raiz_informada=$(basename $particao_raiz_informada)
+        particao_validada="$(valida_particao $particao_raiz_informada "ext4 btrfs" 10G)"
+
+        if [[ "/dev/$particao_raiz_informada" == "$particao_validada" ]]; then
+            particao_raiz="$particao_validada"
+
+            if [ -z $ja_rodou ]; then
+                mostra_preenchido "$particao_raiz" "$1" "Partição onde o sistema será instalado: "
+	    fi
+            unset ja_rodou
+        elif [ ! -z "$particao_raiz_informada" ]; then
+            printf "$particao_validada\n"
+            unset particao_raiz_informada
+            ja_rodou="0"
+        fi
+    fi
+done
+
+
+## UEFI ou BIOS
+if [ -d /sys/firmware/efi ]; then
+    while [[ -z $particao_EFI ]]; do
+        if [ -z "$particao_EFI_informada" ]; then
+            read -p "Partição de inicialização EFI [ex.: sda1]: " particao_EFI_informada
+        else
+            particao_EFI_informada=$(basename $particao_EFI_informada)
+            particao_validada="$(valida_particao $particao_EFI_informada "fat fat32 vfat fat16" 100M)"
+    
+            if [[ "/dev/$particao_EFI_informada" == "$particao_validada" ]]; then
+                particao_EFI="$particao_validada"
+   
+                if [ -z $ja_rodou ]; then
+                    mostra_preenchido "$particao_EFI" "$2" "Partição de inicialização EFI: "
+                fi
+                unset ja_rodou
+            elif [ ! -z "$particao_EFI_informada" ]; then
+                printf "$particao_validada\n"
+                unset particao_EFI_informada
+                ja_rodou="0"
+            fi
+        fi
+    done
+else
+    while [[ -z $dispositivo_boot ]]; do
+        if [ -z "$dispositivo_boot_informado" ]; then 
+            read -p "Dispositivo de inicialização [ex.: sda]: " dispositivo_boot_informado
+        else
+            dispositivo_boot_informado=$(basename $dispositivo_boot_informado)
+            dispositivo_boot_validado="$(valida_dispositivo $dispositivo_boot_informado)"
+    
+            if [[ "/dev/$dispositivo_boot_informado" == "$dispositivo_boot_validado" ]]; then 
+                dispositivo_boot="$dispositivo_boot_validado"
+   
+                if [ -z $ja_rodou ]; then 
+                    mostra_preenchido "$dispositivo_boot" "$2" "Dispositivo de inicialização: "
+                fi   
+                unset ja_rodou
+            elif [ ! -z "$dispositivo_boot_informado" ]; then 
+                printf "$dispositivo_boot_validado"
+                unset dispositivo_boot_informado
+                ja_rodou="0"
+            fi   
+        fi   
+    done
+fi
+
+
+if [ -z "$senha_root" ]; then
+    echo ""
+    echo "╔═══════════════════════════════════════════════╗"
+    echo "║                                               ║"
+    echo "║ Definição de senha para o superusuário (root) ║"
+    echo "║                                               ║"
+    echo "╚═══════════════════════════════════════════════╝"
+
+    printf "\n$magenta Por favor, escolha uma senha segura, pois este \n"
+    printf " usuário pode realizar qualquer ação no sistema!! $normal\n\n"
+
+    while [[ "$senha_root" != "$senha_root_redigitada" ]] || [[ -z "$senha_root" ]]
+    do
+        read -sp "Senha para o superusuário root (ficará oculta enquanto digitar): " senha_root
+        echo
+        read -sp "Confirme a senha: " senha_root_redigitada
+        echo
+
+        if [ "$senha_root" != "$senha_root_redigitada" ]; then
+            echo -e "\nAs senhas digitadas são diferentes! Tente novamente.\n"
+        fi
+    done
+else
+    printf "\n$verde"
+    printf "Senha para o usuário root: Já definida!$normal\n"
+fi
+
+echo -e "\n### Criação do seu usuário ###"
+
+if [ -z "$usuario" ]; then
+    read -p "Nome de usuário a ser criado: [ex.: joao]: " usuario
+else
+    printf "Nome de usuário a ser criado: [ex.: joao]: "
+    printf "$verde"
+    printf "$usuario"
+    printf "$normal\n"
+fi
+
+if [ -z "$senha" ]; then
+    while [[ "$senha" != "$senha_redigitada" ]] || [[ -z "$senha" ]]
+    do
+        read -sp "Senha para esse novo usuário (ficará oculta enquanto digitar): " senha
+        echo
+        read -sp "Confirme a senha: " senha_redigitada
+        echo
+
+        if [ "$senha" != "$senha_redigitada" ]; then
+            echo -e "\nAs senhas digitadas são diferentes! Tente novamente.\n"
+        fi
+    done
+else
+    printf "$verde"
+    printf "Senha para o novo usuário \"$usuario\": Já definida!"
+    printf "$normal\n"
+fi
+
+if [ -z "$nome_completo" ]; then
+    read -p "Nome completo para o novo usuário [ex.: João Pedro]: " nome_completo
+else
+    printf "Nome completo para o novo usuário [ex.: João Pedro]: "
+    printf "$verde"
+    printf "$nome_completo"
+    printf "$normal\n"
+fi
+
+if [ -z "$nome_computador" ]; then
+    read -p "Nome do computador (não pode conter espaços) [ex.: meupc]: " nome_computador
+else
+    printf "Nome do computador (não pode conter espaços) [ex.: meupc]: "
+    printf "$verde"
+    printf "$nome_computador"
+    printf "$normal\n"
+fi
+
+if [ -z "$laptop" ] || [[ "$laptop" != [sSnN] ]]; then
+    while [[ "$laptop" != [sSnN] ]]; do
+        read -p "A instalação será realizada em um notebook? [S/N] " laptop
+    done
+else
+    printf "A instalação será realizada em um notebook? [S/N] "
+    printf "$verde"
+    printf "$laptop"
+    printf "$normal\n"
+fi
+
+echo -e "\nInformações coletadas:"
+printf " - Partição onde o sistema será instalado: "
+printf "$verde"
+printf "$particao_raiz"
+printf "$normal\n"
+
+## UEFI ou BIOS
+if [ -d /sys/firmware/efi ]; then
+    printf " - Partição de inicialização EFI: "
+    printf "$verde"
+    printf "$particao_EFI" 
+    printf "$normal\n"
+else
+    printf " - Dispositivo onde ocorrerá o boot: "
+    printf "$verde"
+    printf "$dispositivo_boot"
+    printf "$normal\n"
+fi
+
+printf " - Nome de usuário a ser criado: "
+printf "$verde"
+printf "$usuario"
+printf "$normal\n"
+
+printf " - Nome completo para o novo usuário: "
+printf "$verde"
+printf "$nome_completo"
+printf "$normal\n"
+
+printf " - Nome do computador: "
+printf "$verde"
+printf "$nome_computador"
+printf "$normal\n"
+
+printf " - Suporte para placas de vídeo da NVIDIA: "
+
+if [[ "$instalar_nvidia" == "Sim" ]]; then
+    printf "$verde"
+    printf "Sim"
+    printf "$normal\n"
+else
+    printf "$vermelho"
+    printf "Não"
+    printf "$normal\n"
+fi
+
+echo -n " - Instalação em notebook: "
+
+if [[ "$laptop" == [sS] ]]; then
+    printf "$verde"
+    echo "Sim"
+    printf "$normal\n"
+else
+    printf "$vermelho"
+    echo "Não"
+    printf "$normal\n"
+fi
+
+echo -e "\n"
+
+while [[ "$resposta" != [sSnN] ]]; do
+    read -p "As informações acima estão corretas? [S/N] " resposta
+done
+
+if [[ "$resposta" == [nN] ]]; then
+    echo -e "\nA instalação foi cancelada e nada foi alterado no seu computador. Execute-a novamente para recomeçar."
+    echo ""
+    exit 0
+fi
+
+### Montando a partição onde o sistema será instalado ###
+mount $particao_raiz $destino
+
+### Instalação dos pacotes necessários ###
+echo -e "\nInstalando os pacotes necessários para começar a instalação...\n"
+
+comando_1="zypper -n --gpg-auto-import-keys refresh -f"
+comando_2="zypper -n install -y pv"
+
+tentar "$comando_1 ; $comando_2" $tentivas_maximas
+
+### Baixando a raiz do sistema operacional ###
+echo -e "\nBaixando a raiz do sistema operacional\n"
+
+nome_repo="jpmsb/preparando-computador-para-engenharia-de-tele"
+url_repo="https://github.com/$nome_repo"
+ultima_tag_repo=$(basename $(curl -Ls -o /dev/null -w %{url_effective} $url_repo/releases/latest))
+url_ultima_tag_repo="$url_repo/releases/download/$ultima_tag_repo"
+url_api="https://api.github.com/repos/$nome_repo/releases/tags/$ultima_tag_repo"
+arquivos_compactados=$(curl -sL "$url_api" | jq -r '.assets[].name' | sed 's/^[ \t]*//;s/[ \t]*$//' | grep -E ".*\.xz.*")
+quantidade_arquivos=$(echo "$arquivos_compactados" | wc -l)
+
+echo -e "Arquivos a serem baixados:"
+echo "$arquivos_compactados" | nl
+
+contagem_arquivos=1
+for arquivo in $arquivos_compactados; do
+    echo -e "\n${verde}Baixando o arquivo \"$arquivo\"... ($contagem_arquivos de $quantidade_arquivos)${normal}\n"
+    wget -q --show-progress --read-timeout=5 --tries=0 -cO $destino/$arquivo $url_ultima_tag_repo/$arquivo
+    contagem_arquivos=$((contagem_arquivos + 1))
+done
+
+### Descompactando a raiz do sistema operacional ###
+echo -e "\n${verde}Descompactando a raiz do sistema operacional...${normal}\n"
+
+arquivos_compactados_absolutos=$(for item in $arquivos_compactados; do echo -n "$destino/$item "; done)
+cat $arquivos_compactados_absolutos | pv | tar -Jxf - -C $destino
+
+rm -f $arquivos_compactados_absolutos
+
+### Montando diretórios adicionais ###
+mount --bind /sys $destino/sys
+mount --bind /proc $destino/proc
+mount --bind /dev $destino/dev
+
+### Atualização do sistema e instalação de pacotes ###
+### específicos para CPUs e GPUs da AMD e Intel    ###
+echo -e "\nAtualizando o sistema...\n"
+
+comando_1="zypper -n --root $destino refresh -f"
+comando_2="zypper -n --no-refresh --root $destino dist-upgrade -y --download-in-advance --allow-vendor-change --no-recommends --auto-agree-with-licenses"
+comando_3="zypper -n --no-refresh --ignore-unknown --root $destino install -y --download-in-advance $pacotes_amd_cpu $pacotes_intel_cpu $pacotes_amd_gpu $pacotes_intel_gpu"
+
+tentar "$comando_1 ; $comando_2 ; $comando_3" $tentivas_maximas
+
+### Instalação do grub (UEFI ou BIOS) ###
+comando_1="zypper -n --root $destino refresh -f -r \"repo-oss\""
+
+if [ -d /sys/firmware/efi ]; then
+    echo -e "\nInstalando o GRUB em modo UEFI\n"
+    comando_2="zypper -n --no-refresh --ignore-unknown --root $destino install -y --download-in-advance efitools efivar grub2-x86_64-efi-extras"
+    tentar "$comando_1 ; $comando_2" $tentivas_maximas
+
+    mount $particao_EFI $destino/boot/efi
+    chroot $destino /usr/bin/mount -t efivarfs efivarfs /sys/firmware/efi/efivars
+    chroot $destino /usr/sbin/grub2-install
+    opensuse_secureboot=(chroot $destino /usr/sbin/shim-install --config-file=/boot/grub2/grub.cfg)
+else
+    echo -e "\nInstalando o GRUB em modo BIOS\n"
+    comando_2="zypper -n --no-refresh --ignore-unknown --root $destino install -y --download-in-advance grub2-i386-pc-extras"
+    tentar "$comando_1 ; $comando_2" $tentivas_maximas
+    chroot $destino /usr/sbin/grub2-install $dispositivo_boot
+fi
+
+sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT=/s/GRUB_CMDLINE_LINUX_DEFAULT=".*"/GRUB_CMDLINE_LINUX_DEFAULT="quiet splash security=apparmor loglevel=3 nosimplefb=1"/' $destino/etc/default/grub
+sed -i 's/.*GRUB_TERMINAL.*/GRUB_TERMINAL=gfxterm/' $destino/etc/default/grub
+sed -i 's/.*GRUB_GFXMODE.*/GRUB_GFXMODE=auto/' $destino/etc/default/grub
+echo "GRUB_DISABLE_OS_PROBER=\"false\"" >> $destino/etc/default/grub
+
+echo
+chroot $destino /usr/bin/dracut -f --regenerate-all
+echo
+chroot $destino /usr/sbin/grub2-mkconfig -o /boot/grub2/grub.cfg
+echo
+"${opensuse_secureboot[@]}"
+echo
+
+### Adicionando o repositorio NVIDIA e instalando o driver ###
+if [[ $instalar_nvidia = "Sim" ]]; then
+    echo -e "\nAdicionando o repositório NVIDIA\n"
+    comando_1="zypper -n --root $destino refresh -f -r \"repo-oss\""
+    comando_2="zypper -n --no-refresh --ignore-unknown --root $destino install -y --download-in-advance openSUSE-repos-Tumbleweed-NVIDIA"
+    comando_3="zypper -n --no-refresh --ignore-unknown --root $destino install-new-recommends --repo repo-non-free"
+
+    tentar "$comando_1 ; $comando_2 && $comando_3" $tentivas_maximas
+fi
+
+### Ajustando o tema de inialização do sistema ###
+chroot $destino /usr/sbin/plymouth-set-default-theme bgrt -R
+chroot $destino /usr/bin/dracut -f --regenerate-all
+
+### Ajustando os pontos de montagem no fstab (UEFI ou BIOS) ###
+tipo_particao_raiz="$(tipo_particao $particao_raiz)"
+
+if [ -d /sys/firmware/efi ]; then
+    tipo_particao_EFI="$(tipo_particao $particao_EFI)"
+
+    echo "$(/usr/sbin/blkid | grep "$particao_raiz" | awk '{print $2}') / $tipo_particao_raiz defaults 0 0" > $destino/etc/fstab
+    echo "$(/usr/sbin/blkid | grep "$particao_EFI" | awk '{print $2}') /boot/efi $tipo_particao_EFI utf8 0 0" >> $destino/etc/fstab
+else
+    echo "$(/usr/sbin/blkid | grep "$particao_raiz" | awk '{print $2}') / $tipo_particao_raiz defaults 0 0" > $destino/etc/fstab
+fi
+
+### Instalando o SUSE Prime e ajustando para não desligar o áudio do HDMI ###
+if [[ "$laptop" == [sS] ]]; then
+    ### Instalando componentes para melhor experiência com laptops ###
+    echo -e "\nInstalando componentes para melhor experiência com laptops\n"
+    if [ "$num_gpus" -gt 1 ]; then
+        switcheroo_control="switcheroo-control"
+    fi
+ 
+    comando_1="zypper -n --root $destino refresh -f -r \"repo-oss\""
+    comando_2="zypper -n --no-refresh --ignore-unknown --root $destino install -y --download-in-advance -t pattern laptop"
+    comando_3="zypper -n --no-refresh --ignore-unknown --root $destino install -y --download-in-advance touchegg $switcheroo_control tlpui"
+
+    tentar "$comando_1 ; $comando_2 && $comando_3" $tentivas_maximas
+
+    if [[ $instalar_nvidia == "Sim" ]]; then
+        echo -e "\nInstalando o SUSE Prime e ajustando para não desligar o áudio do HDMI\n"
+        comando_1="zypper -n --root $destino refresh -f -r \"repo-oss\""
+        comando_2="zypper -n --no-refresh --ignore-unknown --root $destino install -y --download-in-advance suse-prime suseprime-appindicator"
+
+        tentar "$comando_1 ; $comando_2" $tentivas_maximas
+
+        echo '# Enable runtime PM for NVIDIA VGA/3D controller devices on driver bind
+        ACTION=="bind", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x030000", TEST=="power/control", ATTR{power/control}="auto"
+        ACTION=="bind", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x030200", TEST=="power/control", ATTR{power/control}="auto"
+
+        # Disable runtime PM for NVIDIA VGA/3D controller devices on driver unbind
+        ACTION=="unbind", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x030000", TEST=="power/control", ATTR{power/control}="on"
+        ACTION=="unbind", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x030200", TEST=="power/control", ATTR{power/control}="on"' > $destino/etc/udev/rules.d/90-nvidia-udev-pm-G05.rules
+
+        # Habilitar controle de energia dinâmico
+        echo 'options nvidia NVreg_DynamicPowerManagement=0x02' > $destino/etc/modprobe.d/09-nvidia-dpm.conf
+
+        # Habilitar o SUSE Prime e realizar as configurações necessárias
+        chroot $destino /usr/bin/ln -s /usr/lib/systemd/system/prime-select.service /etc/systemd/system/multi-user.target.wants/prime-select.service
+        echo "offload" > $destino/etc/prime/boot
+        echo "offload" > $destino/etc/prime/current_type
+        echo "$iGPU" > $destino/etc/prime/offload_type
+        echo "$usuario" > $destino/etc/prime/user
+    fi
+
+    # Habilitando o TLP para preservação da bateria
+    chroot $destino /usr/bin/ln -s /usr/lib/systemd/system/tlp.service /etc/systemd/system/multi-user.target.wants/tlp.service
+    chroot $destino /usr/bin/ln -s /usr/lib/systemd/system/touchegg.service /etc/systemd/system/multi-user.target.wants/touchegg.service
+
+    # Ajustando configurações do TLP
+    sed -i '/^/s/^#CPU_SCALING_GOVERNOR_ON_BAT/CPU_SCALING_GOVERNOR_ON_BAT/g' $destino/etc/tlp.conf
+    sed -i '/^/s/^#CPU_SCALING_GOVERNOR_ON_AC/CPU_SCALING_GOVERNOR_ON_AC/g' $destino/etc/tlp.conf
+    sed -i '/^/s/^#RUNTIME_PM_ON_AC=on/RUNTIME_PM_ON_AC=auto/g' $destino/etc/tlp.conf
+    sed -i '/^/s/^#PCIE_ASPM_ON_BAT=default/PCIE_ASPM_ON_BAT=powersupersave/g' $destino/etc/tlp.conf
+
+    # Habilitar o serviço do switcheroo-control
+    if [ ! -z "$switcheroo_control" ]; then
+        chroot $destino /usr/bin/ln -s /usr/lib/systemd/system/switcheroo-control.service /etc/systemd/system/graphical.target.wants/switcheroo-control.service
+    fi
+fi
+
+### Criando usuário com poder sudo ###
+echo -e "\nCriando usuário \"$usuario\" com poder sudo\n"
+useradd --root $destino -m --groups libvirt,wheel,users,video,dialout -c "$nome_completo" --shell /bin/bash $usuario
+echo "$usuario:$senha" | chpasswd --root $destino
+rm -rf $destino/home/$usuario/bin
+
+### Criando o cache do tealdeer ###
+chroot $destino /usr/bin/su -c "/usr/bin/tldr --update" -s /bin/bash $usuario
+
+### Definindo a senha do root ###
+echo -e "\nDefinindo a senha do usuário root\n"
+echo "root:$senha_root" | chpasswd --root $destino
+
+### Desmontando diretórios ###
+desmontar_tudo $destino
+
+echo -e "${verde}\n\nTudo pronto!! Digite \"sudo reboot\" para reiniciar o seu computador.${normal}"
