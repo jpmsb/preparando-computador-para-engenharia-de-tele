@@ -50,7 +50,7 @@ Abaixo, estão alguns motivos para a escolha do openSUSE Tumbleweed:
 
 ### Instalação do openSUSE
 
-Para facilitar o processo de instalação e já deixar o ambiente preparado, foi criado o *script* [`instalacao_completa_opensuse`](https://github.com/jpmsb/preparando-computador-para-engenharia-de-tele/blob/main/instalacao_completa_opensuse) que instalará todo o sistema para você, além de pré-instalar algumas aplicações extras, como o Visual Studio Code, e realizar configurações adicionais que precisariam ser realizadas manualmente pelo usuário.
+Para facilitar o processo de instalação e já deixar o ambiente preparado, foi criado o *script* [`instalacao_opensuse_tumbleweed`](https://github.com/jpmsb/preparando-computador-para-engenharia-de-tele/blob/main/instalacao_opensuse_tumbleweed) que instalará todo o sistema para você, além de pré-instalar algumas aplicações extras, como o Visual Studio Code, e realizar configurações adicionais que precisariam ser realizadas manualmente pelo usuário.
 
 Caso você já possua outro sistema em seu computador, será necessário ajustar as partições do seu armazenamento de modo a criar um espaço suficiente para instalar o openSUSE. A maioria das pessoas geralmente possui o Windows instalado. Você será guiado ao longo do processo.
 
@@ -123,14 +123,14 @@ Após realizadas as mudanças, você pode fechar o `gparted`. Voltando ao termin
 Para baixar a rotina de instalação, utilize o comando abaixo no terminal:
 
 ```bash
-wget https://raw.githubusercontent.com/jpmsb/preparando-computador-para-engenharia-de-tele/main/instalacao_completa_opensuse -O instalacao_completa_opensuse
+wget https://raw.githubusercontent.com/jpmsb/preparando-computador-para-engenharia-de-tele/main/instalacao_opensuse_tumbleweed -O instalacao_opensuse_tumbleweed
 ```
 
 Para executar o *script*, eleve para o usuário `root` com o comando:
 
 ```bash
 sudo su
-bash instalacao_completa_opensuse
+bash instalacao_opensuse_tumbleweed
 ```
 
 Basta seguir as instruções e responder as perguntas que o *script* fará. Abaixo, é mostrada uma captura de tela com essa etapa inicial:
