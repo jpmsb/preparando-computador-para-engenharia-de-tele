@@ -1011,6 +1011,8 @@ fi
 echo -e "\nOlá!! Este é o script que prepara a mídia raiz do openSUSE Tumbleweed para uso.\n"
 echo -e "\nNo mais, aproveite!!\n"
 
+resposta="$2"
+
 sufixo=$(date +%Y-%m-%d)
 destino="$(readlink --canonicalize $1)-$sufixo"
 nome_arquivo_compactado="$(basename $destino)"
