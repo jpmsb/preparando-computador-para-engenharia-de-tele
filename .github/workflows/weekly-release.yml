@@ -1,0 +1,78 @@
+name: Weekly RootFS Release
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 5 * * 0' # Executa semanalmente, todo domingo às 2 UTC-3
+
+jobs:
+  generate-rootfs:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Start openSUSE Tumbleweed container in privileged mode
+      id: start_container
+      run: |
+        docker run -d --privileged \
+          --name opensuse-tumbleweed \
+          -v "${{ github.workspace }}:/workspace" \
+          -w /workspace \
+          registry.opensuse.org/opensuse/tumbleweed:latest \
+          sleep infinity
+
+    - name: Install required dependencies
+      run: |
+        docker exec opensuse-tumbleweed zypper -n refresh
+        docker exec opensuse-tumbleweed zypper -n install tar xz gawk wget gtk3-tools
+
+    - name: Run preparar-raiz script
+      run: |
+        docker exec opensuse-tumbleweed chmod +x /workspace/scripts-auxiliares/preparar-raiz
+        docker exec opensuse-tumbleweed /workspace/scripts-auxiliares/preparar-raiz /workspace/rootfs s
+
+    - name: Verify generated files
+      run: |
+        echo "Listing generated files in workspace..."
+        echo " - Directory: ${{ github.workspace }}"
+        ls -l ${{ github.workspace }}
+
+    - name: Get current date
+      id: date
+      run: echo "DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+
+    - name: Create Draft Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ env.DATE }}
+        release_name: ${{ env.DATE }}
+        draft: true
+        prerelease: false
+
+    - name: Upload release assets
+      run: |
+        for file in ${{ github.workspace }}/rootfs-${{ env.DATE }}.tar.xz.*; do
+          echo "Uploading $file"
+          gh release upload ${{ env.DATE }} "$file" --repo ${{ github.repository }}
+        done
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # For the 'gh' CLI
+
+    - name: Publish Release
+      run: |
+        gh release edit ${{ env.DATE }} --draft=false --repo ${{ github.repository }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # For the 'gh' CLI
+
+    - name: Stop and remove container
+      if: always()
+      run: |
+        docker stop opensuse-tumbleweed
+        docker rm opensuse-tumbleweed
