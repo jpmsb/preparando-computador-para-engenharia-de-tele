@@ -1549,4 +1549,8 @@ echo -e "\nCompactando a raiz \"$destino\"...\n"
 
 tar -Jcf - -C $destino . | split --bytes=1536MB - $diretorio_base_destino/$nome_arquivo_compactado.tar.xz.
 
+### Exibindo o caminho completo dos arquivos gerados ###
+echo -e "\nArquivos gerados:\n"
+readlink -f $diretorio_base_destino/$nome_arquivo_compactado.tar.xz.*
+
 echo -e "${verde}\n\nTudo pronto!! Criação da raiz finalizada.${normal}"
