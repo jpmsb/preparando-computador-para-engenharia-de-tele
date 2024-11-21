@@ -529,7 +529,7 @@ mount --bind /dev $destino/dev
 ### específicos para CPUs e GPUs da AMD e Intel    ###
 echo -e "\nAtualizando o sistema...\n"
 
-comando_1="zypper -n --root $destino refresh -f"
+comando_1="zypper -n --root $destino --gpg-auto-import-keys refresh -f"
 comando_2="zypper -n --no-refresh --root $destino dist-upgrade -y --download-in-advance --allow-vendor-change --no-recommends --auto-agree-with-licenses"
 comando_3="zypper -n --no-refresh --ignore-unknown --root $destino install -y --download-in-advance $pacotes_amd_cpu $pacotes_intel_cpu $pacotes_amd_gpu $pacotes_intel_gpu"
 
