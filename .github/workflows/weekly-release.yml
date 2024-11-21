@@ -40,39 +40,18 @@ jobs:
         ls -l ${{ github.workspace }}
 
     - name: Get current date
-      id: date
       run: echo "DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
 
-    - name: Create Draft Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Create Release and Upload Assets
+      uses: softprops/action-gh-release@v1
       with:
         tag_name: ${{ env.DATE }}
-        release_name: ${{ env.DATE }}
-        draft: true
-        prerelease: false
-
-    - name: Upload release assets
-      run: |
-        for file in ${{ github.workspace }}/rootfs-${{ env.DATE }}.tar.xz.*; do
-          echo "Uploading $file"
-          gh release upload ${{ env.DATE }} "$file" --repo ${{ github.repository }}
-        done
+        name: ${{ env.DATE }}
+        draft: false
+        body: "Raiz do sistema operacional openSUSE Tumbleweed."
+        files: ${{ github.workspace }}/rootfs-${{ env.DATE }}.tar.xz.*
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # For the 'gh' CLI
-
-    - name: Publish Release
-      run: |
-        gh release edit ${{ env.DATE }} \
-        --draft=false \
-        --notes "Raiz do sistema operacional openSUSE Tumbleweed." \
-        --repo ${{ github.repository }}
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # For the 'gh' CLI
 
     - name: Stop and remove container
       if: always()
