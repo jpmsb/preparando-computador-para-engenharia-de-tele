@@ -31,7 +31,7 @@ jobs:
     - name: Run preparar-raiz script
       run: |
         docker exec opensuse-tumbleweed chmod +x /workspace/scripts-auxiliares/preparar-raiz
-        docker exec opensuse-tumbleweed /workspace/scripts-auxiliares/preparar-raiz /workspace/rootfs s
+        docker exec opensuse-tumbleweed /workspace/scripts-auxiliares/preparar-raiz /workspace/rootfs s --recommends
 
     - name: Verify generated files
       run: |
