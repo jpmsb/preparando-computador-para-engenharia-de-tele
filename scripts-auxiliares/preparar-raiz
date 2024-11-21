@@ -1013,6 +1013,7 @@ echo -e "\nNo mais, aproveite!!\n"
 
 argumento_destino="$1"
 resposta="$2"
+arg_extra_install="$3"
 
 sufixo=$(date +%Y-%m-%d)
 destino="$(readlink --canonicalize $argumento_destino)-$sufixo"
@@ -1038,8 +1039,8 @@ fi
 pacotes_iniciais="libz1 libz1-x86-64-v3 zypper-needs-restarting systemd-lang systemd-container ca-certificates ca-certificates-mozilla curl gawk grep-lang sed-lang tar-lang xz-lang gzip procps-lang procps which systemd-presets-branding-openSUSE suse-module-tools suse-module-tools-scriptlets diffutils-lang man man-pages man-pages-posix man-pages-pt_BR tlp rpm-repos-openSUSE-Tumbleweed openSUSE-repos-Tumbleweed glibc-locale"
 
 comando_1="zypper refresh -f"
-comando_2="zypper -n --ignore-unknown --installroot $destino install -y --auto-agree-with-licenses -t product openSUSE"
-comando_3="zypper -n --ignore-unknown --installroot $destino install -y --auto-agree-with-licenses $pacotes_iniciais"
+comando_2="zypper -n --ignore-unknown --installroot $destino install -y --auto-agree-with-licenses $arg_extra_install -t product openSUSE"
+comando_3="zypper -n --ignore-unknown --installroot $destino install -y --auto-agree-with-licenses $arg_extra_install $pacotes_iniciais"
 comando_4="zypper -n --installroot $destino addlocale pt_BR"
 comando_5="zypper -n --root $destino modifyrepo --priority 80 --all"
 
@@ -1067,7 +1068,7 @@ echo "nameserver 8.8.8.8" > $destino/etc/resolv.conf
 echo -e "\nInstalando padrões do sistema base.\n"
 
 comando_1="zypper -n --root $destino --gpg-auto-import-keys refresh -f"
-comando_2="zypper -n --no-refresh --ignore-unknown --root $destino install --download-in-advance -y --auto-agree-with-licenses -t pattern base enhanced_base minimal_base basesystem"
+comando_2="zypper -n --no-refresh --ignore-unknown --root $destino install --download-in-advance -y --auto-agree-with-licenses $arg_extra_install -t pattern base enhanced_base minimal_base basesystem"
 
 tentar "$comando_1 && $comando_2" $tentivas_maximas
 
@@ -1184,12 +1185,12 @@ valida_pacotes_visualizado "Validando os pacotes a serem instalados. Por favor, 
 
 echo -e "\nPacotes pulados:\n"
 cat pacotes_pulados
-echo -e "\n\n"
+echo -e "\n"
 
 comando_1="zypper -n --root $destino --gpg-auto-import-keys refresh -f"
 comando_2="zypper -n --no-refresh --root $destino dist-upgrade -y --download-in-advance --allow-vendor-change --no-recommends --auto-agree-with-licenses"
-comando_3="zypper -n --no-refresh --ignore-unknown --root $destino install -y --allow-vendor-change --download-in-advance --auto-agree-with-licenses $pacotes_validados"
-comando_4="zypper -n --no-refresh --ignore-unknown --root $destino install -y --allow-vendor-change --download-in-advance --auto-agree-with-licenses -t pattern apparmor fonts x11_yast x11"
+comando_3="zypper -n --no-refresh --ignore-unknown --root $destino install -y --allow-vendor-change --download-in-advance --auto-agree-with-licenses $arg_extra_install $pacotes_validados"
+comando_4="zypper -n --no-refresh --ignore-unknown --root $destino install -y --allow-vendor-change --download-in-advance --auto-agree-with-licenses $arg_extra_install -t pattern apparmor fonts x11_yast x11"
 
 tentar "$comando_1 ; $comando_2 ; $comando_3 && $comando_4" $tentivas_maximas
 
