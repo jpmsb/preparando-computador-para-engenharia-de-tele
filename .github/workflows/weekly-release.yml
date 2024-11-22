@@ -27,6 +27,8 @@ jobs:
       run: |
         docker exec opensuse-tumbleweed zypper -n refresh
         docker exec opensuse-tumbleweed zypper -n install tar xz gawk wget gtk3-tools
+        docker exec opensuse-tumbleweed sed -i '/^solver\.onlyRequires/s/^/# /' /etc/zypp/zypp.conf
+        docker exec opensuse-tumbleweed sed -i '/^rpm\.install\.excludedocs/s/^/# /' /etc/zypp/zypp.conf
 
     - name: Run preparar-raiz script
       run: |
