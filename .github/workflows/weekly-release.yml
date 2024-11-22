@@ -23,7 +23,7 @@ jobs:
           registry.opensuse.org/opensuse/tumbleweed:latest \
           sleep infinity
 
-    - name: Install required dependencies
+    - name: Install required dependencies and tunning Zypper
       run: |
         docker exec opensuse-tumbleweed zypper -n refresh
         docker exec opensuse-tumbleweed zypper -n install tar xz gawk wget gtk3-tools
@@ -33,7 +33,7 @@ jobs:
     - name: Run preparar-raiz script
       run: |
         docker exec opensuse-tumbleweed chmod +x /workspace/scripts-auxiliares/preparar-raiz
-        docker exec opensuse-tumbleweed /workspace/scripts-auxiliares/preparar-raiz /workspace/rootfs s --recommends
+        docker exec opensuse-tumbleweed /workspace/scripts-auxiliares/preparar-raiz /workspace/rootfs s
 
     - name: Verify generated files
       run: |
