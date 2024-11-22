@@ -44,16 +44,23 @@ jobs:
     - name: Get current date
       run: echo "DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
 
-    - name: Create Release and Upload Assets
+    - name: Create Draft Release and Upload Assets
       uses: softprops/action-gh-release@v1
       with:
         tag_name: ${{ env.DATE }}
         name: ${{ env.DATE }}
-        draft: false
+        draft: true
         body: "Raiz do sistema operacional openSUSE Tumbleweed."
         files: ${{ github.workspace }}/rootfs-${{ env.DATE }}.tar.xz.*
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Publish Release
+      run: |
+        gh release edit ${{ env.DATE }} --draft=false --repo ${{ github.repository }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Stop and remove container
       if: always()
