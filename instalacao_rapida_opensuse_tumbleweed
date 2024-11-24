@@ -166,6 +166,7 @@ tentivas_maximas=5
 verde='\033[1;32m'
 magenta='\033[1;35m'
 vermelho='\033[1;31m'
+ciano='\033[1;36m'
 normal='\033[0m'
 contagem=0
 limiar=0
