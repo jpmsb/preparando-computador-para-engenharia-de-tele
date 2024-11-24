@@ -492,23 +492,37 @@ comando_2="zypper -n install -y pv"
 tentar "$comando_1 ; $comando_2" $tentivas_maximas
 
 ### Baixando a raiz do sistema operacional ###
-echo -e "\nBaixando a raiz do sistema operacional\n"
+echo -e "\n${verde}Baixando a raiz do sistema operacional...${normal}\n"
 
 nome_repo="jpmsb/preparando-computador-para-engenharia-de-tele"
 url_repo="https://github.com/$nome_repo"
 ultima_tag_repo=$(basename $(curl -Ls -o /dev/null -w %{url_effective} $url_repo/releases/latest))
 url_ultima_tag_repo="$url_repo/releases/download/$ultima_tag_repo"
 url_api="https://api.github.com/repos/$nome_repo/releases/tags/$ultima_tag_repo"
-arquivos_compactados=$(curl -sL "$url_api" | jq -r '.assets[].name' | sed 's/^[ \t]*//;s/[ \t]*$//' | grep -E ".*\.xz.*")
+arquivos_compactados_e_tamanho=$(curl -sL "$url_api" | jq -r '.assets[] | "\(.name) \(.size)"' | grep -E ".*\.xz.*")
+arquivos_compactados=$(echo "$arquivos_compactados_e_tamanho" | awk '{print $1}' | sed 's/^[ \t]*//;s/[ \t]*$//' | grep -E ".*\.xz.*")
 quantidade_arquivos=$(echo "$arquivos_compactados" | wc -l)
 
-echo -e "Arquivos a serem baixados:"
-echo "$arquivos_compactados" | nl
+while read -r arquivo tamanho_em_bytes; do
+    tamanho=$(numfmt --to=iec --format %.2f $tamanho_em_bytes)
+    tamanho_total_em_bytes=$((tamanho_total_em_bytes + tamanho_em_bytes))
+
+    if [ -z "$arquivos_para_baixar" ]; then
+        arquivos_para_baixar="$arquivo (${tamanho}B)"
+    else
+        arquivos_para_baixar="$arquivos_para_baixar\n$arquivo (${tamanho}B)"
+    fi
+done <<< "$arquivos_compactados_e_tamanho"
+
+echo -e "Arquivos a serem baixados (total: $(numfmt --to=iec --format %.2f $tamanho_total_em_bytes)B):"
+echo -e "$arquivos_para_baixar" | nl
 
 contagem_arquivos=1
 for arquivo in $arquivos_compactados; do
-    echo -e "\n${verde}Baixando o arquivo \"$arquivo\"... ($contagem_arquivos de $quantidade_arquivos)${normal}\n"
-    wget -q --show-progress --read-timeout=5 --tries=0 -cO $destino/$arquivo $url_ultima_tag_repo/$arquivo
+    echo -e "\n${verde}Baixando o arquivo \"${ciano}$arquivo${verde}\"... ($contagem_arquivos de $quantidade_arquivos)${normal}\n"
+    comando_1="wget -q --show-progress --read-timeout=5 --tries=0 -cO $destino/$arquivo $url_ultima_tag_repo/$arquivo"
+
+    tentar "$comando_1" $tentivas_maximas
     contagem_arquivos=$((contagem_arquivos + 1))
 done
 
@@ -527,7 +541,7 @@ mount --bind /dev $destino/dev
 
 ### Atualização do sistema e instalação de pacotes ###
 ### específicos para CPUs e GPUs da AMD e Intel    ###
-echo -e "\nAtualizando o sistema...\n"
+echo -e "\n${verde}Atualizando o sistema...${normal}\n"
 
 comando_1="zypper -n --root $destino --gpg-auto-import-keys refresh -f"
 comando_2="zypper -n --no-refresh --root $destino dist-upgrade -y --download-in-advance --allow-vendor-change --no-recommends --auto-agree-with-licenses"
