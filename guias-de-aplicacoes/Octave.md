@@ -4,8 +4,10 @@ O Octave é um software livre para cálculos numéricos, muito utilizado em curs
 
 ### Tabela de conteúdos
 
-- [Instalação](#instala%C3%A7%C3%A3o)
-    - [Carregando os pacotes na inicialização](#carregando-os-pacotes-na-inicializa%C3%A7%C3%A3o)
+- [Octave](#octave)
+    - [Tabela de conteúdos](#tabela-de-conteúdos)
+  - [Instalação](#instalação)
+    - [Carregando os pacotes na inicialização](#carregando-os-pacotes-na-inicialização)
 
 
 ## Instalação
@@ -22,7 +24,6 @@ Para que os pacotes sejam carregados na inicialização do Octave, crie o arquiv
 
 ```bash
 echo '# Aumentando o tamanho dos textos dos eixos e título
-warning('off','Octave:shadowed-function')
 set(0, "defaultaxesfontsize", 16)  % axes labels
 set(0, "defaulttextfontsize", 16)  % title
 
