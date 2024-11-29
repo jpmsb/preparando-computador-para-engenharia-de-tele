@@ -78,7 +78,6 @@ jobs:
       run: |
         docker exec opensuse-tumbleweed chmod +x /workspace/scripts-auxiliares/preparar-raiz
         docker exec opensuse-tumbleweed /workspace/scripts-auxiliares/preparar-raiz /workspace/rootfs s
-        docker exec opensuse-tumbleweed wget ${{ needs.check-new-release.outputs.CHANGES_FILE }} -O /workspace/Changes-${{ needs.check-new-release.outputs.LATEST_SNAPSHOT_DATE_FORMATTED }}.txt
 
     - name: Verify generated files
       run: |
