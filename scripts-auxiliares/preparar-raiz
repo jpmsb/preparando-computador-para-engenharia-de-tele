@@ -1063,7 +1063,7 @@ tentar "$comando_1 && $comando_2 && $comando_3 && $comando_4 && $comando_5" $ten
 arquivo_bootloader > $destino/etc/sysconfig/bootloader
 
 ### Bloqueando pacotes problemáticos ###
-zypper --root $destino addlock ifplugd
+zypper --root $destino addlock ifplugd grub*
 
 ### Montando diretórios adicionais ###
 mount --bind /sys $destino/sys
@@ -1366,6 +1366,9 @@ zypper --root $destino modifyrepo --enable "Emulators"
 zypper --root $destino modifyrepo --enable "Multimedia Proaudio"
 
 zypper --root $destino --gpg-auto-import-keys refresh -f
+
+### Remoção da trava do grub no Zypper ###
+zypper --root $destino removelock grub*
 
 ### Ajustando para que o zypper não mude o fornecedor de pacotes por padrão ###
 echo -e "\nAjustando para que o zypper não mude o fornecedor de pacotes por padrão\n"
