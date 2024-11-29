@@ -1,4 +1,4 @@
-name: Weekly RootFS Release
+name: RootFS Release
 
 on:
   workflow_dispatch:
