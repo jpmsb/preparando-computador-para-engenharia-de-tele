@@ -1015,7 +1015,20 @@ argumento_destino="$1"
 resposta="$2"
 arg_extra_install="$3"
 
-sufixo=$(date +%Y-%m-%d)
+### Verificando se há snapshots recentes ###
+### e obtendo a data do mais recente     ###
+contagem=0
+while [ -z "$ultimo_snapshot_tumbleweed" ]; do
+    # date=$(date --date="${dataset_date} - $count day" +%Y%m%d)
+    data=$(date --date="$(date +%Y-%m-%d) - $contagem day" +%Y%m%d)
+    ultimo_snapshot_tumbleweed=$(curl -sL 'http://download.opensuse.org/tumbleweed/iso/' | grep -E "name.*Changes\.$data.txt" | sed -E 's/.*>(Changes\.[0-9]{8}\.txt)<.*/\1/')
+    contagem=$((contagem+1))
+done
+
+data_ultimo_snapshot_tumbleweed=${ultimo_snapshot_tumbleweed//[!0-9]/}
+data_formatada_ultimo_snapshot_tumbleweed=$(date -d $data_ultimo_snapshot_tumbleweed +%Y-%m-%d)
+
+sufixo=$data_formatada_ultimo_snapshot_tumbleweed
 destino="$(readlink --canonicalize $argumento_destino)-$sufixo"
 diretorio_base_destino="$(dirname $destino)"
 nome_arquivo_compactado="$(basename $destino)"
