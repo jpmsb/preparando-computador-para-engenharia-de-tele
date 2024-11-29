@@ -67,7 +67,7 @@ jobs:
           registry.opensuse.org/opensuse/tumbleweed:latest \
           sleep infinity
 
-    - name: Install required dependencies and tunning Zypper
+    - name: Install required dependencies and tune Zypper
       run: |
         docker exec opensuse-tumbleweed zypper -n refresh
         docker exec opensuse-tumbleweed zypper -n install tar xz gawk wget gtk3-tools
