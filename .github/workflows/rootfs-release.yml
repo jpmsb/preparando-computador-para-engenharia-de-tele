@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       LATEST_SNAPSHOT_DATE_FORMATTED: ${{ steps.get_latest_snapshot.outputs.LATEST_SNAPSHOT_DATE_FORMATTED }}
-      CHANGES_FILE: ${{ steps.get_latest_snapshot.outputs.CHANGES }}
+      CHANGES_FILE: ${{ steps.get_latest_snapshot.outputs.CHANGES_FILE }}
 
     steps:
     - name: Get the latest Tumbleweed snapshot date
