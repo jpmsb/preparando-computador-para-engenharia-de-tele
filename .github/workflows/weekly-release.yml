@@ -3,10 +3,54 @@ name: Weekly RootFS Release
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 5 * * 0' # Executa semanalmente, todo domingo às 2 UTC-3
+    - cron: '0 5 * * *' # Executa todos os dias, às 2 UTC-3
 
 jobs:
+  check-new-release:
+    runs-on: ubuntu-latest
+    outputs:
+      LATEST_SNAPSHOT_DATE_FORMATTED: ${{ steps.get_latest_snapshot.outputs.LATEST_SNAPSHOT_DATE_FORMATTED }}
+      CHANGES_FILE: ${{ steps.get_latest_snapshot.outputs.CHANGES }}
+
+    steps:
+    - name: Get the latest Tumbleweed snapshot date
+      id: get_latest_snapshot
+      run: |
+        query_url="http://download.opensuse.org/tumbleweed/iso/"
+        count=0
+        latest_tumbleweed_snapshot=""
+        while [ -z "$latest_tumbleweed_snapshot" ]; do
+            date=$(date --date="${dataset_date} - $count day" +%Y%m%d)
+            latest_tumbleweed_snapshot=$(curl -sL "$query_url" | grep -E "name.*Changes\.$date.txt" | sed -E 's/.*>(Changes\.[0-9]{8}\.txt)<.*/\1/')
+            count=$((count+1))
+        done
+        latest_tumbleweed_snapshot_date=${latest_tumbleweed_snapshot//[!0-9]/}
+        latest_tumbleweed_snapshot_date_formatted=$(date -d $latest_tumbleweed_snapshot_date +%Y-%m-%d)
+        
+        echo "Latest Tumbleweed snapshot date: $latest_tumbleweed_snapshot_date_formatted"
+
+        echo "CHANGES_FILE=$query_url/$latest_tumbleweed_snapshot" >> $GITHUB_OUTPUT
+
+        echo "LATEST_SNAPSHOT_DATE_FORMATTED=$latest_tumbleweed_snapshot_date_formatted" >> $GITHUB_ENV
+        echo "LATEST_SNAPSHOT_DATE_FORMATTED=$latest_tumbleweed_snapshot_date_formatted" >> $GITHUB_OUTPUT
+
+    - name: Check if snapshot is already released
+      id: check_release
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        existing_release=$(gh release list --repo ${{ github.repository }} --limit 100 | grep 'Latest' | awk '{print $1}'| grep "$LATEST_SNAPSHOT_DATE_FORMATTED" || true)
+        if [ -n "$existing_release" ]; then
+          echo "Snapshot $LATEST_SNAPSHOT_DATE_FORMATTED already released. Exiting."
+          exit 1
+        else
+          echo "Snapshot $LATEST_SNAPSHOT_DATE_FORMATTED not released yet. Proceeding."
+          exit 0
+        fi
+
   generate-rootfs:
+    needs: check-new-release
+    if: success()
     runs-on: ubuntu-latest
 
     steps:
@@ -34,6 +78,7 @@ jobs:
       run: |
         docker exec opensuse-tumbleweed chmod +x /workspace/scripts-auxiliares/preparar-raiz
         docker exec opensuse-tumbleweed /workspace/scripts-auxiliares/preparar-raiz /workspace/rootfs s
+        docker exec opensuse-tumbleweed wget ${{ needs.check-new-release.outputs.CHANGES_FILE }} -O /workspace/Changes-${{ needs.check-new-release.outputs.LATEST_SNAPSHOT_DATE_FORMATTED }}.txt
 
     - name: Verify generated files
       run: |
@@ -42,22 +87,22 @@ jobs:
         ls -l ${{ github.workspace }}
 
     - name: Get current date
-      run: echo "DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+      run: echo "DATE=$(date +'%d/%m/%Y')" >> $GITHUB_ENV
 
     - name: Create Draft Release and Upload Assets
       uses: softprops/action-gh-release@v2
       with:
-        tag_name: ${{ env.DATE }}
-        name: ${{ env.DATE }}
+        tag_name: ${{ needs.check-new-release.outputs.LATEST_SNAPSHOT_DATE_FORMATTED }}
+        name: ${{ needs.check-new-release.outputs.LATEST_SNAPSHOT_DATE_FORMATTED }}
         draft: true
-        body: "Raiz do sistema operacional openSUSE Tumbleweed."
-        files: ${{ github.workspace }}/rootfs-${{ env.DATE }}.tar.xz.*
+        body: "Raiz do sistema operacional openSUSE Tumbleweed, gerada em ${{ env.DATE }}. As mudanças são listadas abaixo:\n\n${{ needs.check-new-release.outputs.CHANGES_FILE }}"
+        files: ${{ github.workspace }}/rootfs-${{ needs.check-new-release.outputs.LATEST_SNAPSHOT_DATE_FORMATTED }}.tar.xz.*
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Publish Release
       run: |
-        gh release edit ${{ env.DATE }} --draft=false --repo ${{ github.repository }}
+        gh release edit ${{ needs.check-new-release.outputs.LATEST_SNAPSHOT_DATE_FORMATTED }} --draft=false --repo ${{ github.repository }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
