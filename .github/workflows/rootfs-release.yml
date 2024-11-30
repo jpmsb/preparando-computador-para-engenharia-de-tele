@@ -16,7 +16,7 @@ jobs:
     - name: Get the latest Tumbleweed snapshot date
       id: get_latest_snapshot
       run: |
-        query_url="http://download.opensuse.org/tumbleweed/iso/"
+        query_url="http://download.opensuse.org/tumbleweed/iso"
         count=0
         latest_tumbleweed_snapshot=""
         while [ -z "$latest_tumbleweed_snapshot" ]; do
