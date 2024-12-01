@@ -1367,6 +1367,23 @@ zypper --root $destino modifyrepo --enable "Multimedia Proaudio"
 
 zypper --root $destino --gpg-auto-import-keys refresh -f
 
+### Verificando se o lançamento ainda permence o mesmo ###
+echo -e "\n### Verificando se o lançamento ainda permanece o mesmo ###"
+
+lancamento_atual=$(cat $destino/etc/os-release | grep VERSION_ID | cut -d= -f2 | sed 's/"//g')
+
+if [ "$lancamento_atual" != "$data_ultimo_snapshot_tumbleweed" ]; then
+    echo -e "\nO lançamento do openSUSE Tumbleweed foi atualizado de \"$lancamento_atual\" para \"$data_ultimo_snapshot_tumbleweed\"."
+    echo -e "O processo foi interrompido."
+    exit 1
+else
+    echo -e "\nO lançamento do openSUSE Tumbleweed continua sendo \"$data_ultimo_snapshot_tumbleweed\":"
+    echo -e "Lançamento atual:                    $lancamento_atual"
+    echo -e "Lançamento do snapshot mais recente: $data_ultimo_snapshot_tumbleweed"
+fi
+
+echo -e "\n##########################################################\n"
+
 ### Ajustando para que o zypper não mude o fornecedor de pacotes por padrão ###
 echo -e "\nAjustando para que o zypper não mude o fornecedor de pacotes por padrão\n"
 sed -i 's/solver.dupAllowVendorChange = true/solver.dupAllowVendorChange = false/' $destino/etc/zypp/zypp.conf
