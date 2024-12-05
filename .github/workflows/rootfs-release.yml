@@ -9,7 +9,7 @@ jobs:
   check-new-release:
     runs-on: ubuntu-latest
     outputs:
-      LATEST_SNAPSHOT_DATE_FORMATTED: ${{ steps.get_latest_snapshot.outputs.LATEST_SNAPSHOT_DATE_FORMATTED }}
+      LATEST_SNAPSHOT_DATE_FORMATTED: ${{ steps.check_release.outputs.LATEST_SNAPSHOT_DATE_FORMATTED }}
       CHANGES_FILE: ${{ steps.get_latest_snapshot.outputs.CHANGES_FILE }}
 
     steps:
@@ -26,13 +26,11 @@ jobs:
         done
         latest_tumbleweed_snapshot_date=${latest_tumbleweed_snapshot//[!0-9]/}
         latest_tumbleweed_snapshot_date_formatted=$(date -d $latest_tumbleweed_snapshot_date +%Y-%m-%d)
-        
+
         echo "Latest Tumbleweed snapshot date: $latest_tumbleweed_snapshot_date_formatted"
 
-        echo "CHANGES_FILE=$query_url/$latest_tumbleweed_snapshot" >> $GITHUB_OUTPUT
-
         echo "LATEST_SNAPSHOT_DATE_FORMATTED=$latest_tumbleweed_snapshot_date_formatted" >> $GITHUB_ENV
-        echo "LATEST_SNAPSHOT_DATE_FORMATTED=$latest_tumbleweed_snapshot_date_formatted" >> $GITHUB_OUTPUT
+        echo "CHANGES_FILE=$query_url/$latest_tumbleweed_snapshot" >> $GITHUB_OUTPUT
 
     - name: Check if snapshot is already released
       id: check_release
@@ -42,15 +40,16 @@ jobs:
         existing_release=$(gh release list --repo ${{ github.repository }} --limit 100 | grep 'Latest' | awk '{print $1}'| grep "$LATEST_SNAPSHOT_DATE_FORMATTED" || true)
         if [ -n "$existing_release" ]; then
           echo "Snapshot $LATEST_SNAPSHOT_DATE_FORMATTED already released. Exiting."
-          exit 1
+          exit 0
         else
           echo "Snapshot $LATEST_SNAPSHOT_DATE_FORMATTED not released yet. Proceeding."
+          echo "LATEST_SNAPSHOT_DATE_FORMATTED=$LATEST_SNAPSHOT_DATE_FORMATTED" >> $GITHUB_OUTPUT
           exit 0
         fi
 
   generate-rootfs:
     needs: check-new-release
-    if: success()
+    if: ${{ success() && needs.check-new-release.outputs.LATEST_SNAPSHOT_DATE_FORMATTED != '' }}
     runs-on: ubuntu-latest
 
     steps:
