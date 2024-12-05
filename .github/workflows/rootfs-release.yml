@@ -49,7 +49,7 @@ jobs:
 
   generate-rootfs:
     needs: check-new-release
-    if: ${{ success() && needs.check-new-release.outputs.LATEST_SNAPSHOT_DATE_FORMATTED != '' }}
+    if: ${{ success() && needs.check-new-release.outputs.LATEST_SNAPSHOT_DATE_FORMATTED != null }}
     runs-on: ubuntu-latest
 
     steps:
