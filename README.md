@@ -50,7 +50,7 @@ Abaixo, estão alguns motivos para a escolha do openSUSE Tumbleweed:
 
 ### Instalação do openSUSE
 
-Para facilitar o processo de instalação e já deixar o ambiente preparado, foi criado o *script* [`instalacao_opensuse_tumbleweed`](https://github.com/jpmsb/preparando-computador-para-engenharia-de-tele/blob/main/instalacao_opensuse_tumbleweed) que instalará todo o sistema para você, além de pré-instalar algumas aplicações extras, como o Visual Studio Code, e realizar configurações adicionais que precisariam ser realizadas manualmente pelo usuário.
+Para facilitar o processo de instalação e já deixar o ambiente preparado, foram criados os *scripts* [`instalacao_opensuse_tumbleweed`](https://github.com/jpmsb/preparando-computador-para-engenharia-de-tele/blob/main/instalacao_opensuse_tumbleweed) e [`instalacao_rapida_opensuse_tumbleweed`](https://github.com/jpmsb/preparando-computador-para-engenharia-de-tele/blob/main/instalacao_rapida_opensuse_tumbleweed) com a finalidade de instalar todo o sistema para você, além de pré-instalar algumas aplicações extras, como o **Visual Studio Code**, e realizar configurações adicionais que precisariam ser realizadas manualmente pelo usuário.
 
 Caso você já possua outro sistema em seu computador, será necessário ajustar as partições do seu armazenamento de modo a criar um espaço suficiente para instalar o openSUSE. A maioria das pessoas geralmente possui o Windows instalado. Você será guiado ao longo do processo.
 
@@ -120,11 +120,33 @@ Após realizadas as mudanças, você pode fechar o `gparted`. Voltando ao termin
 
 ### Instalação do openSUSE através do script
 
-Para baixar a rotina de instalação, utilize o comando abaixo no terminal:
+- **Instalação rápida (recomendada)**
 
-```bash
-wget https://raw.githubusercontent.com/jpmsb/preparando-computador-para-engenharia-de-tele/main/instalacao_opensuse_tumbleweed -O instalacao_opensuse_tumbleweed
-```
+    Para baixar a rotina de instalação rápida, utilize o comando abaixo no terminal:
+
+    ```bash
+    wget https://raw.githubusercontent.com/jpmsb/preparando-computador-para-engenharia-de-tele/main/instalacao_rapida_opensuse_tumbleweed -O instalacao_opensuse_tumbleweed
+    ```
+
+    <details>
+        <summary>Mais informações</summary>
+
+    Neste tipo de instalação, uma raiz do sistema criada previamente é baixada e extraída para a partição de destino, diminuindo o tempo que seria gasto baixando e instalando cada pacote separadamente. Os arquivos compactados estão na seção "Releases" e são gerados automaticamente a cada novo lançamento de _snapshots_ do openSUSE Tumbleweed.
+    </details>
+
+- Instalação customizável
+
+    Para baixar a rotina de instalação, utilize o comando abaixo no terminal:
+
+    ```bash
+    wget https://raw.githubusercontent.com/jpmsb/preparando-computador-para-engenharia-de-tele/main/instalacao_opensuse_tumbleweed -O instalacao_opensuse_tumbleweed
+    ```
+
+    <details>
+        <summary>Mais informações</summary>
+
+    Neste tipo de instalação, os pacotes são baixados um por um diretamente dos repositórios. Além disso, esses pacotes são instalados um por um, o que aumenta consideravelmente o tempo de instalação do sistema operacional. Essa rotina é recomendada caso queira customizar quais pacotes serão instalados ou algum outro aspecto da instalação, já que a rotina pode ser totalmente editada antes de ser executada.
+    </details>
 
 Para executar o *script*, eleve para o usuário `root` com o comando:
 
