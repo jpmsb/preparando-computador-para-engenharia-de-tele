@@ -531,7 +531,7 @@ done
 echo -e "\n${verde}Descompactando a raiz do sistema operacional...${normal}\n"
 
 arquivos_compactados_absolutos=$(for item in $arquivos_compactados; do echo -n "$destino/$item "; done)
-cat $arquivos_compactados_absolutos | pv | tar -Jxf - -C $destino
+cat $arquivos_compactados_absolutos | pv | tar --acls --xattrs --xattrs-include='*' -Jpxf - -C $destino
 
 rm -f $arquivos_compactados_absolutos
 
