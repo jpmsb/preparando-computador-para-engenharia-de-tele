@@ -260,7 +260,7 @@ while [[ -z $particao_raiz ]]; do
         read -p "Partição onde o sistema será instalado [ex.: sda2]: " particao_raiz_informada
     else
         particao_raiz_informada=$(basename $particao_raiz_informada)
-        particao_validada="$(valida_particao $particao_raiz_informada "ext4 btrfs" 10G)"
+        particao_validada="$(valida_particao $particao_raiz_informada "ext4 btrfs" 16G)"
 
         if [[ "/dev/$particao_raiz_informada" == "$particao_validada" ]]; then
             particao_raiz="$particao_validada"
