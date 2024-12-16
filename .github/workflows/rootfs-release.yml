@@ -3,6 +3,8 @@ name: RootFS Release
 on:
   workflow_dispatch:
   schedule:
+    - cron: '30  5 * * *' # Executa todos os dias, às 2:30 UTC-3
+    - cron: '30 10 * * *' # Executa todos os dias, às 7:30 UTC-3
     - cron: '30 15 * * *' # Executa todos os dias, às 12:30 UTC-3
     - cron: '30 20 * * *' # Executa todos os dias, às 17:30 UTC-3
 
