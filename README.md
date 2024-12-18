@@ -166,7 +166,7 @@ Abaixo, é explicado o significado de algumas perguntas:
  - **Nome do computador:**: não pode conter espaços e identificará o seu computador na rede. No exemplo da imagem acima, o nome do computador é `um-teste`;
  - **A instalação será realizada em um notebook? [S/N]**: caso você esteja instalando em um notebook, digite "S" e confirme com "Enter".
 
-Após confirmar que os dados estão corretos, digite "S" e confirme com "Enter". Basta esperar a rotina finalizar o processo de instalação, que leva cerca de 60 minutos e esse tempo pode variar de acordo com a velocidade de *download* da sua Internet, velocidade do seu processador, ou se você utiliza HD ou SSD como armazenamento. É preciso manter a conexão com a internet ativa durante todo o processo.
+Após confirmar que os dados estão corretos, digite "S" e confirme com "Enter". Basta esperar a rotina finalizar o processo de instalação que, dependendo do tipo escolhido (rápida ou customizável), pode levar em torno de 10 a 60 minutos, sendo que esse tempo pode variar de acordo com a velocidade de *download* da sua Internet, velocidade do seu processador, ou se você utiliza HD ou SSD como armazenamento. É preciso manter a conexão com a internet ativa durante todo o processo.
 
 Ao final da rotina de instalação, caso veja a mensagem:
 
