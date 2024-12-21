@@ -1565,6 +1565,13 @@ chroot $destino /usr/bin/chown polkitd:root /etc/polkit-1/rules.d
 ### Ajustando a zona padrão do Firewalld para 'trusted' ###
 chroot $destino /usr/bin/firewall-offline-cmd --set-default-zone=trusted
 
+### Criando as regras para dispositivos FPGA da Intel ###
+echo 'ATTR{idVendor}=="09fb", ATTR{idProduct}=="6001", MODE="666"
+ATTR{idVendor}=="09fb", ATTR{idProduct}=="6002", MODE="666"
+ATTR{idVendor}=="09fb", ATTR{idProduct}=="6003", MODE="666"
+ATTR{idVendor}=="09fb", ATTR{idProduct}=="6010", MODE="666"
+ATTR{idVendor}=="09fb", ATTR{idProduct}=="6810", MODE="666"' > $destino/etc/udev/rules.d/altera-usb-blaster.rules
+
 ### Desmontando diretórios ###
 desmontar_tudo $destino
 
