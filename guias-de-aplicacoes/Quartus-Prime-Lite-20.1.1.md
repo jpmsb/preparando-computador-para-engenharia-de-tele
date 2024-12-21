@@ -102,6 +102,21 @@ Altera_Foundation_Class\AFCQ_TED_TCL_MODIFIER_COLOR=@Variant(\0\0\0\x43\x1\xff\x
 Altera_Foundation_Class\AFCQ_TED_BOOKMARK_COLOR=@Variant(\0\0\0\x43\x1\xff\xff\xff\xff\xff\xff\xbf\xbf\0\0)' >> $HOME/.altera.quartus/quartus2.qreg
 ```
 
+### Destravando a gravação no Kit FPGA
+
+Em dados momentos, ao tentar realizar a gravação do código compilado na placa, a tela do _Programmer_ pode não responder após clicar em _Start_. Para resolver este problema, abra um terminal e execute o comando abaixo:
+
+```bash
+pkill -f jtagd -9; /opt/intelFPGA/Quartus-lite/20.1.1/quartus/bin/jtagd --user-start;  /opt/intelFPGA/Quartus-lite/20.1.1/quartus/bin/jtagconfig
+```
+
+Caso uma placa esteja conectada e ligada, o resultdo deverá ser semelhante ao mostrado abaixo:
+
+```bash
+1) USB-Blaster [N-N]
+  020F40DD   10CL040(Y|Z)/EP3C40/EP4CE30/..
+```
+
 ## Desinstalação
 
 Basta remover os arquivos e diretórios criados pelo *script* de instalação:
