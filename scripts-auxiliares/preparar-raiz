@@ -1565,10 +1565,6 @@ echo "[org.gnome.software]
 packaging-format-preference = [ 'package', 'flatpak' ]" > $destino/usr/share/glib-2.0/schemas/20_org.gnome.software-jpmsb.gschema.override
 chroot $destino /usr/bin/glib-compile-schemas /usr/share/glib-2.0/schemas
 
-# ### Definindo a senha do root ###
-# echo -e "\nDefinindo a senha do usuário root\n"
-# echo "root:$senha_root" | chpasswd --root $destino
-
 ### Ajustando as permissões dos diretórios do PolicyKit ###
 chroot $destino /usr/bin/chown -R root:root /usr/share/polkit-1/
 chroot $destino /usr/bin/chown polkitd:root /usr/share/polkit-1/rules.d
