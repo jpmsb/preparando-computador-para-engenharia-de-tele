@@ -13,6 +13,30 @@ desmontar_tudo(){
     umount $destino/sys
 }
 
+box(){
+    local sentence="$1"
+    local sentenceLenght=${#sentence}
+    local horizontalSpacing=$(($sentenceLenght+2))
+
+    local leftUpperCornerSymbol="╔"
+    local rightUpperCornerSymbol="╗"
+    local leftBottomCornerSymbol="╚"
+    local rightBottomCornerSymbol="╝"
+    local horizontalSymbol="═"
+    local verticalSymbol="║"
+
+    for line in $(seq 1 $horizontalSpacing)
+    do
+        local horizontalLine=$horizontalSymbol$horizontalLine
+    done
+
+    echo "$leftUpperCornerSymbol$horizontalLine$rightUpperCornerSymbol"
+    echo "$verticalSymbol${horizontalLine//$horizontalSymbol/ }$verticalSymbol"
+    echo "$verticalSymbol $sentence $verticalSymbol"
+    echo "$verticalSymbol${horizontalLine//$horizontalSymbol/ }$verticalSymbol"
+    echo "$leftBottomCornerSymbol$horizontalLine$rightBottomCornerSymbol"
+}
+
 tentar(){
     local comando="$1"
     local tentativas=$2
