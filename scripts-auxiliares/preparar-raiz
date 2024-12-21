@@ -50,30 +50,12 @@ tentar(){
         local tentativa_atual=$((tentativa_atual + 1))
         sleep $espera
 
+
         if [ $tentativa_atual -eq $tentativas ]; then
-            echo -e "\nApós $tentativas tentativas, o comando de instalação finalizou com erro."
-            echo "Verifique se você está conectado a Internet e se há espaço suficiente na partição onde o sistema será instalado."
-
             echo ""
-            while [[ "$tentar_novamente" != [sSnN] ]]; do
-                read -p "Você deseja tentar repetir o passo que falhou? [S/N] " tentar_novamente
-            done
-
-            if [[ "$tentar_novamente" == [sS] ]]; then
-                local tentativa_atual=0
-                unset tentar_novamente
-            else
-                echo ""
-                echo "╔══════════════════════════════════════════════════════════════════════════════════════════╗"
-                echo "║                                                                                          ║" 
-                echo "║ Você pode tentar executar esse script novamente para reiniciar o processo de instalação. ║"
-                echo "║                                                                                          ║" 
-                echo "╚══════════════════════════════════════════════════════════════════════════════════════════╝"
-                echo ""
-                echo "Atenção: é preciso limpar a partição \"$particao_raiz\" afim de evitar conflitos."
-                echo ""
-                exit 1
-            fi
+            box "Após $tentativas tentativas, o comando de instalação finalizou com erro."
+            echo ""
+            exit 1
         fi
     done
 }
