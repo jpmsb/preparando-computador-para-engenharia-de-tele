@@ -1546,9 +1546,6 @@ fi' > $destino/etc/profile.d/extra_paths.sh
 echo 'export SHELL=/usr/bin/fish' > $destino/etc/profile.d/default_shell.sh
 echo 'SHELL=/usr/bin/fish' >> $destino/etc/environment
 
-# ### Criando o cache do tealdeer ###
-# chroot $destino /usr/bin/su -c "/usr/bin/tldr --update" -s /bin/bash $usuario
-
 ### Ajustando o tema dos aplicativos do Gnome ###
 echo "[org.gnome.desktop.interface]
 color-scheme='prefer-dark'" > $destino/usr/share/glib-2.0/schemas/10_org.gnome.desktop.interface.gschema.override
