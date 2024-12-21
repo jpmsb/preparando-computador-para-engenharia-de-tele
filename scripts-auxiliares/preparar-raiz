@@ -1517,12 +1517,6 @@ tentar "$comando_1" $tentivas_maximas
 
 chmod +x $destino/usr/local/bin/atualizar-sistema
 
-# ### Criando usuário com poder sudo ###
-# echo -e "\nCriando usuário \"$usuario\" com poder sudo\n"
-# useradd --root $destino -m --groups libvirt,wheel,users,video,dialout -c "$nome_completo" --shell /bin/bash $usuario
-# echo "$usuario:$senha" | chpasswd --root $destino
-# rm -rf $destino/home/$usuario/bin
-
 ### Adicionando caminhos extras de binários no FISH ###
 echo 'for i in /bin /sbin /usr/local/sbin /usr/local/bin
     if not contains $i $PATH
