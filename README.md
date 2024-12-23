@@ -17,6 +17,7 @@ Quando se inicia em um curso de tecnologia, nem sempre as ferramentas que serão
             - [Instalação do GNOME](#instala%C3%A7%C3%A3o-do-gnome)
             - [Instalação do KDE](#instala%C3%A7%C3%A3o-do-kde)
 - [Informações extras](#informa%C3%A7%C3%B5es-extras)
+    - [Atualização do sistema](#atualiza%C3%A7%C3%A3o-do-sistema)
 - [Guias para instalação e uso de aplicações](#guias-para-instala%C3%A7%C3%A3o-e-uso-de-aplica%C3%A7%C3%B5es)
     - [Avrdude](guias-de-aplicacoes/Avrdude.md)
     - [CLion](guias-de-aplicacoes/CLion.md)
@@ -236,6 +237,8 @@ Outro comando útil é o `tldr`, que mostra exemplos de uso de comandos:
 
 ![](imagens/opensuse_tumbleweed_tldr_zypper.png)
 
+### Atualização do sistema
+
 Conforme mostrado na imagem acima, o Zypper é o gerenciador de pacotes do openSUSE. Com ele, você pode procurar, instalar, atualizar e remover pacotes do sistema. Note que para atualizar o openSUSE Tumbleweed, o comando é:
 
 ```bash
@@ -258,7 +261,7 @@ Você **não** precisará executar o comando de atualização manualmente. Assim
 
 Como o openSUSE Tumbleweed é uma distribuição *rolling release*, é comum receber notificação de atualizações diariamente e até múltiplas vezes ao dia. Entretanto, você não precisa atualizar de imediado, podendo fazê-lo quando for mais conveniente, como, por exemplo, uma vez por semana, uma vez a cada duas semanas ou até mesmo até uma vez por mês.
 
-Ao tentar atualizar o sistema, caso ocorra o erro abaixo:
+Ao tentar atualizar o sistema, caso ocorra o erro semelhante ao abaixo:
 
 ![](imagens/opensuse_tumbleweed_atualizacao_erro.png)
 
