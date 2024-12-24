@@ -664,6 +664,9 @@ if [[ "$laptop" == [sS] ]]; then
     fi
 fi
 
+### Ajustando o nome do computador ###
+echo "$nome_computador" > $destino/etc/hostname
+
 ### Criando usuário com poder sudo ###
 echo -e "\nCriando usuário \"$usuario\" com poder sudo\n"
 useradd --root $destino -m --groups libvirt,kvm,wheel,users,video,dialout -c "$nome_completo" --shell /bin/bash $usuario
