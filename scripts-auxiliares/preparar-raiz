@@ -1376,7 +1376,7 @@ echo -e "\n### Verificando se o lançamento ainda permanece o mesmo ###"
 lancamento_atual=$(cat $destino/etc/os-release | grep VERSION_ID | cut -d= -f2 | sed 's/"//g')
 
 if [ "$lancamento_atual" != "$data_ultimo_snapshot_tumbleweed" ]; then
-    echo -e "\nO lançamento do openSUSE Tumbleweed foi atualizado de \"$lancamento_atual\" para \"$data_ultimo_snapshot_tumbleweed\"."
+    echo -e "\nO lançamento do openSUSE Tumbleweed foi atualizado de \"$data_ultimo_snapshot_tumbleweed\" para \"$lancamento_atual\"."
     echo -e "O processo foi interrompido."
     exit 1
 else
