@@ -1291,9 +1291,6 @@ echo "polkit.addAdminRule(function(action, subject) {
 
 chmod +r $destino/etc/polkit-1/rules.d/00-wheel.rules
 
-### Ajustando o nome do computador ###
-echo "$nome_computador" > $destino/etc/hostname
-
 ### Ajustando idioma e fuso ###
 echo "LANG=pt_BR.utf8" > $destino/etc/environment
 echo "QT_QPA_PLATFORMTHEME=qt5ct" >> $destino/etc/environment
