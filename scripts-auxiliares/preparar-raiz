@@ -1575,7 +1575,7 @@ desmontar_tudo $destino
 ### Compactando a raiz ###
 echo -e "\nCompactando a raiz \"$destino\"...\n"
 
-tar --acls --xattrs --xattrs-include='*' -Jcpf - -C $destino . | split --bytes=1536MB - $diretorio_base_destino/$nome_arquivo_compactado.tar.xz.
+tar --acls --xattrs --xattrs-include='*' -Jcpf - -C $destino . | split --bytes=2GB - $diretorio_base_destino/$nome_arquivo_compactado.tar.xz.
 
 ### Exibindo o caminho completo dos arquivos gerados ###
 echo -e "\nArquivos gerados:\n"
