@@ -20,72 +20,80 @@ verifica_usuario_logado(){
 }
 
 script_atualizador(){
-    printf '%s\n'                                                                      \
-    '#!/bin/bash'                                                                      \
-    ''                                                                                 \
-    'export ZYPP_MEDIANETWORK=1'                                                       \
-    ''                                                                                 \
-    'box(){'                                                                           \
-    '    local sentence="$1"'                                                          \
-    '    local sentenceLenght=${#sentence}'                                            \
-    '    local horizontalSpacing=$(($sentenceLenght+2))'                               \
-    ''                                                                                 \
-    '    local leftUpperCornerSymbol="╔"'                                              \
-    '    local rightUpperCornerSymbol="╗"'                                             \
-    '    local leftBottomCornerSymbol="╚"'                                             \
-    '    local rightBottomCornerSymbol="╝"'                                            \
-    '    local horizontalSymbol="═"'                                                   \
-    '    local verticalSymbol="║"'                                                     \
-    ''                                                                                 \
-    '    for line in $(seq 1 $horizontalSpacing)'                                      \
-    '    do'                                                                           \
-    '        local horizontalLine=$horizontalSymbol$horizontalLine'                    \
-    '    done'                                                                         \
-    ''                                                                                 \
-    '    echo "$leftUpperCornerSymbol$horizontalLine$rightUpperCornerSymbol"'          \
-    '    echo "$verticalSymbol${horizontalLine//$horizontalSymbol/ }$verticalSymbol"'  \
-    '    echo "$verticalSymbol $sentence $verticalSymbol"'                             \
-    '    echo "$verticalSymbol${horizontalLine//$horizontalSymbol/ }$verticalSymbol"'  \
-    '    echo "$leftBottomCornerSymbol$horizontalLine$rightBottomCornerSymbol"'        \
-    '}'                                                                                \
-    ''                                                                                 \
-    'atualizar_repositorios(){'                                                        \
-    '    local comando="$1"'                                                           \
-    '    box "Atualizando as informações dos repositórios"'                            \
-    '    box "Executando \"$comando\""'                                                \
-    ''                                                                                 \
-    '    $comando'                                                                     \
-    '}'                                                                                \
-    ''                                                                                 \
-    'atualizar() {'                                                                    \
-    '    local comando="$1"'                                                           \
-    ''                                                                                 \
-    '    box "Prosseguindo para a atualização dos pacotes..."'                         \
-    ''                                                                                 \
-    '    while [ -s /run/zypp.pid ]; do'                                               \
-    '        sleep 1'                                                                  \
-    '    done'                                                                         \
-    ''                                                                                 \
-    '    box "Executando \"$comando\""'                                                \
-    ''                                                                                 \
-    '    box "Verifique o que será realizado antes de prosseguir!!"'                   \
-    ''                                                                                 \
-    '    $comando'                                                                     \
-    '    retorno=$?'                                                                   \
-    ''                                                                                 \
-    '    if [ $retorno -ne 0 ]; then'                                                  \
-    '        box "Algo deu errado!! Você pode tentar novamente."'                      \
-    '    fi'                                                                           \
-    ''                                                                                 \
-    "    read -rep \$'\nPressione ENTER para sair...\n'"                               \
-    '    pkcon get-updates'                                                            \
-    '}'                                                                                \
-    ''                                                                                 \
-    'atualizar_repositorios "pkcon get-updates"'                                       \
-    'atualizar "/usr/bin/zypper dist-upgrade --auto-agree-with-licenses"'              \
-    ''                                                                                 \
-    'rm -rf /var/tmp/rpm-tmp.*'                                                        \
-    'rm -rf /var/tmp/zypp.*'
+cat << 'EOF'
+#!/bin/bash
+
+export ZYPP_MEDIANETWORK=1
+
+box(){
+    local sentence="$1"
+    local sentenceLenght=${#sentence}
+    local horizontalSpacing=$(($sentenceLenght+2))
+
+    local leftUpperCornerSymbol="╔"
+    local rightUpperCornerSymbol="╗"
+    local leftBottomCornerSymbol="╚"
+    local rightBottomCornerSymbol="╝"
+    local horizontalSymbol="═"
+    local verticalSymbol="║"
+
+    for line in $(seq 1 $horizontalSpacing)
+    do
+        local horizontalLine=$horizontalSymbol$horizontalLine
+    done
+
+    echo "$leftUpperCornerSymbol$horizontalLine$rightUpperCornerSymbol"
+    echo "$verticalSymbol${horizontalLine//$horizontalSymbol/ }$verticalSymbol"
+    echo "$verticalSymbol $sentence $verticalSymbol"
+    echo "$verticalSymbol${horizontalLine//$horizontalSymbol/ }$verticalSymbol"
+    echo "$leftBottomCornerSymbol$horizontalLine$rightBottomCornerSymbol"
+}
+
+atualizar_repositorios(){
+    local comando="$1"
+    box "Atualizando as informações dos repositórios"
+    box "Executando \"$comando\""
+
+    $comando
+    sleep 1
+}
+
+encerrar_packagekit(){
+    local sinalizador=$1
+    while [ -f $sinalizador ]; do
+        pkill -f "packagekit" -9
+        sleep 0.1
+    done
+}
+
+atualizar() {
+    local comando="$1"
+
+    box "Prosseguindo para a atualização dos pacotes..."
+
+    box "Executando \"$comando\""
+
+    box "Verifique o que será realizado antes de prosseguir!!"
+
+    $comando
+    retorno=$?
+
+    if [ $retorno -ne 0 ]; then
+        box "Algo deu errado!! Você pode tentar novamente."
+    fi
+
+    read -rep $'\nPressione ENTER para sair...\n'
+}
+
+sinalizador=$(mktemp)
+atualizar_repositorios "pkcon get-updates"
+encerrar_packagekit $sinalizador &
+atualizar "/usr/bin/zypper dist-upgrade --auto-agree-with-licenses"
+rm -f $sinalizador
+
+rm -rf /var/tmp/rpm-tmp.*
+rm -rf /var/tmp/zypp.*
+EOF
 
     chmod +x $script_temporario
 }
