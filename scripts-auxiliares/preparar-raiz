@@ -1152,15 +1152,16 @@ type=rpm-md
 priority=100
 keeppackages=0' > $destino/etc/zypp/repos.d/X2Go.repo
 
-echo '[libdvdcss]
-name=libdvdcss
+echo '[VideoLAN_Tumbleweed]
+name=VideoLAN repo (Tumbleweed)
 enabled=1
 autorefresh=1
-baseurl=http://opensuse-guide.org/repo/openSUSE_Tumbleweed/
-path=/
+baseurl=http://download.videolan.org/SuSE/Tumbleweed/
+gpgcheck=1
+gpgkey=http://download.videolan.org/SuSE/Tumbleweed/repodata/repomd.xml.key
 type=rpm-md
 priority=100
-keeppackages=0' > $destino/etc/zypp/repos.d/libdvdcss.repo
+keeppackages=0' > $destino/etc/zypp/repos.d/VideoLAN_Tumbleweed.repo
 
 echo '[google-chrome]
 name=google-chrome
