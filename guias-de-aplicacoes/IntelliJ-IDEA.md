@@ -25,7 +25,7 @@ Para instalar a versão Community do IntelliJ IDEA, execute o seguinte comando:
 curl -sL https://github.com/jpmsb/preparando-computador-para-engenharia-de-tele/raw/main/scripts-auxiliares/instalar-intellij-community | bash
 ```
 
-Será perguntado pela senha do seu usuário para prosseguir a instalação. Após a IDE ter sido instalada, você pode abri-la digitando `intellij-community` no terminal ou pelo menu de aplicativos em **Menu** &rarr; **Desenvolviment**o &rarr; **IntelliJ IDEA Community**.
+Será perguntado pela senha do seu usuário para prosseguir a instalação. Após a IDE ter sido instalada, você pode abri-la digitando `intellij-community` no terminal ou pelo menu de aplicativos em **Menu** &rarr; **Desenvolvimento** &rarr; **IntelliJ IDEA Community**.
 
 ![](imagens/opensuse_tumbleweed_intellij_idea_community_menu.png)
 
