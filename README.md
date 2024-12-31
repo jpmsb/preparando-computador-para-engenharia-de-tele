@@ -35,6 +35,7 @@ Quando se inicia em um curso de tecnologia, nem sempre as ferramentas que serão
     - [Podman](guias-de-aplicacoes/Podman.md)
     - [Quartus Prime Lite 20.1.1](guias-de-aplicacoes/Quartus-Prime-Lite-20.1.1.md)
     - [X2Go Client](guias-de-aplicacoes/X2GoClient.md)
+- [Dúvidas, sugestões ou dificuldades?](#d%C3%BAvidas-sugest%C3%B5es-ou-dificuldades)
 
 ## Sistema operacional
 
@@ -288,3 +289,7 @@ Abaixo estão listados guias onde será explicado como instalar algumas aplicaç
 - [Podman](guias-de-aplicacoes/Podman.md)
 - [Quartus Prime Lite 20.1.1](guias-de-aplicacoes/Quartus-Prime-Lite-20.1.1.md)
 - [X2Go Client](guias-de-aplicacoes/X2GoClient.md)
+
+## Dúvidas, sugestões ou dificuldades?
+
+Caso tenha alguma dúvida, sugestão ou tenha enfrentado alguma dificuldade, sinta-se à vontade para abrir uma [_issue_](https://github.com/jpmsb/preparando-computador-para-engenharia-de-tele/issues) e fornecer mais informações.
