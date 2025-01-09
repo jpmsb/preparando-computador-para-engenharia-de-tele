@@ -3,7 +3,7 @@ name: RootFS Release
 on:
   workflow_dispatch:
   schedule:
-    - cron: '30 */4 * * *' # Executa todos os dias, a cada 4 horas: 21:30, 01:30, 05:30, 09:30, 13:30 e 17:30 (UTC-3)
+    - cron: '30 */3 * * *' # Executa todos os dias, a cada 3 horas: 21:30, 00:30, 03:30, 06:30, 09:30, 12:30, 15:30, 18:30 (UTC-3)
 
 jobs:
   check-new-release:
