@@ -84,8 +84,8 @@ jobs:
         echo " - Directory: ${{ github.workspace }}"
         ls -l ${{ github.workspace }}
 
-    - name: Get current date
-      run: echo "DATE=$(date +'%d/%m/%Y')" >> $GITHUB_ENV
+    - name: Get current date (BRT)
+      run: echo "DATE=$(date -d "-3 hours" +'%d/%m/%Y')" >> $GITHUB_ENV
 
     - name: Create Draft Release and Upload Assets
       run: |
