@@ -61,7 +61,9 @@ atualizar_repositorios(){
 encerrar_packagekit(){
     local sinalizador=$1
     while [ -f $sinalizador ]; do
-        pkill -f "packagekit" -9
+        if [ ! -z "$(pgrep -f "packagekitd")" ]; then
+            pkill -f "packagekitd" -9
+        fi
         sleep 0.1
     done
 }
