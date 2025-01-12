@@ -664,6 +664,21 @@ if [[ "$laptop" == [sS] ]]; then
     fi
 fi
 
+### Ajustando o Package Update Indicator para ###
+### utilizar um script customizado            ###
+mkdir -p $destino/etc/skel/.config/package-update-indicator/
+echo "[General]
+refresh-interval=43200
+update-command='/usr/local/bin/atualizar-sistema'" > $destino/etc/skel/.config/package-update-indicator/package-update-indicator.conf
+
+### Script para atualizar o sistema ###
+echo -e "\nInstalando o script para atualizar o sistema\n"
+comando_1="wget -q --show-progress https://raw.githubusercontent.com/jpmsb/preparando-computador-para-engenharia-de-tele/main/scripts-auxiliares/atualizar-sistema -O $destino/usr/local/bin/atualizar-sistema"
+
+tentar "$comando_1" $tentivas_maximas
+
+chmod +x $destino/usr/local/bin/atualizar-sistema
+
 ### Ajustando o nome do computador ###
 echo "$nome_computador" > $destino/etc/hostname
 

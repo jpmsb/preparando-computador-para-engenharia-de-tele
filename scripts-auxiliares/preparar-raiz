@@ -1500,21 +1500,6 @@ rm -rf /tmp/Tela-icon-theme.tar.gz /tmp/Tela-icon-theme-$ultima_tag_tela
 
 ajustar_tema_icones_tela $destino/usr/share/icons
 
-### Ajustando o Package Update Indicator para ###
-### utilizar um script customizado            ###
-mkdir -p $destino/etc/skel/.config/package-update-indicator/
-echo "[General]
-refresh-interval=43200
-update-command='/usr/local/bin/atualizar-sistema'" > $destino/etc/skel/.config/package-update-indicator/package-update-indicator.conf
-
-### Script para atualizar o sistema ###
-echo -e "\nInstalando o script para atualizar o sistema\n"
-comando_1="wget -q --show-progress https://raw.githubusercontent.com/jpmsb/preparando-computador-para-engenharia-de-tele/main/scripts-auxiliares/atualizar-sistema -O $destino/usr/local/bin/atualizar-sistema"
-
-tentar "$comando_1" $tentivas_maximas
-
-chmod +x $destino/usr/local/bin/atualizar-sistema
-
 ### Adicionando caminhos extras de binários no FISH ###
 echo 'for i in /bin /sbin /usr/local/sbin /usr/local/bin
     if not contains $i $PATH
