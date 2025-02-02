@@ -69,9 +69,7 @@ encerrar_packagekit(){
             contador=$(($contador+1))
         fi
 
-        if [ ! -z "$(pgrep -f "packagekitd")" ]; then
-            pkill -f "packagekitd" -9
-        fi
+        pkill -f "packagekitd" -9
         sleep 0.1
     done
 }
