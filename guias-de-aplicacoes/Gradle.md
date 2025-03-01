@@ -13,7 +13,7 @@ O [Gradle](https://gradle.org/) é uma ferramenta de código aberto que fornece 
 
 ## Instalação
 
-Para o facilitar o processo de instalação do Gradle, foi criado um *script* que realiza tal ação, obtendo a versão mais recente da ferramenta. A rotina pode ser chamada com o comando
+Para o facilitar o processo de instalação do Gradle, foi criado um *script* que realiza tal ação, obtendo a versão mais recente da ferramenta. A rotina pode ser chamada com o comando:
 
 ```bash
 curl -sL https://github.com/jpmsb/preparando-computador-para-engenharia-de-tele/raw/main/scripts-auxiliares/instalar-gradle | bash
