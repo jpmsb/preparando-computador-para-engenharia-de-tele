@@ -18,6 +18,7 @@ Em cada um dos itens abaixo, estão os guias de instalação e uso das aplicaç�
 - [OBS Studio](OBS-Studio.md)
 - [Octave](Octave.md)
 - [PlatformIO](PlatformIO.md)
+- [Postman](Postman.md)
 - [Podman](Podman.md)
 - [Quartus Prime Lite 20.1.1](Quartus-Prime-Lite-20.1.1.md)
 - [X2Go Client](X2GoClient.md)
