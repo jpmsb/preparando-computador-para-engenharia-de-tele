@@ -1208,6 +1208,12 @@ echo -e "\nPacotes pulados:\n"
 cat pacotes_pulados
 echo -e "\n"
 
+### Verifica se o pacote code foi pulado
+if grep -q "code" pacotes_pulados; then
+    echo -e "\nO pacote \"code\" foi pulado. A geração da raiz foi cancelada.\n"
+    exit 1
+fi
+
 comando_1="zypper -n --root $destino --gpg-auto-import-keys refresh -f"
 comando_2="zypper -n --no-refresh --root $destino dist-upgrade -y --download-in-advance --allow-vendor-change --no-recommends --auto-agree-with-licenses"
 comando_3="zypper -n --no-refresh --ignore-unknown --root $destino install -y --allow-vendor-change --download-in-advance --auto-agree-with-licenses $arg_extra_install $pacotes_validados"
