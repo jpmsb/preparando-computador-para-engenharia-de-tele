@@ -7,6 +7,7 @@ Em cada um dos itens abaixo, estão os guias de instalação e uso das aplicaç�
 - [CLion](CLion.md)
 - [Compilador para AVR](Compilador-para-AVR.md)
 - [DataGrip](DataGrip.md)
+- [DBeaver](DBeaver.md)
 - [Docker](Docker.md)
 - [Google Chrome](Google-Chrome.md)
 - [Gradle](Gradle.md)
