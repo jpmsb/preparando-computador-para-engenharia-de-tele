@@ -1204,14 +1204,16 @@ pacotes="$pacotes_base $componentes_graficos $ambiente_de_trabalho $ferramentas_
 
 valida_pacotes_visualizado "Validando os pacotes a serem instalados. Por favor, aguarde..." "$pacotes" "$log_zypper" "--root $destino" "pacotes_validados" "pacotes_pulados"
 
-echo -e "\nPacotes pulados:\n"
-cat pacotes_pulados
-echo -e "\n"
+if [ -f pacotes_pulados ]; then
+    echo -e "\nPacotes pulados:\n"
+    cat pacotes_pulados
+    echo -e "\n"
 
-### Verifica se o pacote code foi pulado
-if grep -q "code" pacotes_pulados; then
-    echo -e "\nO pacote \"code\" foi pulado. A geração da raiz foi cancelada.\n"
-    exit 1
+    ### Verifica se o pacote code foi pulado
+    if grep -q "code" pacotes_pulados; then
+        echo -e "\nO pacote \"code\" foi pulado. A geração da raiz foi cancelada.\n"
+        exit 1
+    fi
 fi
 
 comando_1="zypper -n --root $destino --gpg-auto-import-keys refresh -f"
