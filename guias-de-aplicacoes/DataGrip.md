@@ -2,7 +2,7 @@
 
 O DataGrip é uma IDE da JetBrains com foco em bancos de dados.
 
-# Instalação
+## Instalação
 
 Para facilitar a instalação, foi criado um *script* que automatiza o processo, de forma que, com um simples comando, a IDE é instalada.
 
