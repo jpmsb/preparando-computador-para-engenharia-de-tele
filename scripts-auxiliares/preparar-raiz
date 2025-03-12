@@ -1218,8 +1218,8 @@ fi
 
 comando_1="zypper -n --root $destino --gpg-auto-import-keys refresh -f"
 comando_2="zypper -n --no-refresh --root $destino dist-upgrade -y --download-in-advance --allow-vendor-change --no-recommends --auto-agree-with-licenses"
-comando_3="zypper -n --no-refresh --ignore-unknown --root $destino install -y --allow-vendor-change --download-in-advance --auto-agree-with-licenses $arg_extra_install $pacotes_validados"
-comando_4="zypper -n --no-refresh --ignore-unknown --root $destino install -y --allow-vendor-change --download-in-advance --auto-agree-with-licenses $arg_extra_install -t pattern apparmor fonts x11_yast x11"
+comando_3="zypper -n --no-refresh --ignore-unknown --root $destino install -y --allow-vendor-change --download-in-advance --auto-agree-with-licenses --replacefiles $arg_extra_install $pacotes_validados"
+comando_4="zypper -n --no-refresh --ignore-unknown --root $destino install -y --allow-vendor-change --download-in-advance --auto-agree-with-licenses --replacefiles $arg_extra_install -t pattern apparmor fonts x11_yast x11"
 
 tentar "$comando_1 ; $comando_2 ; $comando_3 && $comando_4" $tentivas_maximas
 
@@ -1364,8 +1364,8 @@ valida_pacotes_visualizado "Validando os pacotes a serem instalados. Por favor, 
 
 comando_1="zypper -n --root $destino refresh -f -r \"repo-oss\" -r \"Packman Repository\""
 comando_2="zypper -n --no-refresh --ignore-unknown --root $destino install -y --download-in-advance --force --repo \"repo-oss\" $pacotes_orfaos_validados"
-comando_3="zypper -n --no-refresh --root $destino dist-upgrade -y --download-in-advance --from \"Packman Repository\" --allow-vendor-change"
-comando_4="zypper -n --no-refresh --root $destino dist-upgrade -y --download-in-advance"
+comando_3="zypper -n --no-refresh --root $destino dist-upgrade -y --download-in-advance --from \"Packman Repository\" --allow-vendor-change --replacefiles"
+comando_4="zypper -n --no-refresh --root $destino dist-upgrade -y --download-in-advance --replacefiles"
 
 if [ -z "$pacotes_orfaos_validados" ]; then
     comando_2="echo -n"
