@@ -1069,7 +1069,7 @@ tentar "$comando_1 && $comando_2 && $comando_3 && $comando_4 && $comando_5" $ten
 arquivo_bootloader > $destino/etc/sysconfig/bootloader
 
 ### Bloqueando pacotes problemáticos ###
-zypper --root $destino addlock ifplugd
+zypper --root $destino addlock ifplugd crda
 
 ### Montando diretórios adicionais ###
 mount --bind /sys $destino/sys
@@ -1354,6 +1354,9 @@ zypper -n --root $destino remove -y --clean-deps java-11-openjdk java-11-openjdk
 ### Removendo o repositório do openSUSE Leap ###
 echo -e "\nRemovendo o repositório do openSUSE Leap\n"
 zypper --root $destino removerepo "Open Source Software Leap"
+
+### Removendo bloqueios ###
+zypper --root $destino removelock ifplugd crda
 
 ### Atualizando os pacotes órfãos e garantindo ###
 ### que as bibliotecas gráficas vêm do Packman ###
