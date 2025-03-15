@@ -96,7 +96,7 @@ Você pode fechar a janela de boas-vindas. Para acessar o terminal, clique no "M
 Com o terminal aberto, copie e cole (botão direito &rarr; "paste" ou Ctrl+Shift+V) o conteúdo abaixo para preparar o ambiente:
 
 ```bash
-sudo -n zypper install -y --force glibc-locale glibc-locale-base gparted; gtk-launch xfce4-terminal.desktop ; exit
+sudo chronyc makestep; sudo zypper -n install -y --force glibc-locale glibc-locale-base gparted; gtk-launch xfce4-terminal.desktop; exit
 ```
 
 ![](imagens/opensuse_tumbleweed_xfce_live_cd_preparar_ambiente.png)
