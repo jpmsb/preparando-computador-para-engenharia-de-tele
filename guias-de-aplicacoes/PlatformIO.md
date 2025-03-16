@@ -20,7 +20,7 @@ O PlatformIO provê uma plataforma unificada para desenvolvimento de sistemas em
 Para instalar o PlatformIO, basta executar o comando:
 
 ```bash
-sudo zypper install python311-platformio
+sudo zypper install python313-platformio
 ```
 
 ## Utilização

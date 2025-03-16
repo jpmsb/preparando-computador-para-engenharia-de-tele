@@ -7,7 +7,7 @@ O Podman é um gerenciador de contêiner que visa ser uma alternativa ao Docker.
 Para instalar o Podman juntamente com o `podman compose`, basta executar o comando:
 
 ```bash
-sudo zypper install podman python311-podman-compose
+sudo zypper install podman python313-podman-compose
 ```
 
 Você pode verificar se a instalação foi bem sucedida executando o comando:
@@ -33,5 +33,5 @@ docker ps -a
 Para desinstalar o Podman, execute o comando:
 
 ```bash
-sudo zypper remove -u podman python311-podman-compose
+sudo zypper remove -u podman python313-podman-compose
 ```
