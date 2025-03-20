@@ -585,11 +585,12 @@ echo
 ### Adicionando o repositorio NVIDIA e instalando o driver ###
 if [[ $instalar_nvidia = "Sim" ]]; then
     echo -e "\nAdicionando o repositório NVIDIA\n"
-    comando_1="zypper -n --root $destino refresh -f -r \"repo-oss\""
+    comando_1="zypper -n --root $destino --gpg-auto-import-keys refresh -f -r \"repo-oss\""
     comando_2="zypper -n --no-refresh --ignore-unknown --root $destino install -y --download-in-advance openSUSE-repos-Tumbleweed-NVIDIA"
-    comando_3="zypper -n --no-refresh --ignore-unknown --root $destino install-new-recommends --repo repo-non-free"
+    comando_3="zypper -n --root $destino --gpg-auto-import-keys refresh -f -r \"repo-non-free\""
+    comando_4="zypper -n --no-refresh --ignore-unknown --root $destino install-new-recommends --repo repo-non-free"
 
-    tentar "$comando_1 ; $comando_2 && $comando_3" $tentivas_maximas
+    tentar "$comando_1 ; $comando_2 && $comando_3 && $comando_4" $tentivas_maximas
 fi
 
 ### Ajustando o tema de inialização do sistema ###
