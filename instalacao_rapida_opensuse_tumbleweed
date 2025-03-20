@@ -626,7 +626,7 @@ if [[ "$laptop" == [sS] ]]; then
     if [[ $instalar_nvidia == "Sim" ]]; then
         echo -e "\nInstalando o SUSE Prime e ajustando para não desligar o áudio do HDMI\n"
         comando_1="zypper -n --root $destino refresh -f -r \"repo-oss\""
-        comando_2="zypper -n --no-refresh --ignore-unknown --root $destino install -y --download-in-advance suse-prime suseprime-appindicator"
+        comando_2="zypper -n --no-refresh --ignore-unknown --root $destino install -y --download-in-advance --auto-agree-with-licenses --no-recommends suse-prime suseprime-appindicator"
 
         tentar "$comando_1 ; $comando_2" $tentivas_maximas
 
