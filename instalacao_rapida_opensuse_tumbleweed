@@ -484,6 +484,9 @@ fi
 ### Montando a partição onde o sistema será instalado ###
 mount $particao_raiz $destino
 
+### Ajustando o Zypper para sempre aceitar as licenças ###
+sed -i '/autoAgreeWithLicenses/ s/.*/autoAgreeWithLicenses = yes/' /etc/zypp/zypper.conf
+
 ### Instalação dos pacotes necessários ###
 echo -e "\nInstalando os pacotes necessários para começar a instalação...\n"
 
