@@ -8,6 +8,7 @@ Em cada um dos itens abaixo, estão os guias de instalação e uso das aplicaç�
 - [Compilador para AVR](Compilador-para-AVR.md)
 - [DataGrip](DataGrip.md)
 - [DBeaver](DBeaver.md)
+- [Discord](Discord.md)
 - [Docker](Docker.md)
 - [Google Chrome](Google-Chrome.md)
 - [Gradle](Gradle.md)
