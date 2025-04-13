@@ -9,7 +9,7 @@ export ULTIMA_VERSAO=$(curl -sL "https://www.postman.com/release-notes/postman-a
 export NOME="Postman"
 export BINARIO="postman"
 export DIR_INSTALACAO_BASE="/opt"
-export DIR_INSTALACAO="$DIR_INSTALACAO_BASE/Postman-$ULTIMA_VERSAO"
+export DIR_INSTALACAO="$DIR_INSTALACAO_BASE/$NOME-$ULTIMA_VERSAO"
 export URL_ARQUIVO="https://dl.pstmn.io/download/latest/linux?arch=64"
 
 if [ -d /opt/$NOME-$ULTIMA_VERSAO ]; then
@@ -30,7 +30,7 @@ echo -e "\n${VERDE}Instalando $NOME $ULTIMA_VERSAO...${NORMAL}\n"
 set -e
 sudo -E -- bash -c '
     echo -e "\nBaixando $NOME $ULTIMA_VERSAO...\n"
-    ARQUIVO_BAIXADO="/tmp/postman.tar.gz"
+    ARQUIVO_BAIXADO="/tmp/$NOME.tar.gz"
     wget -q --show-progress --read-timeout=5 --tries=0 -cO ${ARQUIVO_BAIXADO} ${URL_ARQUIVO}
     rm -rf "$DIR_INSTALACAO"
     mkdir -p "$DIR_INSTALACAO"
@@ -38,7 +38,7 @@ sudo -E -- bash -c '
     echo -e "\nExtraindo o arquivo baixado \"${ARQUIVO_BAIXADO}\" para \"$DIR_INSTALACAO\"...\n"
     pv ${ARQUIVO_BAIXADO} | tar -xz -C ${DIR_INSTALACAO} --strip-components=1
     rm -f /usr/local/bin/$BINARIO
-    ln -s "$DIR_INSTALACAO/Postman" /usr/local/bin/$BINARIO
+    ln -s "$DIR_INSTALACAO/$NOME" /usr/local/bin/$BINARIO
     rm -f ${ARQUIVO_BAIXADO}
     chown -R $SUDO_USER: "$DIR_INSTALACAO"
 
@@ -46,14 +46,14 @@ sudo -E -- bash -c '
     printf "%s\n"                                         \
         "[Desktop Entry]"                                 \
         "Encoding=UTF-8"                                  \
-        "Name=Postman"                                    \
-        "Comment=Postman"                                 \
+        "Name=$NOME"                                      \
+        "Comment=$NOME"                                   \
         "Exec=$BINARIO"                                   \
         "Icon=$DIR_INSTALACAO/app/icons/icon_128x128.png" \
         "Terminal=false"                                  \
         "Type=Application"                                \
         "Categories=Development;IDE;"                     \
-        "StartupNotify=true" > /usr/share/applications/postman.desktop
+        "StartupNotify=true" > /usr/share/applications/$BINARIO.desktop
 '
 
 echo -e "O $NOME $ULTIMA_VERSAO foi instalado com sucesso.\n"
