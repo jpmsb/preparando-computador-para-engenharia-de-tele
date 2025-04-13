@@ -16,11 +16,11 @@ if [ -d /opt/$NOME-$ULTIMA_VERSAO ]; then
     echo "A versão mais recente já está instalada."
     echo "Versão atual: $ULTIMA_VERSAO"
     
-    while [[ "$RESPOSTA_INSTALAR_POSTMAN" != [sSnN] ]]; do
-        read -p "Deseja reinstalar? [s/n] " RESPOSTA_INSTALAR_POSTMAN < /dev/tty
+    while [[ "$RESPOSTA_INSTALAR_NOVAMENTE" != [sSnN] ]]; do
+        read -p "Deseja reinstalar? [s/n] " RESPOSTA_INSTALAR_NOVAMENTE < /dev/tty
     done
 
-    if [[ "$RESPOSTA_INSTALAR_POSTMAN" == [nN] ]]; then
+    if [[ "$RESPOSTA_INSTALAR_NOVAMENTE" == [nN] ]]; then
         exit 0
     fi
 fi
