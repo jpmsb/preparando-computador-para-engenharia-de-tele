@@ -23,6 +23,8 @@ script_atualizador(){
 cat << 'EOF'
 #!/bin/bash
 
+export ZYPP_CURL2=1
+export ZYPP_PCK_PRELOAD=1
 export ZYPP_MEDIANETWORK=1
 
 box(){
