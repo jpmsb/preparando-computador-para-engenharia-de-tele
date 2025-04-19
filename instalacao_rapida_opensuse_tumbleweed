@@ -166,6 +166,15 @@ mensagem_erro_argumento_ignorado(){
     printf "$normal"
 }
 
+mensagem_erro_valor_invalido(){
+    argumento="$1"
+    valor="$2"
+
+    printf "$vermelho"
+    echo -e "\nO valor \"$valor\" informado para \"$argumento\" não é válido. Por favor, continue respondendo abaixo ↓\n"
+    printf "$normal"
+}
+
 ### Variáveis preparatórias ###
 destino=/mnt
 log_zypper="/var/log/zypper.log"
