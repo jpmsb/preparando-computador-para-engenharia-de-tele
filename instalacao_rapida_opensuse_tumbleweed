@@ -219,22 +219,102 @@ echo -e "\nOlá!! Este é o script de instalação rápida do openSUSE Tumblewee
 
 echo -e "\nNo mais, aproveite!!\n"
 
-particao_raiz_informada=$1
-
-## UEFI ou BIOS
-if [ -d /sys/firmware/efi ]; then
-    particao_EFI_informada=$2
-else
-    dispositivo_boot_informado=$2
-fi
-
-senha_root=$3
-usuario=$4
-senha=$5
-nome_completo=$6
-nome_computador=$7
-laptop=$8
-
+### Processar os argumentos ###
+while [[ $# -gt 0 ]]; do
+    argumento="$1"
+    case $argumento in
+        -r|--raiz)
+            if [[ "$2" == -* ]] || [[ -z "$2" ]]; then
+                mensagem_erro_argumento_ignorado $argumento
+            else
+                particao_raiz_informada="$2"
+                shift
+            fi
+            shift
+            ;;
+        -b|--boot)
+            if [[ "$2" == -* ]] || [[ -z "$2" ]]; then
+                mensagem_erro_argumento_ignorado $argumento
+            else
+                if [ -d /sys/firmware/efi ]; then
+                    particao_EFI_informada=$2
+                else
+                    dispositivo_boot_informado=$2
+                fi
+                shift
+            fi
+            shift
+            ;;
+        -S|--senha-root)
+            if [[ "$2" == -* ]] || [[ -z "$2" ]]; then
+                mensagem_erro_argumento_ignorado $argumento
+            else
+                senha_root="$2"
+                shift
+            fi
+            shift
+            ;;
+        -u|--usuario)
+            if [[ "$2" == -* ]] || [[ -z "$2" ]]; then
+                mensagem_erro_argumento_ignorado $argumento
+            else
+                usuario="$2"
+                shift
+            fi
+            shift
+            ;;
+        -s|--senha)
+            if [[ "$2" == -* ]] || [[ -z "$2" ]]; then
+                mensagem_erro_argumento_ignorado $argumento
+            else
+                senha="$2"
+                shift
+            fi
+            shift
+            ;;
+        -n|--nome-completo)
+            if [[ "$2" == -* ]] || [[ -z "$2" ]]; then
+                mensagem_erro_argumento_ignorado $argumento
+            else
+                nome_completo="$2"
+                shift
+            fi
+            shift
+            ;;
+        -H|--nome-computador|--hostname)
+            if [[ "$2" == -* ]] || [[ -z "$2" ]]; then
+                mensagem_erro_argumento_ignorado $argumento
+            else
+                nome_computador="$2"
+                shift
+            fi
+            shift
+            ;;
+        -l|--laptop)
+            if [[ "$2" == -* ]] || [[ -z "$2" ]]; then
+                laptop="s"
+            else
+                laptop="$2"
+                if [[ "$laptop" != [sSnN] ]]; then
+                    mensagem_erro_valor_invalido "$argumento" "$laptop"
+                fi
+                shift
+            fi
+            shift
+            ;;
+        -h|--help|-a|--ajuda)
+            ajuda
+            exit 0
+            ;;
+        *)
+            printf "$vermelho"
+            echo -e "\nO argumento \"$argumento\" não é reconhecido. Por favor, verifique a sintaxe do comando.\n"
+            printf "$normal"
+            ajuda
+            exit 1
+            ;;
+    esac
+done
 
 ### Identificação da CPUs presentes ###
 cpu_info=$(grep -o -m 1 'vendor_id.*' /proc/cpuinfo | cut -d ':' -f 2 | tr -d '[:space:]')
