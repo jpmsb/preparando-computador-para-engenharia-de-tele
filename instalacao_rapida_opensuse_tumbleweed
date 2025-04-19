@@ -158,6 +158,13 @@ ajuda(){
     echo
 }
 
+mensagem_erro_argumento_ignorado(){
+    argumento="$1"
+
+    printf "$vermelho"
+    echo -e "\nO argumento \"$argumento\" precisa de um valor. Por favor, continue respondendo abaixo ↓\n"
+    printf "$normal"
+}
 
 ### Variáveis preparatórias ###
 destino=/mnt
