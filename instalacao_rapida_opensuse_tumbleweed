@@ -185,6 +185,9 @@ valida_tag(){
 }
 
 ### Variáveis preparatórias ###
+nome_repo="jpmsb/preparando-computador-para-engenharia-de-tele"
+url_repo="https://github.com/$nome_repo"
+url_api="https://api.github.com/repos/$nome_repo/releases/latest"
 destino=/mnt
 log_zypper="/var/log/zypper.log"
 tentivas_maximas=5
@@ -308,6 +311,15 @@ while [[ $# -gt 0 ]]; do
                 if [[ "$laptop" != [sSnN] ]]; then
                     mensagem_erro_valor_invalido "$argumento" "$laptop"
                 fi
+                shift
+            fi
+            shift
+            ;;
+        -t|--tag)
+            if [[ "$2" == -* ]] || [[ -z "$2" ]]; then
+                mensagem_erro_argumento_ignorado $argumento
+            else
+                repo_tag="$2"
                 shift
             fi
             shift
@@ -563,17 +575,37 @@ else
     printf "$normal\n"
 fi
 
-echo -n " - Instalação em notebook: "
+printf " - Instalação em notebook: "
 
 if [[ "$laptop" == [sS] ]]; then
     printf "$verde"
-    echo "Sim"
+    printf "Sim"
     printf "$normal\n"
 else
     printf "$vermelho"
-    echo "Não"
+    printf "Não"
     printf "$normal\n"
 fi
+
+if [ -n "$repo_tag" ]; then
+    repo_tag_validada="$(valida_tag $repo_tag $nome_repo)"
+    printf " - Tag do repositório: "
+
+    if [[ "$repo_tag" == "$repo_tag_validada" ]]; then
+        printf "$verde"
+        printf "$repo_tag"
+        printf "$normal\n"
+        url_api="https://api.github.com/repos/$nome_repo/releases/tags/$repo_tag"
+    else
+        printf "$vermelho"
+        printf "O lançamento \"$repo_tag\" informado é inválido. ${amarelo}Utilizando o mais recente.\n"
+        printf "$normal"
+        repo_tag=$(curl -sL "$url_api" | jq -r '.tag_name')
+    fi
+else
+    repo_tag=$(curl -sL "$url_api" | jq -r '.tag_name')
+fi
+url_tag_repo="$url_repo/releases/download/$repo_tag"
 
 echo -e "\n"
 
@@ -604,12 +636,6 @@ tentar "$comando_1 ; $comando_2" $tentivas_maximas
 ### Baixando a raiz do sistema operacional ###
 echo -e "\n${verde}Baixando a raiz do sistema operacional...${normal}\n"
 
-nome_repo="jpmsb/preparando-computador-para-engenharia-de-tele"
-url_repo="https://github.com/$nome_repo"
-url_api="https://api.github.com/repos/$nome_repo/releases/latest"
-ultima_tag_repo=$(curl -sL "$url_api" | jq -r '.tag_name')
-url_ultima_tag_repo="$url_repo/releases/download/$ultima_tag_repo"
-
 arquivos_compactados_e_tamanho=$(curl -sL "$url_api" | jq -r '.assets[] | "\(.name) \(.size)"' | grep -E ".*\.xz.*")
 arquivos_compactados=$(echo "$arquivos_compactados_e_tamanho" | awk '{print $1}' | sed 's/^[ \t]*//;s/[ \t]*$//' | grep -E ".*\.xz.*")
 quantidade_arquivos=$(echo "$arquivos_compactados" | wc -l)
@@ -631,7 +657,7 @@ echo -e "$arquivos_para_baixar" | nl
 contagem_arquivos=1
 for arquivo in $arquivos_compactados; do
     echo -e "\n${verde}Baixando o arquivo \"${ciano}$arquivo${verde}\"... ($contagem_arquivos de $quantidade_arquivos)${normal}\n"
-    comando_1="wget -q --show-progress --read-timeout=5 --tries=0 -cO $destino/$arquivo $url_ultima_tag_repo/$arquivo"
+    comando_1="wget -q --show-progress --read-timeout=5 --tries=0 -cO $destino/$arquivo $url_tag_repo/$arquivo"
 
     tentar "$comando_1" $tentivas_maximas
     contagem_arquivos=$((contagem_arquivos + 1))
