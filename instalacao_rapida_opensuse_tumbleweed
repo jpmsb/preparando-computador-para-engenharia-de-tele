@@ -175,6 +175,15 @@ mensagem_erro_valor_invalido(){
     printf "$normal"
 }
 
+valida_tag(){
+    local tag="$1"
+    local nome_repo="$2"
+    local consulta_api=$(curl -sL "https://api.github.com/repos/$nome_repo/releases/tags/$tag")
+    local retorno=$(echo "$consulta_api" | jq -r ".tag_name")
+
+    echo "$retorno"
+}
+
 ### Variáveis preparatórias ###
 destino=/mnt
 log_zypper="/var/log/zypper.log"
