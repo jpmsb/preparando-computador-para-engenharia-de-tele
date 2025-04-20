@@ -596,6 +596,7 @@ if [ -n "$repo_tag" ]; then
         printf "$repo_tag"
         printf "$normal\n"
         url_api="https://api.github.com/repos/$nome_repo/releases/tags/$repo_tag"
+        desativar_atualizacao="Sim"
     else
         printf "$vermelho"
         printf "O lançamento \"$repo_tag\" informado é inválido. ${amarelo}Utilizando o mais recente.\n"
@@ -678,13 +679,18 @@ mount --bind /dev $destino/dev
 
 ### Atualização do sistema e instalação de pacotes ###
 ### específicos para CPUs e GPUs da AMD e Intel    ###
-echo -e "\n${verde}Atualizando o sistema...${normal}\n"
+if [ -z "$desativar_atualizacao" ]; then
+    echo -e "\n${verde}Atualizando o sistema e instalando drivers...${normal}\n"
+    comando_2="zypper -n --no-refresh --root $destino dist-upgrade -y --download-in-advance --allow-vendor-change --no-recommends --auto-agree-with-licenses ;"
+else
+    echo -e "\n${verde}Instalando drivers...${normal}\n"
+    unset comando_2
+fi
 
-comando_1="zypper -n --root $destino --gpg-auto-import-keys refresh -f"
-comando_2="zypper -n --no-refresh --root $destino dist-upgrade -y --download-in-advance --allow-vendor-change --no-recommends --auto-agree-with-licenses"
+comando_1="zypper -n --root $destino --gpg-auto-import-keys refresh -f ;"
 comando_3="zypper -n --no-refresh --ignore-unknown --root $destino install -y --download-in-advance $pacotes_amd_cpu $pacotes_intel_cpu $pacotes_amd_gpu $pacotes_intel_gpu"
 
-tentar "$comando_1 ; $comando_2 ; $comando_3" $tentivas_maximas
+tentar "$comando_1 $comando_2 $comando_3" $tentivas_maximas
 
 ### Instalação do grub (UEFI ou BIOS) ###
 comando_1="zypper -n --root $destino refresh -f -r \"repo-oss\""
