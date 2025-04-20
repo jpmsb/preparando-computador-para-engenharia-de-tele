@@ -597,9 +597,10 @@ echo -e "\n${verde}Baixando a raiz do sistema operacional...${normal}\n"
 
 nome_repo="jpmsb/preparando-computador-para-engenharia-de-tele"
 url_repo="https://github.com/$nome_repo"
-ultima_tag_repo=$(basename $(curl -Ls -o /dev/null -w %{url_effective} $url_repo/releases/latest))
+url_api="https://api.github.com/repos/$nome_repo/releases/latest"
+ultima_tag_repo=$(curl -sL "$url_api" | jq -r '.tag_name')
 url_ultima_tag_repo="$url_repo/releases/download/$ultima_tag_repo"
-url_api="https://api.github.com/repos/$nome_repo/releases/tags/$ultima_tag_repo"
+
 arquivos_compactados_e_tamanho=$(curl -sL "$url_api" | jq -r '.assets[] | "\(.name) \(.size)"' | grep -E ".*\.xz.*")
 arquivos_compactados=$(echo "$arquivos_compactados_e_tamanho" | awk '{print $1}' | sed 's/^[ \t]*//;s/[ \t]*$//' | grep -E ".*\.xz.*")
 quantidade_arquivos=$(echo "$arquivos_compactados" | wc -l)
