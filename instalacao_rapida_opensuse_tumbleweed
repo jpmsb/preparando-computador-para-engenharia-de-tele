@@ -210,37 +210,6 @@ contagem=0
 limiar=0
 baixados=()
 
-
-# Verifica se o comando zypper está presente
-if ! command -v "zypper" &> /dev/null; then
-    printf "$vermelho"
-    echo -e "\n O comando \"zypper\" não foi encontrado. Este script foi feito para ser executado em sistemas openSUSE.$normal\n"
-    printf "$verde"
-    echo -e " No link abaixo, pode baixar um ISO Live CD do openSUSE Tumbleweed:"
-    echo -e "     https://download.opensuse.org/tumbleweed/iso/openSUSE-Tumbleweed-XFCE-Live-x86_64-Current.iso\n"
-    echo -e " Após baixar o ISO, grave-o em um pendrive e dê boot por ele. Em seguida, abra um terminal execute este script.\n"
-    printf "$normal"
-    exit 1
-fi
-
-# Verifica se o usuário é o root
-if [ "$EUID" -ne 0 ]; then
-    printf "$vermelho"
-    echo -e "\n Este script precisa ser executado como root.\n"
-    printf "$verde"
-    echo -e " Para tal, utilize o comando \"sudo $0\" ou"
-    echo -e " execute-o como usuário root, usando os comandos:\n"
-    echo -e " \"sudo su\" e em seguida \"$0\".\n"
-    printf "$normal"
-    exit 1
-fi
-
-
-### Mensagem de boas vindas ###
-echo -e "\nOlá!! Este é o script de instalação rápida do openSUSE Tumbleweed! Nesse tipo de instalação, uma raiz já pré-configurada será baixada e extraída para a partição informada. Isso acelera o processo de instalação e configuração do sistema operacional. Além disso, será realizada a instalação de pacotes específicos para o seu computador.\n"
-
-echo -e "\nNo mais, aproveite!!\n"
-
 ### Processar os argumentos ###
 while [[ $# -gt 0 ]]; do
     argumento="$1"
@@ -346,6 +315,35 @@ while [[ $# -gt 0 ]]; do
             ;;
     esac
 done
+
+# Verifica se o comando zypper está presente
+if ! command -v "zypper" &> /dev/null; then
+    printf "$vermelho"
+    echo -e "\n O comando \"zypper\" não foi encontrado. Este script foi feito para ser executado em sistemas openSUSE.$normal\n"
+    printf "$verde"
+    echo -e " No link abaixo, pode baixar um ISO Live CD do openSUSE Tumbleweed:"
+    echo -e "     https://download.opensuse.org/tumbleweed/iso/openSUSE-Tumbleweed-XFCE-Live-x86_64-Current.iso\n"
+    echo -e " Após baixar o ISO, grave-o em um pendrive e dê boot por ele. Em seguida, abra um terminal execute este script.\n"
+    printf "$normal"
+    exit 1
+fi
+
+# Verifica se o usuário é o root
+if [ "$EUID" -ne 0 ]; then
+    printf "$vermelho"
+    echo -e "\n Este script precisa ser executado como root.\n"
+    printf "$verde"
+    echo -e " Para tal, utilize o comando \"sudo $0\" ou"
+    echo -e " execute-o como usuário root, usando os comandos:\n"
+    echo -e " \"sudo su\" e em seguida \"$0\".\n"
+    printf "$normal"
+    exit 1
+fi
+
+### Mensagem de boas vindas ###
+echo -e "\nOlá!! Este é o script de instalação rápida do openSUSE Tumbleweed! Nesse tipo de instalação, uma raiz já pré-configurada será baixada e extraída para a partição informada. Isso acelera o processo de instalação e configuração do sistema operacional. Além disso, será realizada a instalação de pacotes específicos para o seu computador.\n"
+
+echo -e "\nNo mais, aproveite!!\n"
 
 ### Identificação da CPUs presentes ###
 cpu_info=$(grep -o -m 1 'vendor_id.*' /proc/cpuinfo | cut -d ':' -f 2 | tr -d '[:space:]')
