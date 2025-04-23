@@ -1843,10 +1843,10 @@ tipo_particao_raiz="$(tipo_particao $particao_raiz)"
 if [ -d /sys/firmware/efi ]; then
     tipo_particao_EFI="$(tipo_particao $particao_EFI)"
 
-    echo "$(/usr/sbin/blkid | grep "$particao_raiz" | awk '{print $2}') / $tipo_particao_raiz defaults 0 0" > $destino/etc/fstab
-    echo "$(/usr/sbin/blkid | grep "$particao_EFI" | awk '{print $2}') /boot/efi $tipo_particao_EFI utf8 0 0" >> $destino/etc/fstab
+    echo "$(/usr/sbin/blkid | grep "$particao_raiz" | grep -o '\bUUID="[^"]*"') / $tipo_particao_raiz defaults 0 0" > $destino/etc/fstab
+    echo "$(/usr/sbin/blkid | grep "$particao_EFI" | grep -o '\bUUID="[^"]*"') /boot/efi $tipo_particao_EFI utf8 0 0" >> $destino/etc/fstab
 else
-    echo "$(/usr/sbin/blkid | grep "$particao_raiz" | awk '{print $2}') / $tipo_particao_raiz defaults 0 0" > $destino/etc/fstab
+    echo "$(/usr/sbin/blkid | grep "$particao_raiz" | grep -o '\bUUID="[^"]*"') / $tipo_particao_raiz defaults 0 0" > $destino/etc/fstab
 fi
 
 ### Adicionando trava para que o pacote não seja removido durante atualizações ###
