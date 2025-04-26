@@ -1593,6 +1593,15 @@ fi' > $destino/etc/profile.d/extra_paths.sh
 echo 'export SHELL=/usr/bin/fish' > $destino/etc/profile.d/default_shell.sh
 echo 'SHELL=/usr/bin/fish' >> $destino/etc/environment
 
+### Definindo as variáveis de ambiente para habilitar o download paralelo do Zypper ###
+echo 'set --export ZYPP_CURL2 1
+set --export ZYPP_PCK_PRELOAD 1
+set --export ZYPP_MEDIANETWORK 1' $destino/etc/fish/conf.d/zypper_parallel_download.fish
+
+echo 'export ZYPP_CURL2=1
+export ZYPP_PCK_PRELOAD=1
+export ZYPP_MEDIANETWORK=1' > $destino/etc/profile.d/zypper_parallel_download.sh
+
 ### Ajustando o tema dos aplicativos do Gnome ###
 echo "[org.gnome.desktop.interface]
 color-scheme='prefer-dark'" > $destino/usr/share/glib-2.0/schemas/10_org.gnome.desktop.interface.gschema.override

@@ -2223,6 +2223,15 @@ fi' > $destino/etc/profile.d/extra_paths.sh
 echo 'export SHELL=/usr/bin/fish' > $destino/etc/profile.d/default_shell.sh
 echo 'SHELL=/usr/bin/fish' >> $destino/etc/environment
 
+### Definindo as variáveis de ambiente para habilitar o download paralelo do Zypper ###
+echo 'set --export ZYPP_CURL2 1
+set --export ZYPP_PCK_PRELOAD 1
+set --export ZYPP_MEDIANETWORK 1' $destino/etc/fish/conf.d/zypper_parallel_download.fish
+
+echo 'export ZYPP_CURL2=1
+export ZYPP_PCK_PRELOAD=1
+export ZYPP_MEDIANETWORK=1' > $destino/etc/profile.d/zypper_parallel_download.sh
+
 ### Criando o cache do tealdeer ###
 chroot $destino /usr/bin/su -c "/usr/bin/tldr --update" -s /bin/bash $usuario
 
