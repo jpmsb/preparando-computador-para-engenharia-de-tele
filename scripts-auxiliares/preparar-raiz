@@ -1602,6 +1602,11 @@ echo 'export ZYPP_CURL2=1
 export ZYPP_PCK_PRELOAD=1
 export ZYPP_MEDIANETWORK=1' > $destino/etc/profile.d/zypper_parallel_download.sh
 
+### Ajuste no sudo para preservar as variáveis de ambiente ###
+### que habilitam o download paralelo do Zypper            ###
+echo 'Defaults env_keep += "ZYPP_CURL2 ZYPP_PCK_PRELOAD ZYPP_MEDIANETWORK"' > $destino/etc/sudoers.d/zypper_parallel_download
+chmod 440 $destino/etc/sudoers.d/zypper_parallel_download
+
 ### Ajustando o tema dos aplicativos do Gnome ###
 echo "[org.gnome.desktop.interface]
 color-scheme='prefer-dark'" > $destino/usr/share/glib-2.0/schemas/10_org.gnome.desktop.interface.gschema.override
