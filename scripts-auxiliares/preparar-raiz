@@ -1482,6 +1482,9 @@ criar_arquivo_kdeglobals > $destino/etc/xdg/kdeglobals
 ### Habilitando a tela de boas vindas ###
 cp $destino/usr/share/applications/org.opensuse.opensuse_welcome.desktop $destino/etc/xdg/autostart/org.opensuse.opensuse_welcome.desktop
 
+### Adicionando o /bin/fish ao arquivo /etc/shells ###
+echo "/bin/fish" >> $destino/etc/shells
+
 ### Instalando a fonte Noto Mono Nerd Font ###
 echo -e "\nInstalando a fonte Noto Mono Nerd Font\n"
 comando_1="wget -q --show-progress https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Noto/Mono/NotoMonoNerdFontMono-Regular.ttf -O $destino/usr/share/fonts/NotoMonoNerdFontMono-Regular.ttf"
