@@ -136,6 +136,19 @@ valida_dispositivo(){
     fi
 }
 
+checa_tipo_tabela_de_particao(){
+    local dispositivo="$1"
+    local tipo_tabela=$(fdisk -l $dispositivo 2>/dev/null | grep -oP 'Disklabel type: \K\w+')
+
+    if [[ "$tipo_tabela" == "gpt" ]]; then
+        echo "GPT"
+    elif [[ "$tipo_tabela" == "dos" ]]; then
+        echo "DOS"
+    else
+        echo "Desconhecido"
+    fi
+}
+
 mostra_preenchido(){
     local valor1="$1"
     local valor2="$2"
