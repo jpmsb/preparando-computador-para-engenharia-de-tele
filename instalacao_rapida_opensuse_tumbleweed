@@ -149,6 +149,11 @@ checa_tipo_tabela_de_particao(){
     fi
 }
 
+checa_particao_bios(){
+    local dispositivo="$1"
+    parted -s $dispositivo print | grep 'bios_grub'
+}
+
 mostra_preenchido(){
     local valor1="$1"
     local valor2="$2"
