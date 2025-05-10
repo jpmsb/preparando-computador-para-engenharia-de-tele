@@ -405,7 +405,7 @@ while [[ -z $particao_raiz ]]; do
 
             if [ -z $ja_rodou ]; then
                 mostra_preenchido "$particao_raiz" "$1" "Partição onde o sistema será instalado: "
-	    fi
+	        fi
             unset ja_rodou
         elif [ ! -z "$particao_raiz_informada" ]; then
             printf "$particao_validada\n"
