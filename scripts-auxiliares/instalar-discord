@@ -42,7 +42,6 @@ sudo -E -- bash -c '
     echo -e "\nExtraindo o arquivo baixado \"${ARQUIVO_BAIXADO}\" para \"$DIR_INSTALACAO\"...\n"
     pv ${ARQUIVO_BAIXADO} | tar -xz -C ${DIR_INSTALACAO} --strip-components=1
     rm -f /usr/local/bin/$BINARIO
-    ln -s "$DIR_INSTALACAO/$NOME" /usr/local/bin/$BINARIO
     rm -f ${ARQUIVO_BAIXADO}
     chown -R $SUDO_USER: "$DIR_INSTALACAO"
 
@@ -58,6 +57,32 @@ sudo -E -- bash -c '
         "Type=Application"                     \
         "Categories=Network;InstantMessaging;" \
         "StartupNotify=true" > /usr/share/applications/$BINARIO.desktop
+
+cat > /usr/local/bin/$BINARIO <<'\''EOF'\''
+#!/bin/bash
+
+#in the file $HOME/.config/discord/settings.json
+#if the setting SKIP_HOST_UPDATE does not exist add it
+#otherwise leave it untouched
+CONFIGFILE=$HOME/.config/discord/settings.json
+EOF
+
+echo EXE=$DIR_INSTALACAO/$NOME >> /usr/local/bin/$BINARIO
+
+cat >> /usr/local/bin/$BINARIO <<'\''EOF'\''
+if [[ -x $EXE ]]; then
+    if [[ -d $HOME/.config && ! -f $CONFIGFILE ]]; then
+        [[ ! -d $HOME/.config/discord ]] && mkdir $HOME/.config/discord
+        echo '\''{"SKIP_HOST_UPDATE": true}'\'' >$CONFIGFILE
+    elif [[ -f $CONFIGFILE ]]; then
+        ! grep -qF SKIP_HOST_UPDATE $CONFIGFILE && \
+          sed -i '\''/^{/s@$@\n  "SKIP_HOST_UPDATE": true,@'\'' $CONFIGFILE
+    fi
+    exec $EXE "$@"
+fi
+EOF
+
+chmod +x /usr/local/bin/$BINARIO
 '
 
 echo -e "O $NOME $ULTIMA_VERSAO foi instalado com sucesso.\n"
