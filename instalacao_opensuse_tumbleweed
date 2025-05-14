@@ -1620,6 +1620,36 @@ if [[ "$resposta" == [nN] ]]; then
     exit 0
 fi
 
+### Caso esteja em modo legado e com tabela de    ###
+### partição do tipo GPT, cria a partição de boot ###
+if [ ! -d /sys/firmware/efi ]; then
+    tipo_tabela_particao=$(checa_tipo_tabela_de_particao $dispositivo_boot)
+
+    if [[ "$tipo_tabela_particao" == "GPT" ]]; then
+        particao_bios=$(checa_particao_bios $dispositivo_boot)
+
+        if [ -z "$particao_bios" ]; then
+            printf "$amarelo"
+            echo -e "\nCriando partição de boot BIOS...\n"
+            printf "$normal"
+
+            printf "n\n\n34\n\nef02\nw\ny\n" | gdisk $dispositivo_boot > /dev/null 2>&1
+
+            particao_bios=$(checa_particao_bios $dispositivo_boot)
+            if [ -z "$particao_bios" ]; then
+                printf "$vermelho"
+                echo -e "\nA partição de boot BIOS não foi criada. Verifique se o dispositivo informado está correto.\n"
+                printf "$normal"
+                exit 1
+            else
+                printf "$verde"
+                echo -e "\nPartição de boot BIOS criada com sucesso!\n"
+                printf "$normal"
+            fi
+        fi
+    fi
+fi
+
 ### Montando a partição onde o sistema será instalado ###
 mount $particao_raiz $destino
 
