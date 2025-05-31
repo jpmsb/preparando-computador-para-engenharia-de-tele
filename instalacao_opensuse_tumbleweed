@@ -1103,12 +1103,20 @@ criar_arquivo_kdeglobals(){
 }
 
 ajuda(){
-    echo -e "Seu comando não possui todos os argumentos necessários. Veja o uso e exemplo abaixo:\n"
-    echo -e "Uso:\n"
-    echo "    ./$0 \"partição onde o sistema será instalado\" \"partição EFI\" \"nome de usuário\" \"seu nome completo\""
-    echo -e "\nEXEMPLO:\n"
-    echo "    ./$0 /mnt /dev/sda1 joao \"João Pedro\""
-    echo
+    echo -e "\nSintaxe: ./$0 [opções]"
+    echo -e "\nOpções:"
+    echo -e "  -r, --raiz <partição>        Partição onde o sistema será instalado (ex.: sda2)"
+    echo -e "  -b, --boot <dispositivo>     Dispositivo de inicialização (ex.: sda) ou partição EFI (ex.: sda1)"
+    echo -e "  -S, --senha-root <senha>     Senha para o superusuário root"
+    echo -e "  -u, --usuario <nome>         Nome do usuário a ser criado (ex.: joao)"
+    echo -e "  -s, --senha <senha>          Senha para o novo usuário"
+    echo -e "  -n, --nome-completo <nome>   Nome completo para o novo usuário (ex.: João Pedro)"
+    echo -e "  -H, --hostname <nome>        Nome do computador (não pode conter espaços) (ex.: meupc)"
+    echo -e "  -l, --laptop <s|n>           Especifica se a instalação será realizada em um portátil. Se nenhum"
+    echo -e "                               valor for informado, será assumido que sim"
+    echo -e "  -h, --help, -a, --ajuda      Exibe essa mensagem de ajuda"
+    echo -e "\nExemplo de uso:"
+    echo -e "  ./$0 -r sda2 -b sda1 -S senha_root -u joao -s senha_usuario -n \"João Pedro\" -H meupc -l s"
 }
 
 mensagem_erro_argumento_ignorado(){
