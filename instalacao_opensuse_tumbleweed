@@ -1111,6 +1111,22 @@ ajuda(){
     echo
 }
 
+mensagem_erro_argumento_ignorado(){
+    argumento="$1"
+
+    printf "$vermelho"
+    echo -e "\nO argumento \"$argumento\" precisa de um valor. Por favor, continue respondendo abaixo ↓\n"
+    printf "$normal"
+}
+
+mensagem_erro_valor_invalido(){
+    argumento="$1"
+    valor="$2"
+
+    printf "$vermelho"
+    echo -e "\nO valor \"$valor\" informado para \"$argumento\" não é válido. Por favor, continue respondendo abaixo ↓\n"
+    printf "$normal"
+}
 
 ### Variáveis preparatórias ###
 destino=/mnt
