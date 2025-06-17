@@ -9,7 +9,7 @@ export ULTIMA_VERSAO=$(curl -s 'https://discord.com/api/download?platform=linux&
 export NOME="Discord"
 export BINARIO="discord"
 export DIR_INSTALACAO_BASE="/opt"
-export DIR_INSTALACAO="$DIR_INSTALACAO_BASE/Discord"
+export DIR_INSTALACAO="$DIR_INSTALACAO_BASE/$NOME"
 export URL_ARQUIVO="https://discord.com/api/download?platform=linux&format=tar.gz"
 
 if [ -d /opt/$NOME ]; then
