@@ -5,23 +5,27 @@ export VERMELHO="\033[1;31m"
 export AMARELO="\033[1;33m"
 export NORMAL="\033[0m"
 
-export ULTIMA_VERSAO=$(curl -sL "https://www.postman.com/release-notes/postman-app/" | grep -oE "<title>.*</title>" | grep -o '[0-9]\+')
+export ULTIMA_VERSAO=$(curl -sL 'https://mkt.cdn.postman.com/www-next/release-notes/app-release-notes.json' | grep -oP '"version":\s*"\K[^"]+' | sort -V | tail -1)
 export NOME="Postman"
 export BINARIO="postman"
 export DIR_INSTALACAO_BASE="/opt"
-export DIR_INSTALACAO="$DIR_INSTALACAO_BASE/$NOME-$ULTIMA_VERSAO"
+export DIR_INSTALACAO="$DIR_INSTALACAO_BASE/$NOME"
 export URL_ARQUIVO="https://dl.pstmn.io/download/latest/linux?arch=64"
 
-if [ -d /opt/$NOME-$ULTIMA_VERSAO ]; then
-    echo "A versão mais recente já está instalada."
-    echo "Versão atual: $ULTIMA_VERSAO"
-    
-    while [[ "$RESPOSTA_INSTALAR_NOVAMENTE" != [sSnN] ]]; do
-        read -p "Deseja reinstalar? [s/n] " RESPOSTA_INSTALAR_NOVAMENTE < /dev/tty
-    done
+if [ -d /opt/$NOME ]; then
+    VERSAO_INSTALADA=$(cat /opt/$NOME/app/resources/app/package.json | grep -oP '"version":\s*"\K[^"]+')
 
-    if [[ "$RESPOSTA_INSTALAR_NOVAMENTE" == [nN] ]]; then
-        exit 0
+    if [ "$VERSAO_INSTALADA" == "$ULTIMA_VERSAO" ]; then
+        echo -e "${AMARELO}A versão mais recente já está instalada.${NORMAL}"
+        echo -e "Versão atual: ${VERDE}$ULTIMA_VERSAO${NORMAL}\n"
+
+        while [[ "$RESPOSTA_INSTALAR_NOVAMENTE" != [sSnN] ]]; do
+            read -p "Deseja reinstalar? [s/n] " RESPOSTA_INSTALAR_NOVAMENTE < /dev/tty
+        done
+
+        if [[ "$RESPOSTA_INSTALAR_NOVAMENTE" == [nN] ]]; then
+            exit 0
+        fi
     fi
 fi
 
