@@ -99,7 +99,7 @@ atualizar() {
 sinalizador=$(mktemp)
 atualizar_repositorios "pkcon get-updates"
 encerrar_packagekit $sinalizador 3 &
-atualizar "/usr/bin/zypper dist-upgrade --auto-agree-with-licenses"
+atualizar "/usr/bin/zypper dist-upgrade --auto-agree-with-licenses --replacefiles"
 
 rm -rf /var/tmp/rpm-tmp.*
 rm -rf /var/tmp/zypp.*
