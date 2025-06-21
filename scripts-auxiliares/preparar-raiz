@@ -1471,10 +1471,6 @@ fi
 
 echo -e "\n##########################################################\n"
 
-### Ajustando para que o zypper não mude o fornecedor de pacotes por padrão ###
-echo -e "\nAjustando para que o zypper não mude o fornecedor de pacotes por padrão\n"
-sed -i 's/solver.dupAllowVendorChange = true/solver.dupAllowVendorChange = false/' $destino/etc/zypp/zypp.conf
-
 ### Ajustando o tempo de atualização automática dos repositórios para 7 dias ###
 echo -e "\nAjustando o tempo de atualização automática dos repositórios para 7 dias\n"
 sed -i '/# repo.refresh.delay = 10/a repo.refresh.delay = 10080' $destino/etc/zypp/zypp.conf
