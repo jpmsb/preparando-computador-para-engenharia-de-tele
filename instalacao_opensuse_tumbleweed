@@ -62,7 +62,7 @@ tentar(){
 
 tipo_particao(){
     local particao="$1"
-    echo "$(/usr/sbin/blkid $particao | awk -F 'TYPE="' '{print $2}' | awk -F '"' '{print $1}')"
+    echo "$(/usr/sbin/blkid $particao | grep -oP '\bTYPE="\K[^"]+')"
 }
 
 tamanho_particao(){
