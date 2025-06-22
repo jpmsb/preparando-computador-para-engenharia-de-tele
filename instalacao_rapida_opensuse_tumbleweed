@@ -813,7 +813,7 @@ if [[ "$laptop" == [sS] ]]; then
  
     comando_1="zypper -n --root $destino refresh -f -r \"repo-oss\""
     comando_2="zypper -n --no-refresh --ignore-unknown --root $destino install -y --download-in-advance -t pattern laptop"
-    comando_3="zypper -n --no-refresh --ignore-unknown --root $destino install -y --download-in-advance touchegg $switcheroo_control tlpui"
+    comando_3="zypper -n --no-refresh --ignore-unknown --root $destino install -y --download-in-advance touchegg $switcheroo_control"
 
     tentar "$comando_1 ; $comando_2 && $comando_3" $tentivas_maximas
 
@@ -843,15 +843,8 @@ if [[ "$laptop" == [sS] ]]; then
         echo "$usuario" > $destino/etc/prime/user
     fi
 
-    # Habilitando o TLP para preservação da bateria
-    chroot $destino /usr/bin/ln -s /usr/lib/systemd/system/tlp.service /etc/systemd/system/multi-user.target.wants/tlp.service
+    # Habilitando o TouchEgg
     chroot $destino /usr/bin/ln -s /usr/lib/systemd/system/touchegg.service /etc/systemd/system/multi-user.target.wants/touchegg.service
-
-    # Ajustando configurações do TLP
-    sed -i '/^/s/^#CPU_SCALING_GOVERNOR_ON_BAT/CPU_SCALING_GOVERNOR_ON_BAT/g' $destino/etc/tlp.conf
-    sed -i '/^/s/^#CPU_SCALING_GOVERNOR_ON_AC/CPU_SCALING_GOVERNOR_ON_AC/g' $destino/etc/tlp.conf
-    sed -i '/^/s/^#RUNTIME_PM_ON_AC=on/RUNTIME_PM_ON_AC=auto/g' $destino/etc/tlp.conf
-    sed -i '/^/s/^#PCIE_ASPM_ON_BAT=default/PCIE_ASPM_ON_BAT=powersupersave/g' $destino/etc/tlp.conf
 
     # Habilitar o serviço do switcheroo-control
     if [ ! -z "$switcheroo_control" ]; then
