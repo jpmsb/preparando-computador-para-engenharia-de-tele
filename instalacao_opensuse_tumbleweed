@@ -1869,6 +1869,10 @@ chroot $destino /usr/bin/ln -s /usr/lib/systemd/system/libvirtd-ro.socket /etc/s
 echo -e "\nHabilitando Earlyoom\n"
 chroot $destino /usr/bin/ln -s /usr/lib/systemd/system/earlyoom.service /etc/systemd/system/multi-user.target.wants/earlyoom.service
 
+### Habilitando o TuneD ###
+echo -e "\nHabilitando o TuneD\n"
+chroot $destino /usr/bin/ln -s /usr/lib/systemd/system/tuned.service /etc/systemd/system/multi-user.target.wants/tuned.service
+
 ### Desabilitando a política de nomes de interface de rede ###
 echo -e "\nDesabilitando a política de nomes de interface de rede\n"
 chroot $destino /usr/bin/ln -s /dev/null /etc/systemd/network/99-default.link
