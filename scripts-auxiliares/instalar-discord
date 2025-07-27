@@ -16,7 +16,7 @@ if [ -d /opt/$NOME ]; then
     VERSAO_INSTALADA=$(grep -oP '"version":\s*"\K[^"]+' /opt/$NOME/resources/build_info.json)
 
     if [ "$VERSAO_INSTALADA" == "$ULTIMA_VERSAO" ]; then
-        echo -e "${AMARELO}A versão mais recente já está instalada.${NORMAL}"
+        echo -e "\n${AMARELO}A versão mais recente do $NOME já está instalada.${NORMAL}"
         echo -e "Versão atual: ${VERDE}$ULTIMA_VERSAO${NORMAL}\n"
 
         while [[ "$RESPOSTA_INSTALAR_NOVAMENTE" != [sSnN] ]]; do
