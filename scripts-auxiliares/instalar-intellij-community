@@ -1,5 +1,10 @@
 #!/bin/bash
 
+export VERDE="\033[1;32m"
+export VERMELHO="\033[1;31m"
+export AMARELO="\033[1;33m"
+export NORMAL="\033[0m"
+
 export NOME_IDE="IntelliJ IDEA Community"
 export CODIGO_IDE="IIC"
 export IDE="idea"
@@ -10,8 +15,6 @@ export BIN_IDE="${NOME_ALTERNATIVO_BIN_IDE:-$IDE}"
 export NOME_ARQUIVO_DESKTOP="$(echo $NOME_IDE | tr 'A-Z ' 'a-z-')"
 export DIR_JETBRAINS="/opt/JetBrains"
 export URL="https://data.services.jetbrains.com/products/download?platform=linux&code=$CODIGO_IDE"
-export VERDE="\033[1;32m"
-export NORMAL="\033[0m"
 
 export URL_ARQUIVO=$(wget -qS --max-redirect 0 --spider "$URL" 2>&1 | tac | grep -P -o -m 1 "(?<=Location: ).*")
 export IDE_ULTIMA_VERSAO=$(echo $URL_ARQUIVO | grep -P -o "(?<=/)[^/]*(?=.tar.gz)")
@@ -22,8 +25,8 @@ if [ -d "$DIR_INSTALACAO" ]; then
     VERSAO_INSTALADA=$(grep -oP '"version":\s*"\K[^"]+' "$DIR_INSTALACAO/product-info.json")
 
     if [ "$VERSAO_INSTALADA" == "$ULTIMA_VERSAO" ]; then
-        echo "A versão mais recente do $NOME_IDE já está instalada."
-        echo "Versão atual: $VERSAO_INSTALADA"
+        echo -e "\n${AMARELO}A versão mais recente do $NOME_IDE já está instalada.${NORMAL}"
+        echo -e "Versão atual: ${VERDE}$VERSAO_INSTALADA${NORMAL}\n"
 
         while [[ "$resposta" != [sSnN] ]]; do
             read -p "Deseja reinstalar? [s/n] " resposta < /dev/tty
