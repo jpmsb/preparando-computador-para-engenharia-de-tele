@@ -13,7 +13,7 @@ export DIR_INSTALACAO="$DIR_INSTALACAO_BASE/$NOME"
 export URL_ARQUIVO="https://dl.pstmn.io/download/latest/linux?arch=64"
 
 if [ -d /opt/$NOME ]; then
-    VERSAO_INSTALADA=$(cat /opt/$NOME/app/resources/app/package.json | grep -oP '"version":\s*"\K[^"]+')
+    VERSAO_INSTALADA=$(grep -oP '"version":\s*"\K[^"]+' /opt/$NOME/app/resources/app/package.json)
 
     if [ "$VERSAO_INSTALADA" == "$ULTIMA_VERSAO" ]; then
         echo -e "${AMARELO}A versão mais recente já está instalada.${NORMAL}"
