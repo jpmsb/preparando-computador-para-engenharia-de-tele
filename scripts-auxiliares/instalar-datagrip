@@ -25,8 +25,8 @@ if [ -d "$DIR_INSTALACAO" ]; then
     VERSAO_INSTALADA=$(grep -oP '"version":\s*"\K[^"]+' "$DIR_INSTALACAO/product-info.json")
 
     if [ "$VERSAO_INSTALADA" == "$ULTIMA_VERSAO" ]; then
-        echo -e "\nA versão mais recente do $NOME_IDE já está instalada."
-        echo -e "Versão atual: $VERSAO_INSTALADA\n"
+        echo -e "\n${AMARELO}A versão mais recente do $NOME_IDE já está instalada.${NORMAL}"
+        echo -e "Versão atual: ${VERDE}$VERSAO_INSTALADA${NORMAL}\n"
 
         while [[ "$resposta" != [sSnN] ]]; do
             read -p "Deseja reinstalar? [s/n] " resposta < /dev/tty
