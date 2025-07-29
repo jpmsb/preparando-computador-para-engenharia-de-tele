@@ -1,5 +1,10 @@
 #!/bin/bash
 
+export VERDE="\033[1;32m"
+export VERMELHO="\033[1;31m"
+export AMARELO="\033[1;33m"
+export NORMAL="\033[0m"
+
 export NOME_IDE="DataGrip"
 export CODIGO_IDE="DG"
 export IDE="datagrip"
@@ -10,8 +15,6 @@ export BIN_IDE="${NOME_ALTERNATIVO_BIN_IDE:-$IDE}"
 export NOME_ARQUIVO_DESKTOP="$(echo $NOME_IDE | tr 'A-Z ' 'a-z-')"
 export DIR_JETBRAINS="/opt/JetBrains"
 export URL="https://data.services.jetbrains.com/products/download?platform=linux&code=$CODIGO_IDE"
-export VERDE="\033[1;32m"
-export NORMAL="\033[0m"
 
 export URL_ARQUIVO=$(wget -qS --max-redirect 0 --spider "$URL" 2>&1 | tac | grep -P -o -m 1 "(?<=Location: ).*")
 export IDE_ULTIMA_VERSAO=$(echo $URL_ARQUIVO | grep -P -o "(?<=/)[^/]*(?=.tar.gz)")
