@@ -49,7 +49,7 @@ sudo -E -- bash -c '
     echo -e "\nExtraindo o arquivo baixado \"${ARQUIVO_BAIXADO}\" para \"$DIR_INSTALACAO\"...\n"
     pv ${ARQUIVO_BAIXADO} | tar -xz -C ${DIR_INSTALACAO} --strip-components=1
     rm -f /usr/local/bin/$BIN_IDE
-    ln -s "$DIR_INSTALACAO/bin/$IDE.sh" /usr/local/bin/$BIN_IDE
+    ln -s "$DIR_INSTALACAO/bin/$IDE" /usr/local/bin/$BIN_IDE
     rm -f ${ARQUIVO_BAIXADO}
     chown -R $SUDO_USER: "$DIR_INSTALACAO"
     
