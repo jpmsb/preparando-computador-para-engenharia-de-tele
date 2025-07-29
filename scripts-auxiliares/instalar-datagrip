@@ -16,17 +16,21 @@ export NORMAL="\033[0m"
 export URL_ARQUIVO=$(wget -qS --max-redirect 0 --spider "$URL" 2>&1 | tac | grep -P -o -m 1 "(?<=Location: ).*")
 export IDE_ULTIMA_VERSAO=$(echo $URL_ARQUIVO | grep -P -o "(?<=/)[^/]*(?=.tar.gz)")
 export ULTIMA_VERSAO="$(echo "$IDE_ULTIMA_VERSAO" | cut -f2 -d "-")"
-export DIR_INSTALACAO="$DIR_JETBRAINS/$(echo $NOME_IDE | tr ' ' '-')-$ULTIMA_VERSAO"
+export DIR_INSTALACAO="$DIR_JETBRAINS/$(echo $NOME_IDE | tr ' ' '-')"
 
 if [ -d "$DIR_INSTALACAO" ]; then
-    echo "A versão mais recente do $NOME_IDE já está instalada."
-    echo "Versão atual: $ULTIMA_VERSAO"
-    
-    while [[ "$resposta" != [sSnN] ]]; do
-        read -p "Deseja reinstalar? [s/n] " resposta < /dev/tty
-    done
+    VERSAO_INSTALADA=$(grep -oP '"version":\s*"\K[^"]+' "$DIR_INSTALACAO/product-info.json")
 
-    [[ "$resposta" == [nN] ]] && exit 0
+    if [ "$VERSAO_INSTALADA" == "$ULTIMA_VERSAO" ]; then
+        echo -e "\nA versão mais recente do $NOME_IDE já está instalada."
+        echo -e "Versão atual: $VERSAO_INSTALADA\n"
+
+        while [[ "$resposta" != [sSnN] ]]; do
+            read -p "Deseja reinstalar? [s/n] " resposta < /dev/tty
+        done
+
+        [[ "$resposta" == [nN] ]] && exit 0
+    fi
 fi
 
 echo -e "\nInstalando $NOME_IDE $ULTIMA_VERSAO...\n"
