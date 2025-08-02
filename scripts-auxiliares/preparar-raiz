@@ -1633,6 +1633,12 @@ fi
 
 chmod +x $destino/usr/local/bin/atualizar-sistema
 
+### Alias para o FISH ###
+echo 'alias zypper="zypper --no-refresh"' > $destino/etc/fish/conf.d/alias.fish
+
+### Alias para o BASH ###
+echo 'alias zypper="zypper --no-refresh"' > $destino/etc/profile.d/alias.bash
+
 ### Adicionando caminhos extras de binários no FISH ###
 echo 'for i in /bin /sbin /usr/local/sbin /usr/local/bin
     if not contains $i $PATH
