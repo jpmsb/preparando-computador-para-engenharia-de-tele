@@ -1682,6 +1682,12 @@ export ZYPP_MEDIANETWORK=1' > $destino/etc/profile.d/zypper_parallel_download.sh
 echo 'Defaults env_keep += "ZYPP_CURL2 ZYPP_PCK_PRELOAD ZYPP_MEDIANETWORK"' > $destino/etc/sudoers.d/zypper_parallel_download
 chmod 440 $destino/etc/sudoers.d/zypper_parallel_download
 
+### Ajuste no sudo para preservar as variáveis de ambiente ###
+### que permitem a execução de aplicações gráficas com     ###
+### usuário privilegiado                                   ###
+echo 'Defaults env_keep += "DISPLAY XAUTHORITY"' > $destino/etc/sudoers.d/graphical_envs
+chmod 440 $destino/etc/sudoers.d/graphical_envs
+
 ### Ajustando o tema dos aplicativos do Gnome ###
 echo "[org.gnome.desktop.interface]
 color-scheme='prefer-dark'" > $destino/usr/share/glib-2.0/schemas/10_org.gnome.desktop.interface.gschema.override
