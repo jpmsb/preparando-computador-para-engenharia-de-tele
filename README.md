@@ -299,6 +299,7 @@ Abaixo estão listados guias onde será explicado como instalar algumas aplicaç
 - [Podman](guias-de-aplicacoes/Podman.md)
 - [PyCharm](guias-de-aplicacoes/PyCharm.md)
 - [Quartus Prime Lite 20.1.1](guias-de-aplicacoes/Quartus-Prime-Lite-20.1.1.md)
+- [WebStorm](guias-de-aplicacoes/WebStorm.md)
 - [X2Go Client](guias-de-aplicacoes/X2GoClient.md)
 
 ## Dúvidas, sugestões ou dificuldades?
