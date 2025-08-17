@@ -1620,6 +1620,10 @@ echo "[General]
 refresh-interval=43200
 update-command='/usr/local/bin/atualizar-sistema'" > $destino/etc/skel/.config/package-update-indicator/package-update-indicator.conf
 
+### Ajustando para que o Package Update Indicator ###
+### seja exibido no Gnome e KDE                   ###
+sed -i '${/^NotShowIn/s/^/# /}' $destino/etc/xdg/autostart/org.guido-berhoerster.code.package-update-indicator.desktop
+
 ### Script para atualizar o sistema ###
 echo -e "\nInstalando o script para atualizar o sistema\n"
 
