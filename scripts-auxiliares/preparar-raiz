@@ -1439,7 +1439,7 @@ chroot $destino /usr/bin/flatpak remote-add --if-not-exists flathub https://flat
 zypper -n --root $destino clean
 
 ### Removendo pacotes desnecessários ###
-zypper -n --root $destino remove -y --clean-deps java-11-openjdk java-11-openjdk-headless javapackages-filesystem javapackages-tools busybox-ed hddtemp openssh-askpass xf86-input-keyboard postfix konsole konsole-part
+zypper -n --root $destino remove -y --clean-deps java-11-openjdk java-11-openjdk-headless javapackages-filesystem javapackages-tools busybox-ed hddtemp openssh-askpass xf86-input-keyboard postfix konsole konsole-part git-gui
 
 ### Atualizando os pacotes órfãos e garantindo ###
 ### que as bibliotecas gráficas vêm do Packman ###
