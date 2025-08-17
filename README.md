@@ -297,6 +297,7 @@ Abaixo estão listados guias onde será explicado como instalar algumas aplicaç
 - [PlatformIO](guias-de-aplicacoes/PlatformIO.md)
 - [Postman](guias-de-aplicacoes/Postman.md)
 - [Podman](guias-de-aplicacoes/Podman.md)
+- [PyCharm](guias-de-aplicacoes/PyCharm.md)
 - [Quartus Prime Lite 20.1.1](guias-de-aplicacoes/Quartus-Prime-Lite-20.1.1.md)
 - [X2Go Client](guias-de-aplicacoes/X2GoClient.md)
 

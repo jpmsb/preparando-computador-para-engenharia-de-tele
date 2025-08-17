@@ -22,5 +22,6 @@ Em cada um dos itens abaixo, estão os guias de instalação e uso das aplicaç�
 - [PlatformIO](PlatformIO.md)
 - [Postman](Postman.md)
 - [Podman](Podman.md)
+- [PyCharm](PyCharm.md)
 - [Quartus Prime Lite 20.1.1](Quartus-Prime-Lite-20.1.1.md)
 - [X2Go Client](X2GoClient.md)
