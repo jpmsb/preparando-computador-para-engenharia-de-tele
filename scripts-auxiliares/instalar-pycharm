@@ -1,0 +1,72 @@
+#!/bin/bash
+
+export VERDE="\033[1;32m"
+export VERMELHO="\033[1;31m"
+export AMARELO="\033[1;33m"
+export NORMAL="\033[0m"
+
+export NOME_IDE="PyCharm"
+export CODIGO_IDE="PC"
+export IDE="pycharm"
+export NOME_ALTERNATIVO_BIN_IDE=""
+export DESCRICAO="Criado para profissionais da Web, de dados e de IA/ML. Turbinado com uma experiência de IDE aprimorada por IA."
+
+export BIN_IDE="${NOME_ALTERNATIVO_BIN_IDE:-$IDE}"
+export NOME_ARQUIVO_DESKTOP="$(echo $NOME_IDE | tr 'A-Z ' 'a-z-')"
+export DIR_JETBRAINS="/opt/JetBrains"
+export URL="https://data.services.jetbrains.com/products/download?platform=linux&code=$CODIGO_IDE"
+
+export URL_ARQUIVO=$(wget -qS --max-redirect 0 --spider "$URL" 2>&1 | tac | grep -P -o -m 1 "(?<=Location: ).*")
+export IDE_ULTIMA_VERSAO=$(echo $URL_ARQUIVO | grep -P -o "(?<=/)[^/]*(?=.tar.gz)")
+export ULTIMA_VERSAO="$(echo "$IDE_ULTIMA_VERSAO" | cut -f2 -d "-")"
+export DIR_INSTALACAO="$DIR_JETBRAINS/$(echo $NOME_IDE | tr ' ' '-')"
+
+if [ -d "$DIR_INSTALACAO" ]; then
+    VERSAO_INSTALADA=$(grep -oP '"version":\s*"\K[^"]+' "$DIR_INSTALACAO/product-info.json")
+
+    if [ "$VERSAO_INSTALADA" == "$ULTIMA_VERSAO" ]; then
+        echo -e "\n${AMARELO}A versão mais recente do $NOME_IDE já está instalada.${NORMAL}"
+        echo -e "Versão atual: ${VERDE}$VERSAO_INSTALADA${NORMAL}\n"
+
+        while [[ "$resposta" != [sSnN] ]]; do
+            read -p "Deseja reinstalar? [s/n] " resposta < /dev/tty
+        done
+
+        [[ "$resposta" == [nN] ]] && exit 0
+    fi
+fi
+
+echo -e "\nInstalando $NOME_IDE $ULTIMA_VERSAO...\n"
+
+set -e
+sudo -E -- bash -c '
+    ARQUIVO_BAIXADO="/tmp/$(basename $URL_ARQUIVO)"
+    echo -e "\nBaixando $NOME_IDE $ULTIMA_VERSAO...\n"
+    wget -q --show-progress --read-timeout=5 --tries=0 -cO ${ARQUIVO_BAIXADO} ${URL_ARQUIVO}
+    rm -rf "$DIR_INSTALACAO"
+    mkdir -p "$DIR_INSTALACAO"
+    
+    echo -e "\nExtraindo o arquivo baixado \"${ARQUIVO_BAIXADO}\" para \"$DIR_INSTALACAO\"...\n"
+    pv ${ARQUIVO_BAIXADO} | tar -xz -C ${DIR_INSTALACAO} --strip-components=1
+    rm -f /usr/local/bin/$BIN_IDE
+    ln -s "$DIR_INSTALACAO/bin/$IDE" /usr/local/bin/$BIN_IDE
+    rm -f ${ARQUIVO_BAIXADO}
+    chown -R $SUDO_USER: "$DIR_INSTALACAO"
+    
+    echo -e "\nCriando atalho no menu...\n"
+    printf "%s\n"                           \
+        "[Desktop Entry]"                   \
+        "Encoding=UTF-8"                    \
+        "Name=$NOME_IDE"                    \
+        "Comment=$DESCRICAO"                \
+        "Exec=$BIN_IDE"                     \
+        "Icon=$DIR_INSTALACAO/bin/$IDE.svg" \
+        "Terminal=false"                    \
+        "Type=Application"                  \
+        "Categories=Development;IDE;"       \
+        "StartupNotify=true" > /usr/share/applications/$NOME_ARQUIVO_DESKTOP.desktop
+'
+
+echo -e "O $NOME_IDE $ULTIMA_VERSAO foi instalado com sucesso.\n"
+
+echo -e "${VERDE}Você pode iniciar o $NOME_IDE a partir do menu ou executando o comando \"$BIN_IDE\" no terminal.${NORMAL}"
