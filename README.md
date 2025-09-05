@@ -53,21 +53,21 @@ Há várias outras distribuições Linux disponíveis e bem famosas, como Ubuntu
 
 ### Por que openSUSE Tumbleweed?
 
-Abaixo, estão alguns motivos para a escolha do openSUSE Tumbleweed:
+Abaixo, estão alguns motivos para a escolha do Tumbleweed:
 
 - Possui um ciclo de lançamento contínuo de atualizações, ou seja, basta manter o sistema atualizado que nenhuma atualização maior de versão será necessária e o sistema nunca ficará obsoleto;
 - É mantido com o apoio da empresa alemã SUSE, o que dá a segurança de o projeto não ser abandonado de uma hora para outra, como ocorrem com sistemas menores, além de haver um time de desenvolvedores para manter e testar o sistema;
 - *Você vai adquirir vários conhecimentos ao longo do curso, então é interessante utilizar algo além de Debian e Ubuntu, afinal, Linux é Linux e, quanto menos você se prender à ferramentas, melhor será a sua capacidade para desenvolver novas soluções.*
 
-### Instalação do openSUSE
+### Instalação do Tumbleweed
 
 Para facilitar o processo de instalação e já deixar o ambiente preparado, foram criados os *scripts* [`instalacao_opensuse_tumbleweed`](https://github.com/jpmsb/preparando-computador-para-engenharia-de-tele/blob/main/instalacao_opensuse_tumbleweed) e [`instalacao_rapida_opensuse_tumbleweed`](https://github.com/jpmsb/preparando-computador-para-engenharia-de-tele/blob/main/instalacao_rapida_opensuse_tumbleweed) com a finalidade de instalar todo o sistema para você, além de pré-instalar algumas aplicações extras, como o **Visual Studio Code**, e realizar configurações adicionais que precisariam ser realizadas manualmente pelo usuário.
 
-Caso você já possua outro sistema em seu computador, será necessário ajustar as partições do seu armazenamento de modo a criar um espaço suficiente para instalar o openSUSE. A maioria das pessoas geralmente possui o Windows instalado. Você será guiado ao longo do processo.
+Caso você já possua outro sistema em seu computador, será necessário ajustar as partições do seu armazenamento de modo a criar um espaço suficiente para instalar o Tumbleweed. A maioria das pessoas geralmente possui o Windows instalado. Você será guiado ao longo do processo.
 
 ### Baixe a mídia de instalação Live CD
 
-O primeiro passo para conseguir utilizar a rotina de instalação presente neste repositório é baixar a ISO Live CD do openSUSE Tumbleweed. Para tal, você pode utilizar o link abaixo:
+O primeiro passo para conseguir utilizar a rotina de instalação presente neste repositório é baixar a ISO Live CD do Tumbleweed. Para tal, você pode utilizar o link abaixo:
 
  - [openSUSE Tumbleweed XFCE Live CD](https://download.opensuse.org/tumbleweed/iso/openSUSE-Tumbleweed-XFCE-Live-x86_64-Current.iso)
 
@@ -115,7 +115,7 @@ Execute o `gparted` com o comando:
 gparted
 ```
 
-Com o `gparted` aberto, você poderá redimensionar as partições do seu armazenamento para criar um espaço suficiente para instalar o openSUSE. Na imagem abaixo é exemplificado o `gparted` com uma partição de 10 GB para o openSUSE:
+Com o `gparted` aberto, você poderá redimensionar as partições do seu armazenamento para criar um espaço suficiente para instalar o Tumbleweed. Na imagem abaixo é exemplificado o `gparted` com uma partição de 10 GB para o Tumbleweed:
 
 ![](imagens/opensuse_tumbleweed_xfce_live_cd_gparted.png)
 
@@ -129,7 +129,7 @@ Se você possuir o Windows instalado, basta clicar com o botão direito em cima 
 
 Após realizadas as mudanças, você pode fechar o `gparted`. Voltando ao terminal, baixe o *script* de instalação com o comando:
 
-### Instalação do openSUSE através do script
+### Instalação do Tumbleweed através do script
 
 - **Instalação rápida (recomendada)**
 
@@ -142,7 +142,7 @@ Após realizadas as mudanças, você pode fechar o `gparted`. Voltando ao termin
     <details>
         <summary>Mais informações</summary>
 
-    Neste tipo de instalação, uma raiz do sistema criada previamente é baixada e extraída para a partição de destino, diminuindo o tempo que seria gasto baixando e instalando cada pacote separadamente. Os arquivos compactados estão na seção "Releases" e são gerados automaticamente a cada novo lançamento de _snapshots_ do openSUSE Tumbleweed.
+    Neste tipo de instalação, uma raiz do sistema criada previamente é baixada e extraída para a partição de destino, diminuindo o tempo que seria gasto baixando e instalando cada pacote separadamente. Os arquivos compactados estão na seção "Releases" e são gerados automaticamente a cada novo lançamento de _snapshots_ do Tumbleweed.
     </details>
 
 - Instalação customizável
@@ -172,7 +172,7 @@ Basta seguir as instruções e responder as perguntas que o *script* fará. Abai
 
 Abaixo, é explicado o significado de algumas perguntas:
 
- - **Partição onde o sistema será instalado [ex.: sda2]:**: você deve informar a partição onde o openSUSE será instalado. Recomenda-se pelo 200 GB de espaço caso você esteja no começo do curso. Além disso, a partição deve estar formatada como EXT4 ou BTRFS;
+ - **Partição onde o sistema será instalado [ex.: sda2]:**: você deve informar a partição onde o Tumbleweed será instalado. Recomenda-se pelo 200 GB de espaço caso você esteja no começo do curso. Além disso, a partição deve estar formatada como EXT4 ou BTRFS;
  - **Partição de inicialização EFI [ex.: sda1]:**: você deve informar a partição EFI, que é onde o *bootloader* será instalado;
  - **Nome do computador:**: não pode conter espaços e identificará o seu computador na rede. No exemplo da imagem acima, o nome do computador é `um-teste`;
  - **A instalação será realizada em um notebook? [S/N]**: caso você esteja instalando em um notebook, digite "S" e confirme com "Enter".
@@ -207,7 +207,7 @@ Ao iniciar o sistema, você será apresentado à tela de login, conforme ilustra
 
 #### Área de trabalho
 
-Após inserir suas credenciais, você será direcionado à área de trabalho do openSUSE Tumbleweed, conforme ilustrado abaixo:
+Após inserir suas credenciais, você será direcionado à área de trabalho do Tumbleweed, conforme ilustrado abaixo:
 
 ![](imagens/opensuse_tumbleweed_area_de_trabalho.png)
 
@@ -249,7 +249,7 @@ Outro comando útil é o `tldr`, que mostra exemplos de uso de comandos:
 
 ### Atualização do sistema
 
-Conforme mostrado na imagem acima, o Zypper é o gerenciador de pacotes do openSUSE. Com ele, você pode procurar, instalar, atualizar e remover pacotes do sistema. Note que para atualizar o openSUSE Tumbleweed, o comando é:
+Conforme mostrado na imagem acima, o Zypper é o gerenciador de pacotes do openSUSE Tumbleweed. Com ele, você pode procurar, instalar, atualizar e remover pacotes do sistema. Note que para atualizar o openSUSE Tumbleweed, o comando é:
 
 ```bash
 sudo zypper dist-upgrade
