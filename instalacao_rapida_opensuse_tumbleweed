@@ -788,7 +788,7 @@ if [[ $instalar_nvidia = "Sim" ]]; then
 fi
 
 ### Ajustando o tema de inialização do sistema ###
-chroot $destino /usr/sbin/plymouth-set-default-theme bgrt -R
+chroot $destino /usr/sbin/plymouth-set-default-theme bgrt
 chroot $destino /usr/bin/dracut -f --regenerate-all
 
 ### Ajustando os pontos de montagem no fstab (UEFI ou BIOS) ###
