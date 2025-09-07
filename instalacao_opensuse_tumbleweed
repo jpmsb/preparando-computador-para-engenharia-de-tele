@@ -1741,6 +1741,15 @@ chroot $destino /usr/bin/rpm -e --justdb package-update-indicator package-update
 ### Garantia de compatibilidade com versões de criptografia antigas ###
 chroot $destino /usr/bin/update-crypto-policies --set LEGACY
 
+### Removendo links simbólicos de UUIDs antigos ###
+UUIDs="$(lsblk -rno UUID | grep -v '^$')"
+
+for caminho_link in /dev/disk/by-uuid/*; do
+    [ -L "$caminho_link" ] || continue
+    uuid_atual="$(basename -- "$caminho_link")"
+    echo "$UUIDs" | grep -Fxq "$uuid_atual" || rm -f "$caminho_link"
+done
+
 ### Ajustando os pontos de montagem no fstab (UEFI ou BIOS) ###
 tipo_particao_raiz="$(tipo_particao $particao_raiz)"
 
