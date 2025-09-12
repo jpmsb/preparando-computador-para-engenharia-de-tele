@@ -36,7 +36,7 @@ if [ -d "$DIR_INSTALACAO" ]; then
     fi
 fi
 
-echo -e "\nInstalando $NOME_IDE $ULTIMA_VERSAO...\n"
+echo -e "\n${VERDE}Instalando $NOME_IDE $ULTIMA_VERSAO...${NORMAL}\n"
 
 set -e
 sudo -E -- bash -c '
