@@ -29,7 +29,7 @@ if [ ! $(command -v java) ]; then
     echo -e "\n${vermelho}O comando \"java\" não foi encontrado.${normal}\n"
 
     while [[ "$resposta_instalar_java" != [sSnN] ]]; do
-        read -p "Deseja instalar o OpenJDK 21? [s/n] " resposta_instalar_java < /dev/tty
+        read -p "Deseja instalar o OpenJDK 25? [s/n] " resposta_instalar_java < /dev/tty
     done
 
     if [[ "$resposta_instalar_java" == [nN] ]]; then
@@ -44,7 +44,7 @@ export dir_instalacao_base="/opt/Gradle"
 export dir_instalacao="$dir_instalacao_base/gradle-$versao"
 export dir_instalacao_simbolico="$dir_instalacao_base/gradle"
 export url_arquivo="https://services.gradle.org/distributions/gradle-$versao-bin.zip"
-export pacote_java="java-21-openjdk-devel"
+export pacote_java="java-25-openjdk-devel"
 
 set -e
 sudo -E -- bash -c '
@@ -66,7 +66,7 @@ sudo -E -- bash -c '
              fi
          }
 
-         echo -e "\n${verde}Procedendo para a instalação do OpenJDK 21...${normal}\n"
+         echo -e "\n${verde}Procedendo para a instalação do OpenJDK 25...${normal}\n"
 
          while [ -s /run/zypp.pid ]; do
             barra="$(barra_rotativa "$barra")"
@@ -81,7 +81,7 @@ sudo -E -- bash -c '
 
          zypper --gpg-auto-import-keys refresh -f -r "$repositorio"
 
-         echo -e "\n${amarelo}Instalando o OpenJDK 21...${normal}\n"
+         echo -e "\n${amarelo}Instalando o OpenJDK 25...${normal}\n"
          zypper -n install -y $pacote_java
 
          echo -e "\n${amarelo}Definindo a variável de ambiente JAVA_HOME...${normal}\n"
