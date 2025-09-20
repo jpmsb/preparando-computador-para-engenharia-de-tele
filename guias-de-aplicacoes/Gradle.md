@@ -19,7 +19,7 @@ Para o facilitar o processo de instalação do Gradle, foi criado um *script* qu
 curl -sL https://github.com/jpmsb/preparando-computador-para-engenharia-de-tele/raw/main/scripts-auxiliares/instalar-gradle | bash
 ```
 
-Caso você não possua o [JDK (Java Development Kit)]((JDK-21.md)) instalado, a rotina questionará se você deseja instalá-lo. Será perguntada pela sua senha de usuário definida durante a instalação do Tumbleweed. Após a instalação, você pode verificar se o Gradle foi instalado corretamente com o comando:
+Caso você não possua o [JDK (Java Development Kit)](JDK.md) instalado, a rotina questionará se você deseja instalá-lo. Será perguntada pela sua senha de usuário definida durante a instalação do Tumbleweed. Após a instalação, você pode verificar se o Gradle foi instalado corretamente com o comando:
 
 ```bash
 gradle --version
@@ -49,7 +49,7 @@ gradle init --project-name "Agenda" --package "engtelecom.poo" --dsl groovy --ty
 
 Note que na imagem acima é possível verificar que algumas perguntas ainda são feitas. Basta apenas pressionar "Enter" para aceitar a opção padrão.
 
-Com o projeto criado, já há um programa de exemplo que pode ser compilado e executado. Para tal, garanta que você possui o JDK (Java Development Kit) instalado, consultando o guia [aqui](JDK-21.md). Feito isso, utilize o seguinte comando dentro do diretório da aplicação:
+Com o projeto criado, já há um programa de exemplo que pode ser compilado e executado. Para tal, garanta que você possui o JDK (Java Development Kit) instalado, consultando o guia [aqui](JDK.md). Feito isso, utilize o seguinte comando dentro do diretório da aplicação:
 
 ```bash
 gradle run
@@ -136,4 +136,4 @@ Para desinstalar o Gradle, execute o comando:
 sudo rm -r /opt/Gradle /usr/local/bin/gradle
 ```
 
-Caso o Java tenha sido instalado pela rotina deste guia, você pode consultar a documentação para desinstalar o JDK [aqui](JDK-21.md).
+Caso o Java tenha sido instalado pela rotina deste guia, você pode consultar a documentação para desinstalar o JDK [aqui](JDK.md).
