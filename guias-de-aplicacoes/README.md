@@ -15,7 +15,7 @@ Em cada um dos itens abaixo, estão os guias de instalação e uso das aplicaç�
 - [Google Chrome](Google-Chrome.md)
 - [Gradle](Gradle.md)
 - [IntelliJ IDEA (Community e Ultimate)](IntelliJ-IDEA.md)
-- [Java Development Kit (JDK) 21](JDK-21.md)
+- [Java Development Kit (JDK) 25](JDK.md)
 - [MATLAB R2015a](MATLAB.md)
 - [MPLAB X IDE](MPLAB-X-IDE.md)
 - [MQTT (Mosquitto) - Servidor e Cliente](guias-de-aplicacoes/Mosquitto.md)
