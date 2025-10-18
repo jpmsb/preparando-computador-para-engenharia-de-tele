@@ -17,7 +17,7 @@ if [ $(command -v $BINARIO) ]; then
 
     if [ "$VERSAO_INSTALADA" == "$ULTIMA_VERSAO" ]; then
         echo -e "\n${AMARELO}A versão mais recente do $NOME já está instalada.${NORMAL}"
-        echo -e "Versão atual: ${VERDE}$ULTIMA_VERSAO${NORMAL}\n"
+        echo -e "Versão atual: ${VERDE}$VERSAO_INSTALADA${NORMAL}\n"
 
         while [[ "$RESPOSTA_INSTALAR_NOVAMENTE" != [sSnN] ]]; do
             read -p "Deseja reinstalar? [s/n] " RESPOSTA_INSTALAR_NOVAMENTE < /dev/tty
