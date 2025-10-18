@@ -37,7 +37,7 @@ sudo -E -- bash -c '
     ARQUIVO_BAIXADO="/tmp/$NOME.rpm"
     wget -q --show-progress --read-timeout=5 --tries=0 -cO ${ARQUIVO_BAIXADO} ${URL_ARQUIVO}
 
-    echo -e "\n${VERDE}Instalando o $NOME $ULTIMA_VERSAO...${NORMAL}\n"
+    echo -e "\n${VERDE}Instalando o $NOME $ULTIMA_VERSAO através do gerenciador de pacotes Zypper...${NORMAL}\n"
     zypper --non-interactive install --force --no-confirm --allow-unsigned-rpm ${ARQUIVO_BAIXADO}
     rm -f ${ARQUIVO_BAIXADO}
 '
