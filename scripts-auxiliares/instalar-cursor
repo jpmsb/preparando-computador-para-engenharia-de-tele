@@ -1,0 +1,47 @@
+#!/bin/bash
+
+export VERDE="\033[1;32m"
+export VERMELHO="\033[1;31m"
+export AMARELO="\033[1;33m"
+export NORMAL="\033[0m"
+
+export URL_ARQUIVO=$(curl -IsL https://api2.cursor.sh/updates/download/golden/linux-x64-rpm/cursor/ | grep -o 'location: https://[^[:space:]]*' | sed 's/location: //g')
+export ULTIMA_VERSAO=$(basename $URL_ARQUIVO | grep -oP '(?<=cursor-)\d+\.\d+\.\d+(?=\.el[0-9]+\.x86_64\.rpm)')
+export NOME="Cursor"
+export BINARIO="cursor"
+export DIR_INSTALACAO="/usr/share/cursor"
+
+
+if [ $(command -v $BINARIO) ]; then
+    VERSAO_INSTALADA=$(grep -oP '"version":\s*"\K[^"]+' $DIR_INSTALACAO/resources/app/package.json)
+
+    if [ "$VERSAO_INSTALADA" == "$ULTIMA_VERSAO" ]; then
+        echo -e "\n${AMARELO}A versão mais recente já está instalada.${NORMAL}"
+        echo -e "Versão atual: ${VERDE}$ULTIMA_VERSAO${NORMAL}\n"
+
+        while [[ "$RESPOSTA_INSTALAR_NOVAMENTE" != [sSnN] ]]; do
+            read -p "Deseja reinstalar? [s/n] " RESPOSTA_INSTALAR_NOVAMENTE < /dev/tty
+        done
+
+        if [[ "$RESPOSTA_INSTALAR_NOVAMENTE" == [nN] ]]; then
+            exit 0
+        fi
+    fi
+fi
+
+echo -e "\n${VERDE}Instalando $NOME $ULTIMA_VERSAO...${NORMAL}\n"
+
+set -e
+sudo -E -- bash -c '
+    echo -e "\n${VERDE}Baixando $NOME $ULTIMA_VERSAO...${NORMAL}\n"
+    ARQUIVO_BAIXADO="/tmp/$NOME.rpm"
+    wget -q --show-progress --read-timeout=5 --tries=0 -cO ${ARQUIVO_BAIXADO} ${URL_ARQUIVO}
+
+    echo -e "\n${VERDE}Instalando $NOME $ULTIMA_VERSAO...${NORMAL}\n"
+    zypper --non-interactive install --force --no-confirm --allow-unsigned-rpm ${ARQUIVO_BAIXADO}
+    rm -f ${ARQUIVO_BAIXADO}
+'
+
+echo -e "\n${VERDE}O $NOME $ULTIMA_VERSAO foi instalado com sucesso.${NORMAL}\n"
+
+echo -e "${VERDE}Você pode iniciar o $NOME a partir do menu ou executando o comando \"$BINARIO\" no terminal.${NORMAL}"
