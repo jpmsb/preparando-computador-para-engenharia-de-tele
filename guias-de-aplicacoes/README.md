@@ -5,6 +5,7 @@ Em cada um dos itens abaixo, estão os guias de instalação e uso das aplicaç�
 
 - [Avrdude](Avrdude.md)
 - [CLion](CLion.md)
+- [Cursor](Cursor.md)
 - [Compilador para AVR](Compilador-para-AVR.md)
 - [DataGrip](DataGrip.md)
 - [DataSpell](DataSpell.md)

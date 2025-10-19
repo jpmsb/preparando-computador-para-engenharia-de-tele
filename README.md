@@ -22,6 +22,7 @@ Quando se inicia em um curso de tecnologia, nem sempre as ferramentas que serão
     - [Avrdude](guias-de-aplicacoes/Avrdude.md)
     - [CLion](guias-de-aplicacoes/CLion.md)
     - [Compilador C++ para AVR](guias-de-aplicacoes/Compilador-para-AVR.md)
+    - [Cursor](guias-de-aplicacoes/Cursor.md)
     - [DataGrip](guias-de-aplicacoes/DataGrip.md)
     - [DataSpell](guias-de-aplicacoes/DataSpell.md)
     - [DBeaver](guias-de-aplicacoes/DBeaver.md)
@@ -44,6 +45,7 @@ Quando se inicia em um curso de tecnologia, nem sempre as ferramentas que serão
     - [RustRover](guias-de-aplicacoes/RustRover.md)
     - [X2Go Client](guias-de-aplicacoes/X2GoClient.md)
 - [Dúvidas, sugestões ou dificuldades?](#d%C3%BAvidas-sugest%C3%B5es-ou-dificuldades)
+
 
 ## Sistema operacional
 
@@ -284,6 +286,7 @@ Abaixo estão listados guias onde será explicado como instalar algumas aplicaç
 - [Avrdude](guias-de-aplicacoes/Avrdude.md)
 - [CLion](guias-de-aplicacoes/CLion.md)
 - [Compilador para AVR](guias-de-aplicacoes/Compilador-para-AVR.md)
+- [Cursor](guias-de-aplicacoes/Cursor.md)
 - [DataGrip](guias-de-aplicacoes/DataGrip.md)
 - [DataSpell](guias-de-aplicacoes/DataSpell.md)
 - [DBeaver](guias-de-aplicacoes/DBeaver.md)
