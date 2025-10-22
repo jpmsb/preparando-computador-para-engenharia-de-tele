@@ -35,8 +35,6 @@ else
     echo -e "\n${VERDE}Instalando o $NOME $ULTIMA_VERSAO...${NORMAL}\n"
 fi
 
-
-
 set -e
 sudo -E -- bash -c '
     echo -e "\n${VERDE}Baixando o $NOME $ULTIMA_VERSAO...${NORMAL}\n"
