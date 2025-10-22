@@ -10,6 +10,7 @@ export ULTIMA_VERSAO=$(basename $URL_ARQUIVO | grep -oP '(?<=cursor-)\d+\.\d+\.\
 export NOME="Cursor"
 export BINARIO="cursor"
 export DIR_INSTALACAO="/usr/share/cursor"
+export ATUALIZACAO=false
 
 
 if [ $(command -v $BINARIO) ]; then
@@ -26,10 +27,15 @@ if [ $(command -v $BINARIO) ]; then
         if [[ "$RESPOSTA_INSTALAR_NOVAMENTE" == [nN] ]]; then
             exit 0
         fi
+    else
+        echo -e "\n${VERDE}Atualizando o $NOME da versão $VERSAO_INSTALADA para $ULTIMA_VERSAO...${NORMAL}\n"
+        ATUALIZACAO=true
     fi
+else
+    echo -e "\n${VERDE}Instalando o $NOME $ULTIMA_VERSAO...${NORMAL}\n"
 fi
 
-echo -e "\n${VERDE}Instalando o $NOME $ULTIMA_VERSAO...${NORMAL}\n"
+
 
 set -e
 sudo -E -- bash -c '
@@ -42,6 +48,10 @@ sudo -E -- bash -c '
     rm -f ${ARQUIVO_BAIXADO}
 '
 
-echo -e "\n${VERDE}O $NOME $ULTIMA_VERSAO foi instalado com sucesso.${NORMAL}\n"
+if $ATUALIZACAO; then
+    echo -e "\n${VERDE}O $NOME $ULTIMA_VERSAO foi atualizado com sucesso.${NORMAL}\n"
+else
+    echo -e "\n${VERDE}O $NOME $ULTIMA_VERSAO foi instalado com sucesso.${NORMAL}\n"
+fi
 
 echo -e "${VERDE}Você pode iniciar o $NOME a partir do menu ou executando o comando \"$BINARIO\" no terminal.${NORMAL}"
