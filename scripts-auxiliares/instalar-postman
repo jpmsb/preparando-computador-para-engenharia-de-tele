@@ -37,7 +37,7 @@ fi
 
 set -e
 sudo -E -- bash -c '
-    echo -e "\nBaixando $NOME $ULTIMA_VERSAO...\n"
+    echo -e "\n${VERDE}Baixando o $NOME $ULTIMA_VERSAO...${NORMAL}\n"
     ARQUIVO_BAIXADO="/tmp/$NOME.tar.gz"
     wget -q --show-progress --read-timeout=5 --tries=0 -cO ${ARQUIVO_BAIXADO} ${URL_ARQUIVO}
     rm -rf "$DIR_INSTALACAO"
