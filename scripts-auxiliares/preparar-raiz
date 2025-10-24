@@ -1478,6 +1478,10 @@ echo -e "\n##########################################################\n"
 echo -e "\nAjustando o tempo de atualização automática dos repositórios para 7 dias\n"
 sed -i '/# repo.refresh.delay = 10/a repo.refresh.delay = 10080' $destino/etc/zypp/zypp.conf
 
+### Ajustando para manter até três versões do kernel ###
+echo -e "\nAjustando para manter até três versões do kernel\n"
+sed -i sed "s/^\(# \)\?multiversion\.kernels = .*/\1multiversion.kernels = latest,latest-1,latest-2,running/" $destino/etc/zypp/zypp.conf
+
 ### Instalando o tema Adapta ###
 echo -e "\nInstalando o tema Adpata\n"
 
