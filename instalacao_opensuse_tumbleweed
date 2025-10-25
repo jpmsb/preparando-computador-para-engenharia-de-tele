@@ -1998,12 +1998,19 @@ sed -i '/# repo.refresh.delay = 10/a repo.refresh.delay = 10080' $destino/etc/zy
 
 ### Instalando o tema Adapta ###
 echo -e "\nInstalando o tema Adpata\n"
-comando_1="wget -q --show-progress https://github.com/jpmsb/preparando-computador-para-engenharia-de-tele/raw/main/compactados/tema-adapta.tar.xz -O /tmp/adapta.tar.xz"
-
-tentar "$comando_1" $tentivas_maximas
 
 mkdir -p $destino/usr/share/themes/Adapta
-tar -xf /tmp/adapta.tar.xz -C $destino/usr/share/themes
+if [ -f "compactados/tema-adapta.tar.xz" ]; then
+    tema_adpta_tar_xz="compactados/tema-adapta.tar.xz"
+else
+    comando_1="wget -q --show-progress https://github.com/jpmsb/preparando-computador-para-engenharia-de-tele/raw/main/compactados/tema-adapta.tar.xz -O /tmp/adapta.tar.xz"
+
+    tentar "$comando_1" $tentivas_maximas
+
+    tema_adpta_tar_xz="/tmp/adapta.tar.xz"
+fi
+
+tar -xf $tema_adpta_tar_xz -C $destino/usr/share/themes
 
 ### Instalando o tema Chameleon Breeze Dark ###
 echo -e "\nInstalando o tema Chameleon Breeze Dark\n"
