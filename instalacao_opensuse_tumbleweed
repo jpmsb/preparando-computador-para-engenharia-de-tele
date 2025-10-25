@@ -2078,11 +2078,18 @@ chroot $destino /usr/bin/fc-cache -r
 
 ### Instalando um skel ###
 echo -e "\nInstalando um skel\n"
-comando_1="wget -q --show-progress https://github.com/jpmsb/preparando-computador-para-engenharia-de-tele/raw/main/compactados/skel.tar.xz -O /tmp/skel.tar.xz"
 
-tentar "$comando_1" $tentivas_maximas
+if [ -f "compactados/skel.tar.xz" ]; then
+    skel_tar_xz="compactados/skel.tar.xz"
+else
+    comando_1="wget -q --show-progress https://github.com/jpmsb/preparando-computador-para-engenharia-de-tele/raw/main/compactados/skel.tar.xz -O /tmp/skel.tar.xz"
 
-tar -xf /tmp/skel.tar.xz -C $destino/etc/skel
+    tentar "$comando_1" $tentivas_maximas
+
+    skel_tar_xz="/tmp/skel.tar.xz"
+fi
+
+tar -xf $skel_tar_xz -C $destino/etc/skel
 
 ### Correção do tema de cores do nomacs - Image Lounge ###
 mkdir -p $destino/etc/skel/.config/nomacs
