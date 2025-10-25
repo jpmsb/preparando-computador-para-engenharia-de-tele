@@ -2029,11 +2029,18 @@ tar -xf $tema_chameleon_breeze_dark_tar_xz -C $destino/usr/share/themes
 
 ### Instalando o tema Chameleon Breeze Darker ###
 echo -e "\nInstalando o tema Chameleon Breeze Darker\n"
-comando_1="wget -q --show-progress https://github.com/jpmsb/preparando-computador-para-engenharia-de-tele/raw/main/compactados/Chameleon-Breeze-Darker.tar.xz -O /tmp/Chameleon-Breeze-Darker.tar.xz"
 
-tentar "$comando_1" $tentivas_maximas
+if [ -f "compactados/Chameleon-Breeze-Darker.tar.xz" ]; then
+    tema_chameleon_breeze_darker_tar_xz="compactados/Chameleon-Breeze-Darker.tar.xz"
+else
+    comando_1="wget -q --show-progress https://github.com/jpmsb/preparando-computador-para-engenharia-de-tele/raw/main/compactados/Chameleon-Breeze-Darker.tar.xz -O /tmp/Chameleon-Breeze-Darker.tar.xz"
 
-tar -xf /tmp/Chameleon-Breeze-Darker.tar.xz -C $destino/usr/share/themes
+    tentar "$comando_1" $tentivas_maximas
+
+    tema_chameleon_breeze_darker_tar_xz="/tmp/Chameleon-Breeze-Darker.tar.xz"
+fi
+
+tar -xf $tema_chameleon_breeze_darker_tar_xz -C $destino/usr/share/themes
 
 ### Criando tema de cores para o Qt5ct ###
 echo '[ColorScheme]
