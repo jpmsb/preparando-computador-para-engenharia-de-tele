@@ -1808,7 +1808,7 @@ if [[ "$laptop" == [sS] ]]; then
  
     comando_1="zypper -n --root $destino refresh -f -r \"repo-oss\""
     comando_2="zypper -n --no-refresh --ignore-unknown --root $destino install -y --download-in-advance -t pattern laptop"
-    comando_3="zypper -n --no-refresh --ignore-unknown --root $destino install -y --download-in-advance touchegg $switcheroo_control"
+    comando_3="zypper -n --no-refresh --ignore-unknown --root $destino install -y --download-in-advance $switcheroo_control"
 
     tentar "$comando_1 ; $comando_2 && $comando_3" $tentivas_maximas
 
