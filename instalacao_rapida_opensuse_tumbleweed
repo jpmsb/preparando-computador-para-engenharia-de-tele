@@ -878,10 +878,20 @@ refresh-interval=43200
 update-command='/usr/local/bin/atualizar-sistema'" > $destino/etc/skel/.config/package-update-indicator/package-update-indicator.conf
 
 ### Script para atualizar o sistema ###
-echo -e "\nInstalando o script para atualizar o sistema\n"
+echo -e "\n${verde}Instalando a versão mais atual da rotina para atualizar o sistema...${normal}\n"
+
+cp $destino/usr/local/bin/atualizar-sistema $destino/usr/local/bin/atualizar-sistema.old
+
 comando_1="wget -q --show-progress https://raw.githubusercontent.com/jpmsb/preparando-computador-para-engenharia-de-tele/main/scripts-auxiliares/atualizar-sistema -O $destino/usr/local/bin/atualizar-sistema"
 
-tentar "$comando_1" $tentivas_maximas
+tentar "$comando_1" $tentivas_maximas "P"
+
+if [ "$tentativas_utilizadas" -ge "$tentivas_maximas" ]; then
+    printf "\n${amarelo}A versão atual da rotina foi mantida...${normal}\n"
+    mv $destino/usr/local/bin/atualizar-sistema.old $destino/usr/local/bin/atualizar-sistema
+else
+    rm -f $destino/usr/local/bin/atualizar-sistema.old
+fi
 
 chmod +x $destino/usr/local/bin/atualizar-sistema
 
