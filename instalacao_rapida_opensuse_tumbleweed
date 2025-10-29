@@ -18,6 +18,7 @@ desmontar_tudo(){
 tentar(){
     local comando="$1"
     local tentativas=$2
+    local tentar_novamente=$3
     local tentativa_atual=0
     local espera=5
 
@@ -26,31 +27,39 @@ tentar(){
 
         echo -e "\nOcorreu um erro, tentando novamente em $espera segundos...\n"
         local tentativa_atual=$((tentativa_atual + 1))
+        export tentativas_utilizadas=$tentativa_atual
         sleep $espera
 
         if [ $tentativa_atual -eq $tentativas ]; then
-            echo -e "\nApós $tentativas tentativas, o comando de instalação finalizou com erro."
-            echo "Verifique se você está conectado a Internet e se há espaço suficiente na partição onde o sistema será instalado."
-
-            echo ""
-            while [[ "$tentar_novamente" != [sSnN] ]]; do
-                read -p "Você deseja tentar repetir o passo que falhou? [S/N] " tentar_novamente
-            done
-
-            if [[ "$tentar_novamente" == [sS] ]]; then
-                local tentativa_atual=0
+            if [[ "$tentar_novamente" == [pP] ]]; then
                 unset tentar_novamente
+                echo -e "\nApós $tentativas tentativas, o comando finalizou com erro. Pulando..."
+
+                break
             else
+                echo -e "\nApós $tentativas tentativas, o comando de instalação finalizou com erro."
+                echo "Verifique se você está conectado a Internet e se há espaço suficiente na partição onde o sistema será instalado."
+
                 echo ""
-                echo "╔══════════════════════════════════════════════════════════════════════════════════════════╗"
-                echo "║                                                                                          ║" 
-                echo "║ Você pode tentar executar esse script novamente para reiniciar o processo de instalação. ║"
-                echo "║                                                                                          ║" 
-                echo "╚══════════════════════════════════════════════════════════════════════════════════════════╝"
-                echo ""
-                echo "Atenção: é preciso limpar a partição \"$particao_raiz\" afim de evitar conflitos."
-                echo ""
-                exit 1
+                while [[ "$tentar_novamente" != [sSnN] ]]; do
+                    read -p "Você deseja tentar repetir o passo que falhou? [S/N] " tentar_novamente
+                done
+
+                if [[ "$tentar_novamente" == [sS] ]]; then
+                    local tentativa_atual=0
+                    unset tentar_novamente
+                else
+                    echo ""
+                    echo "╔══════════════════════════════════════════════════════════════════════════════════════════╗"
+                    echo "║                                                                                          ║"
+                    echo "║ Você pode tentar executar esse script novamente para reiniciar o processo de instalação. ║"
+                    echo "║                                                                                          ║"
+                    echo "╚══════════════════════════════════════════════════════════════════════════════════════════╝"
+                    echo ""
+                    echo "Atenção: é preciso limpar a partição \"$particao_raiz\" afim de evitar conflitos."
+                    echo ""
+                    exit 1
+                fi
             fi
         fi
     done
