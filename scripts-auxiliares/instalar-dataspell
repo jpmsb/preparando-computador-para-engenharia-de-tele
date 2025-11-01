@@ -20,6 +20,8 @@ export URL_ARQUIVO=$(wget -qS --max-redirect 0 --spider "$URL" 2>&1 | tac | grep
 export IDE_ULTIMA_VERSAO=$(echo $URL_ARQUIVO | grep -P -o "(?<=/)[^/]*(?=.tar.gz)")
 export ULTIMA_VERSAO="$(echo "$IDE_ULTIMA_VERSAO" | cut -f2 -d "-")"
 export DIR_INSTALACAO="$DIR_JETBRAINS/$(echo $NOME_IDE | tr ' ' '-')"
+export ATUALIZACAO=false
+export REINSTALACAO=false
 
 if [ -d "$DIR_INSTALACAO" ]; then
     VERSAO_INSTALADA=$(grep -oP '"version":\s*"\K[^"]+' "$DIR_INSTALACAO/product-info.json")
@@ -33,10 +35,14 @@ if [ -d "$DIR_INSTALACAO" ]; then
         done
 
         [[ "$resposta" == [nN] ]] && exit 0
+        REINSTALACAO=true
+    else
+        echo -e "\n${VERDE}Atualizando o $NOME_IDE da versão $VERSAO_INSTALADA para $ULTIMA_VERSAO...${NORMAL}\n"
+        ATUALIZACAO=true
     fi
+else
+    echo -e "\n${VERDE}Instalando $NOME_IDE $ULTIMA_VERSAO...${NORMAL}\n"
 fi
-
-echo -e "\n${VERDE}Instalando $NOME_IDE $ULTIMA_VERSAO...${NORMAL}\n"
 
 set -e
 sudo -E -- bash -c '
@@ -67,6 +73,12 @@ sudo -E -- bash -c '
         "StartupNotify=true" > /usr/share/applications/$NOME_ARQUIVO_DESKTOP.desktop
 '
 
-echo -e "O $NOME_IDE $ULTIMA_VERSAO foi instalado com sucesso.\n"
+if $ATUALIZACAO; then
+    echo -e "\n${VERDE}O $NOME_IDE $ULTIMA_VERSAO foi atualizado com sucesso.${NORMAL}\n"
+elif $REINSTALACAO; then
+    echo -e "\n${VERDE}O $NOME_IDE $ULTIMA_VERSAO foi reinstalado com sucesso.${NORMAL}\n"
+else
+    echo -e "\n${VERDE}O $NOME_IDE $ULTIMA_VERSAO foi instalado com sucesso.${NORMAL}\n"
+fi
 
 echo -e "${VERDE}Você pode iniciar o $NOME_IDE a partir do menu ou executando o comando \"$BIN_IDE\" no terminal.${NORMAL}"
