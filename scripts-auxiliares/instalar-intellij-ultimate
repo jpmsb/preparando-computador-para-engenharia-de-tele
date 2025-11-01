@@ -44,8 +44,8 @@ else
     echo -e "\n${VERDE}Instalando $NOME_IDE $ULTIMA_VERSAO...${NORMAL}\n"
 fi
 
-set -e
 sudo -E -- bash -c '
+    set -e
     mkdir -p "$DIR_JETBRAINS"
     ARQUIVO_BAIXADO="$DIR_JETBRAINS/$(basename $URL_ARQUIVO)"
     echo -e "\nBaixando $NOME_IDE $ULTIMA_VERSAO...\n"
