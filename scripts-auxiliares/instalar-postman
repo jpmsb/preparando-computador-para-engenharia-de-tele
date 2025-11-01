@@ -11,7 +11,6 @@ export BINARIO="postman"
 export DIR_INSTALACAO_BASE="/opt"
 export DIR_INSTALACAO="$DIR_INSTALACAO_BASE/$NOME"
 export URL_ARQUIVO="https://dl.pstmn.io/download/latest/linux?arch=64"
-export ATUALIZACAO=false
 
 if [ -d /opt/$NOME ]; then
     VERSAO_INSTALADA=$(grep -oP '"version":\s*"\K[^"]+' /opt/$NOME/app/resources/app/package.json)
@@ -27,12 +26,17 @@ if [ -d /opt/$NOME ]; then
         if [[ "$RESPOSTA_INSTALAR_NOVAMENTE" == [nN] ]]; then
             exit 0
         fi
+        MENSAGEM_SUCESSO="reinstalado"
+        MENSAGEM_ERRO="reinstalar"
     else
         echo -e "\n${VERDE}Atualizando o $NOME da versão $VERSAO_INSTALADA para $ULTIMA_VERSAO...${NORMAL}\n"
-        ATUALIZACAO=true
+        MENSAGEM_SUCESSO="atualizado"
+        MENSAGEM_ERRO="atualizar"
     fi
 else
     echo -e "\n${VERDE}Instalando $NOME $ULTIMA_VERSAO...${NORMAL}\n"
+    MENSAGEM_SUCESSO="instalado"
+    MENSAGEM_ERRO="instalar"
 fi
 
 sudo -E -- bash -c '
@@ -64,10 +68,11 @@ sudo -E -- bash -c '
         "StartupNotify=true" > /usr/share/applications/$BINARIO.desktop
 ' < /dev/tty
 
-if $ATUALIZACAO; then
-    echo -e "\n${VERDE}O $NOME $ULTIMA_VERSAO foi atualizado com sucesso.${NORMAL}\n"
+RETORNO=$?
+if [ $RETORNO -eq 0 ]; then
+    echo -e "\n${VERDE}O $NOME $ULTIMA_VERSAO foi $MENSAGEM_SUCESSO com sucesso.${NORMAL}\n"
+    echo -e "${VERDE}Você pode iniciar o $NOME a partir do menu ou executando o comando \"$BINARIO\" no terminal.${NORMAL}"
 else
-    echo -e "\n${VERDE}O $NOME $ULTIMA_VERSAO foi instalado com sucesso.${NORMAL}\n"
+    echo -e "\n${VERMELHO}Ocorreu um erro ao $MENSAGEM_ERRO o $NOME $ULTIMA_VERSAO.${NORMAL}\n"
+    echo -e "${VERMELHO}Por favor, tente novamente.${NORMAL}"
 fi
-
-echo -e "${VERDE}Você pode iniciar o $NOME a partir do menu ou executando o comando \"$BINARIO\" no terminal.${NORMAL}"
