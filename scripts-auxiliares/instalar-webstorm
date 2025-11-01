@@ -46,7 +46,8 @@ fi
 
 set -e
 sudo -E -- bash -c '
-    ARQUIVO_BAIXADO="/tmp/$(basename $URL_ARQUIVO)"
+    mkdir -p "$DIR_JETBRAINS"
+    ARQUIVO_BAIXADO="$DIR_JETBRAINS/$(basename $URL_ARQUIVO)"
     echo -e "\nBaixando $NOME_IDE $ULTIMA_VERSAO...\n"
     wget -q --show-progress --read-timeout=5 --tries=0 -cO ${ARQUIVO_BAIXADO} ${URL_ARQUIVO}
     rm -rf "$DIR_INSTALACAO"
