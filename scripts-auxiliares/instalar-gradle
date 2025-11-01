@@ -46,8 +46,8 @@ export dir_instalacao_simbolico="$dir_instalacao_base/gradle"
 export url_arquivo="https://services.gradle.org/distributions/gradle-$versao-bin.zip"
 export pacote_java="java-25-openjdk-devel"
 
-set -e
 sudo -E -- bash -c '
+    set -e
     if [ "$instalar_java" = true ]; then
          set -e
          barra_rotativa() {

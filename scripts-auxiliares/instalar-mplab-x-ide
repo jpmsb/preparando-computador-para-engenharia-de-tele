@@ -36,8 +36,8 @@ fi
 
 echo -e "\n${VERDE}Instalando $NOME_IDE ${ULTIMA_VERSAO}...${NORMAL}\n"
 
-set -e
 sudo -E -- bash -c '
+    set -e
     echo -e "\nBaixando $NOME_IDE $ULTIMA_VERSAO...\n"
     mkdir -p $DIR_TEMP
     ARQUIVO_BAIXADO_IDE="$DIR_TEMP/$(basename $URL_IDE)"

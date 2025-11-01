@@ -36,8 +36,8 @@ fi
 
 echo -e "\n\n$VERDE--- Instalando $NOME_IDE $VERSAO ---$NORMAL\n\n"
 
-set -e
 sudo -E -- bash -c '
+    set -e
     if [ ! -z "$DEPENDENCIAS_FALTANDO" ]; then
         set -e
         barra_rotativa() {
