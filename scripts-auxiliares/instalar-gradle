@@ -102,7 +102,7 @@ sudo -E -- bash -c '
     rm -f /usr/local/bin/$binario
     ln -s $dir_instalacao_simbolico/bin/$binario /usr/local/bin/$binario
     rm -f ${arquivo_baixado}
-'
+' < /dev/tty
 
 echo -e "\n${verde}Instalação concluída. Você pode executar o comando \"gradle\" pelo terminal.${normal}\n"
 

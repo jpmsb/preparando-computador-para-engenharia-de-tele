@@ -87,7 +87,7 @@ fi
 EOF
 
 chmod +x /usr/local/bin/$BINARIO
-'
+' < /dev/tty
 
 if $ATUALIZACAO; then
     echo -e "\n${VERDE}O $NOME $ULTIMA_VERSAO foi atualizado com sucesso.${NORMAL}\n"

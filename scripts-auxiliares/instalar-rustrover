@@ -74,7 +74,7 @@ sudo -E -- bash -c '
         "Type=Application"                  \
         "Categories=Development;IDE;"       \
         "StartupNotify=true" > /usr/share/applications/$NOME_ARQUIVO_DESKTOP.desktop
-'
+' < /dev/tty
 
 RETORNO=$?
 if [ $RETORNO -eq 0 ]; then

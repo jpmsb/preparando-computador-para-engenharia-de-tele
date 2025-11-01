@@ -62,7 +62,7 @@ sudo -E -- bash -c '
     bash -c "${ARQUIVO_BAIXADO_XC8} --mode unattended --unattendedmodeui minimalWithDialogs --installer-language pt_BR --prefix ${DIR_INSTALACAO_XC8} --netservername localhost" 2>/dev/null
 
     rm -f ${DIR_TEMP}/*
-'
+' < /dev/tty
 
 echo -e "O $NOME_IDE $ULTIMA_VERSAO e $NOME_COMPILADOR $ULTIMA_VERSAO_XC8 foram instalados com sucesso.\n"
 

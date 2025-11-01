@@ -62,7 +62,7 @@ sudo -E -- bash -c '
         "Type=Application"                                \
         "Categories=Development;IDE;"                     \
         "StartupNotify=true" > /usr/share/applications/$BINARIO.desktop
-'
+' < /dev/tty
 
 if $ATUALIZACAO; then
     echo -e "\n${VERDE}O $NOME $ULTIMA_VERSAO foi atualizado com sucesso.${NORMAL}\n"
