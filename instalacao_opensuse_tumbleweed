@@ -2061,9 +2061,6 @@ criar_esquema_chameleon_breeze_darker > $destino/usr/share/color-schemes/Chamele
 ### Criando o arquivo kdeglobals ###
 criar_arquivo_kdeglobals > $destino/etc/xdg/kdeglobals
 
-### Habilitando a tela de boas vindas ###
-cp $destino/usr/share/applications/org.opensuse.opensuse_welcome.desktop $destino/etc/xdg/autostart/org.opensuse.opensuse_welcome.desktop
-
 ### Adicionando o /bin/fish ao arquivo /etc/shells ###
 echo "/bin/fish" >> $destino/etc/shells
 
