@@ -826,14 +826,13 @@ if [[ "$laptop" == [sS] ]]; then
     ### Instalando componentes para melhor experiência com laptops ###
     echo -e "\nInstalando componentes para melhor experiência com laptops\n"
     if [ "$num_gpus" -gt 1 ]; then
-        switcheroo_control="switcheroo-control"
+        switcheroo_control="&& zypper -n --no-refresh --ignore-unknown --root $destino install -y --download-in-advance switcheroo-control"
     fi
  
     comando_1="zypper -n --root $destino refresh -f -r \"repo-oss\""
     comando_2="zypper -n --no-refresh --ignore-unknown --root $destino install -y --download-in-advance -t pattern laptop"
-    comando_3="zypper -n --no-refresh --ignore-unknown --root $destino install -y --download-in-advance $switcheroo_control"
 
-    tentar "$comando_1 ; $comando_2 && $comando_3" $tentivas_maximas
+    tentar "$comando_1 ; $comando_2 $switcheroo_control" $tentivas_maximas
 
     if [[ $instalar_nvidia == "Sim" ]]; then
         echo -e "\nInstalando o SUSE Prime e ajustando para não desligar o áudio do HDMI\n"
