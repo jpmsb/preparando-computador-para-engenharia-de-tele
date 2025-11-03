@@ -55,16 +55,16 @@ sudo -E -- bash -c '
     chown -R $SUDO_USER: "$DIR_INSTALACAO"
 
     echo -e "\nCriando atalho no menu...\n"
-    printf "%s\n"                                         \
-        "[Desktop Entry]"                                 \
-        "Encoding=UTF-8"                                  \
-        "Name=$NOME"                                      \
-        "Comment=$NOME"                                   \
-        "Exec=$BINARIO"                                   \
-        "Icon=$DIR_INSTALACAO/app/icons/icon_128x128.png" \
-        "Terminal=false"                                  \
-        "Type=Application"                                \
-        "Categories=Development;IDE;"                     \
+    printf "%s\n"                                                \
+        "[Desktop Entry]"                                        \
+        "Encoding=UTF-8"                                         \
+        "Name=$NOME"                                             \
+        "Comment=$NOME"                                          \
+        "Exec=$BINARIO"                                          \
+        "Icon=$DIR_INSTALACAO/app/resources/app/assets/icon.png" \
+        "Terminal=false"                                         \
+        "Type=Application"                                       \
+        "Categories=Development;IDE;"                            \
         "StartupNotify=true" > /usr/share/applications/$BINARIO.desktop
 ' < /dev/tty
 
