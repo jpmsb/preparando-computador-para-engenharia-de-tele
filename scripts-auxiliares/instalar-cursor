@@ -35,8 +35,8 @@ else
     echo -e "\n${VERDE}Instalando o $NOME $ULTIMA_VERSAO...${NORMAL}\n"
 fi
 
-set -e
 sudo -E -- bash -c '
+    set -e
     echo -e "\n${VERDE}Baixando o $NOME $ULTIMA_VERSAO...${NORMAL}\n"
     ARQUIVO_BAIXADO="/tmp/$NOME.rpm"
     wget -q --show-progress --read-timeout=5 --tries=0 -cO ${ARQUIVO_BAIXADO} ${URL_ARQUIVO}
