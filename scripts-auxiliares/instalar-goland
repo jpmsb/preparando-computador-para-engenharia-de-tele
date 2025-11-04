@@ -73,7 +73,8 @@ sudo -E -- bash -c '
         "Terminal=false"                    \
         "Type=Application"                  \
         "Categories=Development;IDE;"       \
-        "StartupNotify=true" > /usr/share/applications/$NOME_ARQUIVO_DESKTOP.desktop
+        "StartupNotify=true"                \
+        "StartupWMClass=jetbrains-goland" > /usr/share/applications/$NOME_ARQUIVO_DESKTOP.desktop
 ' < /dev/tty
 
 RETORNO=$?
