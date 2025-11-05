@@ -97,6 +97,7 @@ sudo -E -- bash -c '
     rm -rf "$dir_instalacao"
     mkdir -p "$dir_instalacao_base"
     unzip -o ${arquivo_baixado} -d /opt/Gradle/ | pv -l >/dev/null
+    echo "$versao" > $dir_instalacao/version
     rm -f $dir_instalacao_simbolico
     ln -s $dir_instalacao $dir_instalacao_simbolico
     rm -f /usr/local/bin/$binario
