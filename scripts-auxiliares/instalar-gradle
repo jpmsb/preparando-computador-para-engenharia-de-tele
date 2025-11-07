@@ -5,25 +5,41 @@ export vermelho="\033[1;31m"
 export amarelo="\033[1;33m"
 export normal="\033[0m"
 
-versao=0
 urls="$(curl -sL https://gradle.org/releases/ | grep 'https://services.gradle.org/distributions/gradle-' | grep -v 'all' | awk '{print $4}' | cut -f 2 -d '=')"
 
-export versao=$(echo "$urls" | sort -V | tail -n 1 | grep -oP '(?<=gradle-)[0-9.]+(?=-bin\.zip)')
+export ultima_versao=$(echo "$urls" | sort -V | tail -n 1 | grep -oP '(?<=gradle-)[0-9.]+(?=-bin\.zip)')
+export dir_base="/opt"
+export dir_instalacao="$dir_base/Gradle"
+export binario="gradle"
+export url_arquivo="https://services.gradle.org/distributions/gradle-$ultima_versao-bin.zip"
+export pacote_java="java-25-openjdk-devel"
 
-if [ -d /opt/Gradle/gradle-$versao ]; then
-    echo "A versão mais recente já está instalada."
-    echo "Versão atual: $versao"
-    
-    while [[ "$resposta_instalar_gradle" != [sSnN] ]]; do
-        read -p "Deseja reinstalar? [s/n] " resposta_instalar_gradle < /dev/tty
-    done
+if [ -d "$dir_instalacao" ]; then
+    versao_instalada=$(<"$dir_instalacao/version")
 
-    if [[ "$resposta_instalar_gradle" == [nN] ]]; then
-        exit 0
+    if [ "$versao_instalada" == "$ultima_versao" ]; then
+        echo "A versão mais recente já está instalada."
+        echo "Versão atual: $versao_instalada"
+
+        while [[ "$resposta_instalar_gradle" != [sSnN] ]]; do
+            read -p "Deseja reinstalar? [s/n] " resposta_instalar_gradle < /dev/tty
+        done
+
+        if [[ "$resposta_instalar_gradle" == [nN] ]]; then
+            exit 0
+        fi
+        mensagem_sucesso="reinstalado"
+        mensagem_erro="reinstalar"
+    else
+        echo -e "\n${verde}Atualizando o Gradle da versão $versao_instalada para $ultima_versao...${normal}\n"
+        mensagem_sucesso="atualizado"
+        mensagem_erro="atualizar"
     fi
+else
+    echo -e "\n${verde}Instalando Gradle $ultima_versao...${normal}\n"
+    mensagem_sucesso="instalado"
+    mensagem_erro="instalar"
 fi
-
-echo -e "\n${verde}Instalando Gradle $versao...${normal}\n"
 
 if [ ! $(command -v java) ]; then
     echo -e "\n${vermelho}O comando \"java\" não foi encontrado.${normal}\n"
@@ -38,13 +54,6 @@ if [ ! $(command -v java) ]; then
         export instalar_java=true
     fi
 fi
-
-export binario="gradle"
-export dir_instalacao_base="/opt/Gradle"
-export dir_instalacao="$dir_instalacao_base/gradle-$versao"
-export dir_instalacao_simbolico="$dir_instalacao_base/gradle"
-export url_arquivo="https://services.gradle.org/distributions/gradle-$versao-bin.zip"
-export pacote_java="java-25-openjdk-devel"
 
 sudo -E -- bash -c '
     set -e
@@ -89,19 +98,19 @@ sudo -E -- bash -c '
          set +e
     fi
 
-    echo -e "\nBaixando Gradle $versao...\n"
+    echo -e "\nBaixando Gradle $ultima_versao...\n"
     arquivo_baixado="/tmp/$(basename $url_arquivo)"
     wget -q --show-progress --read-timeout=5 --tries=0 -cO ${arquivo_baixado} ${url_arquivo}
 
-    echo -e "\nExtraindo o arquivo baixado \"$arquivo_baixado\" para \"$dir_instalacao_base\"...\n"
+    dir_raiz_zip=$(zipinfo -1 $arquivo_baixado | head -1)
+
+    echo -e "\nExtraindo o arquivo baixado \"$arquivo_baixado\" para \"$dir_instalacao\"...\n"
     rm -rf "$dir_instalacao"
-    mkdir -p "$dir_instalacao_base"
-    unzip -o ${arquivo_baixado} -d /opt/Gradle/ | pv -l >/dev/null
-    echo "$versao" > $dir_instalacao/version
-    rm -f $dir_instalacao_simbolico
-    ln -s $dir_instalacao $dir_instalacao_simbolico
+    unzip -o ${arquivo_baixado} -d $dir_base | pv -l >/dev/null
+    mv $dir_base/$dir_raiz_zip/ $dir_instalacao
+    echo "$ultima_versao" > $dir_instalacao/version
     rm -f /usr/local/bin/$binario
-    ln -s $dir_instalacao_simbolico/bin/$binario /usr/local/bin/$binario
+    ln -s $dir_instalacao/bin/$binario /usr/local/bin/$binario
     rm -f ${arquivo_baixado}
 ' < /dev/tty
 
