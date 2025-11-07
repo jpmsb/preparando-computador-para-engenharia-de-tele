@@ -18,8 +18,8 @@ if [ -d "$dir_instalacao" ]; then
     versao_instalada=$(<"$dir_instalacao/version")
 
     if [ "$versao_instalada" == "$ultima_versao" ]; then
-        echo "A versão mais recente já está instalada."
-        echo "Versão atual: $versao_instalada"
+        echo -e "\n${amarelo}A versão mais recente já está instalada.${normal}"
+        echo -e "Versão atual: ${verde}$versao_instalada${normal}\n"
 
         while [[ "$resposta_instalar_gradle" != [sSnN] ]]; do
             read -p "Deseja reinstalar? [s/n] " resposta_instalar_gradle < /dev/tty
@@ -98,13 +98,13 @@ sudo -E -- bash -c '
          set +e
     fi
 
-    echo -e "\nBaixando Gradle $ultima_versao...\n"
+    echo -e "\n${verde}Baixando Gradle $ultima_versao...${normal}\n"
     arquivo_baixado="/tmp/$(basename $url_arquivo)"
     wget -q --show-progress --read-timeout=5 --tries=0 -cO ${arquivo_baixado} ${url_arquivo}
 
     dir_raiz_zip=$(zipinfo -1 $arquivo_baixado | head -1)
 
-    echo -e "\nExtraindo o arquivo baixado \"$arquivo_baixado\" para \"$dir_instalacao\"...\n"
+    echo -e "\n${verde}Extraindo o arquivo baixado \"$arquivo_baixado\" para \"$dir_instalacao\"...${normal}\n"
     rm -rf "$dir_instalacao"
     unzip -o ${arquivo_baixado} -d $dir_base | pv -l >/dev/null
     mv $dir_base/$dir_raiz_zip/ $dir_instalacao
