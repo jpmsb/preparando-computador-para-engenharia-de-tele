@@ -114,7 +114,14 @@ sudo -E -- bash -c '
     rm -f ${arquivo_baixado}
 ' < /dev/tty
 
-echo -e "\n${verde}Instalação concluída. Você pode executar o comando \"gradle\" pelo terminal.${normal}\n"
+retorno=$?
+if [ $retorno -eq 0 ]; then
+    echo -e "\n${verde}O Gradle $ultima_versao foi $mensagem_sucesso com sucesso.${normal}\n"
+    echo -e "${verde}Você pode executar o comando \"gradle\" pelo terminal.${normal}"
+else
+    echo -e "\n${vermelho}Ocorreu um erro ao $mensagem_erro o Gradle $ultima_versao.${normal}\n"
+    echo -e "${vermelho}Por favor, tente novamente.${normal}"
+fi
 
 if [ "$instalar_java" = true ]; then
     echo -e "${amarelo}Reinicie a sua sessão para que a variável de ambiente \"JAVA_HOME\" seja reconhecida por todas as aplicações.${normal}\n"
