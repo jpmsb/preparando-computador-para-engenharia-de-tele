@@ -63,12 +63,12 @@ atualizar_repositorios(){
 encerrar_packagekit(){
     local sinalizador=$1
     local tempo=$2
-    local rodadas=$(echo "scale=0; $tempo/0.1" | bc)
+    local rodadas=$(echo "scale=0; $tempo / 0.1" | bc)
     local contador=0
 
-    while [ $contador -lt $rodadas ]; do
+    while [ "$contador" -lt "$rodadas" ]; do
         if [ ! -f $sinalizador ]; then
-            contador=$(($contador+1))
+            contador=$((contador + 1))
         fi
 
         pkill -f "packagekitd" -9
@@ -85,11 +85,11 @@ atualizar() {
 
     box "Verifique o que será realizado antes de prosseguir!!"
 
-    rm -f $sinalizador
+    rm -f "$sinalizador"
     $comando
     retorno=$?
 
-    if [ $retorno -ne 0 ]; then
+    if [ "$retorno" -ne 0 ]; then
         box "Algo deu errado!! Você pode tentar novamente."
     fi
 
@@ -98,7 +98,7 @@ atualizar() {
 
 sinalizador=$(mktemp)
 atualizar_repositorios "pkcon get-updates"
-encerrar_packagekit $sinalizador 3 &
+encerrar_packagekit "$sinalizador" 3 &
 atualizar "/usr/bin/zypper dist-upgrade --auto-agree-with-licenses --replacefiles"
 
 rm -rf /var/tmp/rpm-tmp.*
