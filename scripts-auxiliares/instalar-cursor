@@ -5,7 +5,8 @@ export VERMELHO="\033[1;31m"
 export AMARELO="\033[1;33m"
 export NORMAL="\033[0m"
 
-export URL_ARQUIVO=$(curl -IsL https://api2.cursor.sh/updates/download/golden/linux-x64-rpm/cursor/ | grep -o 'location: https://[^[:space:]]*' | sed 's/location: //g')
+export URL_BASE=$(curl -sL https://cursor.com/download | grep -oP 'href="\Khttps://api2\.cursor\.sh/updates/download/golden/linux-x64-rpm/cursor/[0-9.]+(?=")' | head -1)
+export URL_ARQUIVO=$(curl -IsL $URL_BASE | grep -o 'location: https://[^[:space:]]*' | sed 's/location: //g')
 export ULTIMA_VERSAO=$(basename $URL_ARQUIVO | grep -oP '(?<=cursor-)\d+\.\d+\.\d+(?=\.el[0-9]+\.x86_64\.rpm)')
 export NOME="Cursor"
 export BINARIO="cursor"
