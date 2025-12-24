@@ -904,7 +904,7 @@ echo "$usuario:$senha" | chpasswd --root $destino
 rm -rf $destino/home/$usuario/bin
 
 ### Criando o cache do tealdeer ###
-chroot $destino /usr/bin/su -c "/usr/bin/tldr --update" -s /bin/bash $usuario
+chroot $destino /usr/bin/su - -c "/usr/bin/tldr --update" -s /bin/bash $usuario
 
 ### Definindo a senha do root ###
 echo -e "\nDefinindo a senha do usuário root\n"

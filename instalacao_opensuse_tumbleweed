@@ -2200,7 +2200,7 @@ echo 'Defaults env_keep += "DISPLAY XAUTHORITY"' > $destino/etc/sudoers.d/graphi
 chmod 440 $destino/etc/sudoers.d/graphical_envs
 
 ### Criando o cache do tealdeer ###
-chroot $destino /usr/bin/su -c "/usr/bin/tldr --update" -s /bin/bash $usuario
+chroot $destino /usr/bin/su - -c "/usr/bin/tldr --update" -s /bin/bash $usuario
 
 ### Ajustando o tema dos aplicativos do Gnome ###
 echo "[org.gnome.desktop.interface]
