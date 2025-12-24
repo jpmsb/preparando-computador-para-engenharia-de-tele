@@ -23,11 +23,11 @@ tentar(){
     local espera=5
 
     until [ $tentativa_atual -ge $tentativas ]; do
+        local tentativa_atual=$((tentativa_atual + 1))
+        export tentativas_utilizadas=$tentativa_atual
         eval "$comando" && break
 
         echo -e "\nOcorreu um erro, tentando novamente em $espera segundos...\n"
-        local tentativa_atual=$((tentativa_atual + 1))
-        export tentativas_utilizadas=$tentativa_atual
         sleep $espera
 
         if [ $tentativa_atual -eq $tentativas ]; then
