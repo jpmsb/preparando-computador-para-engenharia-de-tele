@@ -1927,7 +1927,7 @@ echo "$nome_computador" > $destino/etc/hostname
 
 ### Ajustando idioma e fuso ###
 echo "LANG=pt_BR.utf8" > $destino/etc/environment
-echo "QT_QPA_PLATFORMTHEME=qt5ct" >> $destino/etc/environment
+echo "QT_QPA_PLATFORMTHEME=qt6ct" >> $destino/etc/environment
 sed 's/INSTALLED_LANGUAGES=""/INSTALLED_LANGUAGES="pt_BR"/' -i $destino/etc/sysconfig/language
 sed 's/ROOT_USES_LANG="ctype"/ROOT_USES_LANG="yes"/' -i $destino/etc/sysconfig/language
 echo "LANG=pt_BR.UTF-8" > $destino/etc/locale.conf
