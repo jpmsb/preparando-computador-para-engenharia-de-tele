@@ -2085,7 +2085,7 @@ else
     skel_tar_xz="/tmp/skel.tar.xz"
 fi
 
-tar -xf $skel_tar_xz -C $destino/etc/skel
+tar -xf $skel_tar_xz -C $destino/etc
 
 ### Correção do tema de cores do nomacs - Image Lounge ###
 mkdir -p $destino/etc/skel/.config/nomacs
