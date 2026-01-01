@@ -1682,6 +1682,10 @@ comando_1="chroot $destino /usr/bin/rpm --import https://packages.microsoft.com/
 
 tentar "$comando_1" $tentivas_maximas
 
+### Ajuste para priorizar os pacotes do Packman ###
+echo '[main]
+vendors=openSUSE,obs://build.opensuse.org/openSUSE:Factory,SUSE,SUSE LLC <https://www.suse.com/>,Packman,http://packman.links2linux.de' > $destino/etc/zypp/vendors.d/99-packman.conf
+
 ### Atualizando a lista de pacotes com aceitação automática das chaves GPG ###
 zypper -n --root $destino --gpg-auto-import-keys refresh -f
 
