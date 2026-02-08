@@ -835,11 +835,7 @@ if [[ "$laptop" == [sS] ]]; then
     tentar "$comando_1 ; $comando_2 $switcheroo_control" $tentivas_maximas
 
     if [[ $instalar_nvidia == "Sim" ]]; then
-        echo -e "\nInstalando o SUSE Prime e ajustando para não desligar o áudio do HDMI\n"
-        comando_1="zypper -n --root $destino refresh -f -r \"repo-oss\""
-        comando_2="zypper -n --no-refresh --ignore-unknown --root $destino install -y --download-in-advance --auto-agree-with-licenses --no-recommends suse-prime suseprime-appindicator"
-
-        tentar "$comando_1 ; $comando_2" $tentivas_maximas
+        echo -e "\nAjustando para não desligar o áudio do HDMI\n"
 
         echo '# Enable runtime PM for NVIDIA VGA/3D controller devices on driver bind
         ACTION=="bind", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x030000", TEST=="power/control", ATTR{power/control}="auto"
@@ -851,13 +847,6 @@ if [[ "$laptop" == [sS] ]]; then
 
         # Habilitar controle de energia dinâmico
         echo 'options nvidia NVreg_DynamicPowerManagement=0x02' > $destino/etc/modprobe.d/09-nvidia-dpm.conf
-
-        # Habilitar o SUSE Prime e realizar as configurações necessárias
-        chroot $destino /usr/bin/ln -s /usr/lib/systemd/system/prime-select.service /etc/systemd/system/multi-user.target.wants/prime-select.service
-        echo "offload" > $destino/etc/prime/boot
-        echo "offload" > $destino/etc/prime/current_type
-        echo "$iGPU" > $destino/etc/prime/offload_type
-        echo "$usuario" > $destino/etc/prime/user
     fi
 
     # Habilitando o TouchEgg
