@@ -33,6 +33,7 @@ Quando se inicia em um curso de tecnologia, nem sempre as ferramentas que serão
     - [Gradle](guias-de-aplicacoes/Gradle.md)
     - [IntelliJ IDEA (Community e Ultimate)](guias-de-aplicacoes/IntelliJ-IDEA.md)
     - [Java Development Kit (JDK) 25](guias-de-aplicacoes/JDK.md)
+    - [LaTeX (TexLive)](guias-de-aplicacoes/TexLive.md)
     - [MATLAB R2015a](guias-de-aplicacoes/MATLAB.md)
     - [MPLAB X IDE](guias-de-aplicacoes/MPLAB-X-IDE.md)
     - [MQTT (Mosquitto) - Servidor e Cliente](guias-de-aplicacoes/Mosquitto.md)
@@ -43,7 +44,6 @@ Quando se inicia em um curso de tecnologia, nem sempre as ferramentas que serão
     - [Podman](guias-de-aplicacoes/Podman.md)
     - [Quartus Prime Lite 20.1.1](guias-de-aplicacoes/Quartus-Prime-Lite-20.1.1.md)
     - [RustRover](guias-de-aplicacoes/RustRover.md)
-    - [TexLive (LaTeX)](guias-de-aplicacoes/TexLive.md)
     - [X2Go Client](guias-de-aplicacoes/X2GoClient.md)
 - [Dúvidas, sugestões ou dificuldades?](#d%C3%BAvidas-sugest%C3%B5es-ou-dificuldades)
 
@@ -298,6 +298,7 @@ Abaixo estão listados guias onde será explicado como instalar algumas aplicaç
 - [Gradle](guias-de-aplicacoes/Gradle.md)
 - [IntelliJ IDEA (Community e Ultimate)](guias-de-aplicacoes/IntelliJ-IDEA.md)
 - [Java Development Kit (JDK) 25](guias-de-aplicacoes/JDK.md)
+- [LaTeX (TexLive)](guias-de-aplicacoes/TexLive.md)
 - [MATLAB R2015a](guias-de-aplicacoes/MATLAB.md)
 - [MPLAB X IDE](guias-de-aplicacoes/MPLAB-X-IDE.md)
 - [MQTT (Mosquitto) - Servidor e Cliente](guias-de-aplicacoes/Mosquitto.md)
@@ -309,7 +310,6 @@ Abaixo estão listados guias onde será explicado como instalar algumas aplicaç
 - [PyCharm](guias-de-aplicacoes/PyCharm.md)
 - [Quartus Prime Lite 20.1.1](guias-de-aplicacoes/Quartus-Prime-Lite-20.1.1.md)
 - [RustRover](guias-de-aplicacoes/RustRover.md)
-- [TexLive (LaTeX)](guias-de-aplicacoes/TexLive.md)
 - [WebStorm](guias-de-aplicacoes/WebStorm.md)
 - [X2Go Client](guias-de-aplicacoes/X2GoClient.md)
 
