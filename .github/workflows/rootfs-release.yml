@@ -68,8 +68,8 @@ jobs:
 
     - name: Tune Zypper and install the required dependencies
       run: |
-        docker exec opensuse-tumbleweed sed -i '/^solver\.onlyRequires/s/^/# /' /etc/zypp/zypp.conf
-        docker exec opensuse-tumbleweed sed -i '/^rpm\.install\.excludedocs/s/^/# /' /etc/zypp/zypp.conf
+        docker exec opensuse-tumbleweed sh -c "echo 'solver.onlyRequires = false' > /etc/zypp/zypp.conf.d/solver-only-requires.conf"
+        docker exec opensuse-tumbleweed sh -c "echo 'rpm.install.excludedocs = false' > /etc/zypp/zypp.conf.d/rpm-install-excludedocs.conf"
         docker exec opensuse-tumbleweed zypper -n refresh
         docker exec opensuse-tumbleweed zypper -n install tar xz gawk wget gtk3-tools
 

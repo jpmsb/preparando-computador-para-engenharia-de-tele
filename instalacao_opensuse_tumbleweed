@@ -1989,7 +1989,7 @@ echo 'kernel.dmesg_restrict = 0' > $destino/etc/sysctl.d/50-dmesg.conf
 
 ### Ajustando o tempo de atualização automática dos repositórios para 7 dias ###
 echo -e "\nAjustando o tempo de atualização automática dos repositórios para 7 dias\n"
-sed -i '/# repo.refresh.delay = 10/a repo.refresh.delay = 10080' $destino/etc/zypp/zypp.conf
+echo 'repo.refresh.delay = 10080' >> $destino/etc/zypp/zypp.conf.d/repo-refresh-delay.conf
 
 ### Instalando o tema Adapta ###
 echo -e "\nInstalando o tema Adpata\n"
