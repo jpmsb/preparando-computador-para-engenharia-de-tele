@@ -236,6 +236,12 @@ O KDE (chamado de Plasma) é outra interface que é muito popular e é mais cust
 sudo zypper install -t pattern kde_plasma
 ```
 
+Em seguida, instale a ferramenta de captura de tela Spectacle:
+
+```bash
+sudo zypper install spectacle
+```
+
 Após a instalação, reinicie o sistema. Você verá que a tela de login estará diferente. O gestor de login que é instalado nesse processo é o SDDM.
 
 ## Informações extras
