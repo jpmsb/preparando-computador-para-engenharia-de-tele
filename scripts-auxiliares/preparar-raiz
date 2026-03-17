@@ -1694,6 +1694,9 @@ chroot $destino /usr/bin/chown polkitd:root /etc/polkit-1/rules.d
 ### Ajustando a zona padrão do Firewalld para 'trusted' ###
 chroot $destino /usr/bin/firewall-offline-cmd --set-default-zone=trusted
 
+### Ajustando para que o backend do Firewalld seja o iptables ao invés do nftables ###
+sed -i 's/FirewallBackend=nftables/FirewallBackend=iptables/' $destino/etc/firewalld/firewalld.conf
+
 ### Criando as regras para dispositivos FPGA da Intel ###
 echo 'ATTR{idVendor}=="09fb", ATTR{idProduct}=="6001", MODE="666"
 ATTR{idVendor}=="09fb", ATTR{idProduct}=="6002", MODE="666"
