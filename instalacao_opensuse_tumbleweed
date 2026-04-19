@@ -1202,6 +1202,120 @@ ler_nome_usuario_unix(){
     done
 }
 
+# Lê cada caractere digitado no teclado com eco '*' e sinaliza, com aviso na cor vermelha,
+# quando a senha digitada for vazia ou a tecla Num Lock estiver desativada
+ler_senha_mascarada() {
+    local prompt=$1
+    local buf="" c="" d="" o=""
+    local aviso_numlock_visivel=0 aviso_senha_vazia_visivel=0 i viu_csi j
+    local pad16
+    printf -v pad16 '%16s' ''
+
+    if [[ ! -t 0 ]]; then
+        while true; do
+            read -r -sp "$prompt" "$2" || {
+                echo
+                return 1
+            }
+            echo
+            if [[ -n "${!2}" ]]; then
+                return 0
+            fi
+            printf '%s' "$pad16"
+            printf '%b' "$vermelho A senha não pode ficar vazia! $normal"
+            echo
+        done
+    fi
+
+    printf '%s' "$prompt"
+    buf=""
+    while true; do
+        IFS= read -r -s -n 1 c || {
+            echo
+            return 1
+        }
+        if [[ -z "$c" ]]; then
+            if [[ -z "$buf" ]]; then
+                printf '\r%s' "$prompt"
+                printf '%b' '\033[K'
+                printf '%s' "$pad16"
+                printf '%b' "$vermelho A senha não pode ficar vazia! $normal"
+                echo
+                printf '%s' "$prompt"
+                aviso_numlock_visivel=0
+                aviso_senha_vazia_visivel=1
+                continue
+            fi
+            echo
+            printf -v "$2" %s "$buf"
+            return 0
+        fi
+        if [[ "$c" == $'\177' ]] || [[ "$c" == $'\b' ]]; then
+            if ((${#buf} > 0)); then
+                buf="${buf:0:-1}"
+                if ((aviso_numlock_visivel)); then
+                    printf '\r%s' "$prompt"
+                    for ((j = 0; j < ${#buf}; j++)); do printf '*'; done
+                    printf '%b' '\033[K'
+                else
+                    printf '\b \b'
+                fi
+            elif ((aviso_numlock_visivel)); then
+                printf '\r%s' "$prompt"
+                printf '%b' '\033[K'
+                aviso_numlock_visivel=0
+            elif ((aviso_senha_vazia_visivel)); then
+                printf '\r%s' "$prompt"
+                printf '%b' '\033[K'
+                aviso_senha_vazia_visivel=0
+            fi
+            continue
+        fi
+        if [[ "$c" == $'\e' ]]; then
+            viu_csi=0
+            i=0
+            IFS= read -r -s -n 1 -t 0.05 d || true
+            if [[ "$d" == '[' ]]; then
+                viu_csi=1
+                while ((++i <= 32)); do
+                    IFS= read -r -s -n 1 -t 0.05 d || break
+                    [[ -z "$d" ]] && break
+                    o=$(LC_ALL=C printf '%d' "'$d")
+                    if ((o >= 64 && o <= 126)); then
+                        break
+                    fi
+                done
+            elif [[ "$d" == 'O' ]]; then
+                IFS= read -r -s -n 1 -t 0.05 d || true
+            fi
+            if ((viu_csi == 1)); then
+                buf=""
+                printf '\r%s' "$prompt"
+                printf '%b' '\033[K'
+                aviso_numlock_visivel=1
+                aviso_senha_vazia_visivel=0
+                printf '%s' "$pad16"
+                printf '%b' "$vermelho A tecla Num Lock está desativada. $normal"
+                # Cursor no início do campo de senha (logo após o prompt).
+                printf '\033[%dG' $((${#prompt} + 1))
+            fi
+            continue
+        fi
+        if [[ "$c" =~ [[:print:]] ]]; then
+            buf+="${c}"
+            if ((aviso_numlock_visivel || aviso_senha_vazia_visivel)); then
+                printf '\r%s' "$prompt"
+                for ((j = 0; j < ${#buf}; j++)); do printf '*'; done
+                printf '%b' '\033[K'
+                aviso_numlock_visivel=0
+                aviso_senha_vazia_visivel=0
+            else
+                printf '*'
+            fi
+        fi
+    done
+}
+
 ### Variáveis preparatórias ###
 destino=/mnt
 log_zypper="/var/log/zypper.log"
@@ -1456,10 +1570,8 @@ if [ -z "$senha_root" ]; then
 
     while [[ "$senha_root" != "$senha_root_redigitada" ]] || [[ -z "$senha_root" ]]
     do
-        read -sp "Senha para o superusuário root (ficará oculta enquanto digitar): " senha_root
-        echo
-        read -sp "Confirme a senha: " senha_root_redigitada
-        echo
+        ler_senha_mascarada "Senha para o superusuário root: " senha_root
+        ler_senha_mascarada "Confirme a senha: " senha_root_redigitada
 
         if [ "$senha_root" != "$senha_root_redigitada" ]; then
             echo -e "\nAs senhas digitadas são diferentes! Tente novamente.\n"
@@ -1498,10 +1610,8 @@ done
 if [ -z "$senha" ]; then
     while [[ "$senha" != "$senha_redigitada" ]] || [[ -z "$senha" ]]
     do
-        read -sp "Senha para esse novo usuário (ficará oculta enquanto digitar): " senha
-        echo
-        read -sp "Confirme a senha: " senha_redigitada
-        echo
+        ler_senha_mascarada "Senha para esse novo usuário: " senha
+        ler_senha_mascarada "Confirme a senha: " senha_redigitada
 
         if [ "$senha" != "$senha_redigitada" ]; then
             echo -e "\nAs senhas digitadas são diferentes! Tente novamente.\n"
