@@ -75,7 +75,7 @@ cat > /usr/local/bin/$BINARIO <<'\''EOF'\''
 CONFIGFILE=$HOME/.config/discord/settings.json
 EOF
 
-echo EXE=$DIR_INSTALACAO/$NOME >> /usr/local/bin/$BINARIO
+echo EXE=$DIR_INSTALACAO/$BINARIO >> /usr/local/bin/$BINARIO
 
 cat >> /usr/local/bin/$BINARIO <<'\''EOF'\''
 if [[ -x $EXE ]]; then
