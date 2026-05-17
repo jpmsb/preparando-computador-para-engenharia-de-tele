@@ -13,7 +13,7 @@ export DIR_INSTALACAO="$DIR_INSTALACAO_BASE/$NOME"
 export URL_ARQUIVO="https://discord.com/api/download?platform=linux&format=tar.gz"
 
 if [ -d /opt/$NOME ]; then
-    VERSAO_INSTALADA=$(grep -oP '"version":\s*"\K[^"]+' /opt/$NOME/resources/build_info.json)
+    VERSAO_INSTALADA=$(cat $DIR_INSTALACAO/version)
 
     if [ "$VERSAO_INSTALADA" == "$ULTIMA_VERSAO" ]; then
         echo -e "\n${AMARELO}A versão mais recente do $NOME já está instalada.${NORMAL}"
@@ -46,6 +46,7 @@ sudo -E -- bash -c '
     wget -q --show-progress --read-timeout=5 --tries=0 -cO ${ARQUIVO_BAIXADO} ${URL_ARQUIVO}
     rm -rf "$DIR_INSTALACAO"
     mkdir -p "$DIR_INSTALACAO"
+    echo "$ULTIMA_VERSAO" > $DIR_INSTALACAO/version
 
     echo -e "\nExtraindo o arquivo baixado \"${ARQUIVO_BAIXADO}\" para \"$DIR_INSTALACAO\"...\n"
     pv ${ARQUIVO_BAIXADO} | tar -xz -C ${DIR_INSTALACAO} --strip-components=1
