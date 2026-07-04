@@ -44,6 +44,7 @@ Quando se inicia em um curso de tecnologia, nem sempre as ferramentas que serão
     - [Podman](guias-de-aplicacoes/Podman.md)
     - [Quartus Prime Lite 20.1.1](guias-de-aplicacoes/Quartus-Prime-Lite-20.1.1.md)
     - [RustRover](guias-de-aplicacoes/RustRover.md)
+    - [TRAE](guias-de-aplicacoes/TRAE.md)
     - [WebStorm](guias-de-aplicacoes/WebStorm.md)
     - [X2Go Client](guias-de-aplicacoes/X2GoClient.md)
 - [Dúvidas, sugestões ou dificuldades?](#d%C3%BAvidas-sugest%C3%B5es-ou-dificuldades)
@@ -317,6 +318,7 @@ Abaixo estão listados guias onde será explicado como instalar algumas aplicaç
 - [PyCharm](guias-de-aplicacoes/PyCharm.md)
 - [Quartus Prime Lite 20.1.1](guias-de-aplicacoes/Quartus-Prime-Lite-20.1.1.md)
 - [RustRover](guias-de-aplicacoes/RustRover.md)
+- [TRAE](guias-de-aplicacoes/TRAE.md)
 - [WebStorm](guias-de-aplicacoes/WebStorm.md)
 - [X2Go Client](guias-de-aplicacoes/X2GoClient.md)
 

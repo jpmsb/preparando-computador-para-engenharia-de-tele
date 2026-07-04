@@ -29,5 +29,6 @@ Em cada um dos itens abaixo, estão os guias de instalação e uso das aplicaç�
 - [PyCharm](PyCharm.md)
 - [Quartus Prime Lite 20.1.1](Quartus-Prime-Lite-20.1.1.md)
 - [RustRover](RustRover.md)
+- [TRAE](TRAE.md)
 - [WebStorm](WebStorm.md)
 - [X2Go Client](X2GoClient.md)
