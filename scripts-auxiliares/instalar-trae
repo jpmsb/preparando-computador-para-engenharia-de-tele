@@ -1,0 +1,62 @@
+#!/bin/bash
+
+export VERDE="\033[1;32m"
+export VERMELHO="\033[1;31m"
+export AMARELO="\033[1;33m"
+export NORMAL="\033[0m"
+
+export URL_BASE='https://api-us-east.trae.ai/icube/api/v1/native/version/trae/latest'
+export URL_ARQUIVO=$(curl -sL $URL_BASE | grep -oP 'ai-sg.*"x64\.rpm":"\K[^"]+')
+export ULTIMA_VERSAO=$(echo $URL_ARQUIVO | grep -oP '(?<=releases/stable/)\d+\.\d+\.\d+')
+export NOME="TRAE"
+export BINARIO="trae"
+export DIR_INSTALACAO="/usr/share/trae"
+
+if [ $(command -v $BINARIO) ]; then
+    VERSAO_INSTALADA=$(grep -oP '"appVersion":"\K[^"]+' $DIR_INSTALACAO/manifest.json)
+    VERSAO_BUILD_INSTALADA=$(grep -oP '"buildVersion":"\K[^"]+' $DIR_INSTALACAO/manifest.json)
+
+    if [ "$VERSAO_BUILD_INSTALADA" == "$ULTIMA_VERSAO" ]; then
+        echo -e "\n${AMARELO}A versão mais recente do $NOME já está instalada.${NORMAL}"
+        echo -e "Versão atual: ${VERDE}$VERSAO_INSTALADA${NORMAL}"
+        echo -e "Versão do build: ${VERDE}$VERSAO_BUILD_INSTALADA${NORMAL}\n"
+
+        while [[ "$RESPOSTA_INSTALAR_NOVAMENTE" != [sSnN] ]]; do
+            read -p "Deseja reinstalar? [s/n] " RESPOSTA_INSTALAR_NOVAMENTE < /dev/tty
+        done
+
+        if [[ "$RESPOSTA_INSTALAR_NOVAMENTE" == [nN] ]]; then
+            exit 0
+        fi
+        MENSAGEM_SUCESSO="reinstalado"
+        MENSAGEM_ERRO="reinstalar"
+    else
+        echo -e "\n${VERDE}Atualizando a build do $NOME da versão $VERSAO_BUILD_INSTALADA para $ULTIMA_VERSAO...${NORMAL}\n"
+        MENSAGEM_SUCESSO="atualizado"
+        MENSAGEM_ERRO="atualizar"
+    fi
+else
+    echo -e "\n${VERDE}Instalando o $NOME build $ULTIMA_VERSAO...${NORMAL}\n"
+    MENSAGEM_SUCESSO="instalado"
+    MENSAGEM_ERRO="instalar"
+fi
+
+sudo -E -- bash -c '
+    set -e
+    echo -e "\n${VERDE}Baixando o $NOME build $ULTIMA_VERSAO...${NORMAL}\n"
+    ARQUIVO_BAIXADO="/tmp/$NOME.rpm"
+    wget -q --show-progress --read-timeout=5 --tries=0 -cO ${ARQUIVO_BAIXADO} ${URL_ARQUIVO}
+
+    echo -e "\n${VERDE}Instalando o $NOME build $ULTIMA_VERSAO através do gerenciador de pacotes Zypper...${NORMAL}\n"
+    zypper --non-interactive install --force --no-confirm --allow-unsigned-rpm ${ARQUIVO_BAIXADO}
+    rm -f ${ARQUIVO_BAIXADO}
+'
+
+RETORNO=$?
+if [ $RETORNO -eq 0 ]; then
+    echo -e "\n${VERDE}O $NOME $VERSAO_INSTALADA (build $ULTIMA_VERSAO) foi $MENSAGEM_SUCESSO com sucesso.${NORMAL}\n"
+    echo -e "${VERDE}Você pode iniciar o $NOME a partir do menu ou executando o comando \"$BINARIO\" no terminal.${NORMAL}"
+else
+    echo -e "\n${VERMELHO}Ocorreu um erro ao $MENSAGEM_ERRO o $NOME build $ULTIMA_VERSAO.${NORMAL}\n"
+    echo -e "${VERMELHO}Por favor, tente novamente.${NORMAL}"
+fi
