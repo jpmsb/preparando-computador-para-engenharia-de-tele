@@ -1089,6 +1089,9 @@ chroot $destino /usr/bin/su - -c "/usr/bin/tldr --update" -s /bin/bash $usuario
 echo -e "\nDefinindo a senha do usuário root\n"
 echo "root:$senha_root" | chpasswd --root $destino
 
+### Engatilha a rotulagem do SELinux ###
+touch $destino/.autorelabel
+
 ### Desmontando diretórios ###
 desmontar_tudo $destino
 

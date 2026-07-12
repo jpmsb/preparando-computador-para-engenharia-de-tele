@@ -2425,6 +2425,9 @@ chroot $destino /usr/bin/firewall-offline-cmd --set-default-zone=trusted
 ### Ajustando para que o backend do Firewalld seja o iptables ao invés do nftables ###
 sed -i 's/FirewallBackend=nftables/FirewallBackend=iptables/' $destino/etc/firewalld/firewalld.conf
 
+### Engatilha a rotulagem do SELinux ###
+touch $destino/.autorelabel
+
 ### Desmontando diretórios ###
 desmontar_tudo $destino
 
