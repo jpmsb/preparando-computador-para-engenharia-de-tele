@@ -4,6 +4,7 @@
 Em cada um dos itens abaixo, estão os guias de instalação e uso das aplicações listadas:
 
 - [Avrdude](Avrdude.md)
+- [Antigravity](Antigravity.md)
 - [CLion](CLion.md)
 - [Cursor](Cursor.md)
 - [Compilador para AVR](Compilador-para-AVR.md)
