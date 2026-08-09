@@ -65,7 +65,8 @@ sudo -E -- bash -c '
 
 RETORNO=$?
 if [ $RETORNO -eq 0 ]; then
-    echo -e "\n${VERDE}O $NOME $VERSAO_INSTALADA (build $ULTIMA_VERSAO) foi $MENSAGEM_SUCESSO com sucesso.${NORMAL}\n"
+    VERSAO_INSTALADA=$(grep -oP '"appVersion":"\K[^"]+' "$DIR_INSTALACAO/manifest.json" 2>/dev/null)
+    echo -e "\n${VERDE}O $NOME ${VERSAO_INSTALADA:-$ULTIMA_VERSAO} (build $ULTIMA_VERSAO) foi $MENSAGEM_SUCESSO com sucesso.${NORMAL}\n"
     echo -e "${VERDE}Você pode iniciar o $NOME a partir do menu ou executando o comando \"$BINARIO\" no terminal.${NORMAL}"
 else
     echo -e "\n${VERMELHO}Ocorreu um erro ao $MENSAGEM_ERRO o $NOME build $ULTIMA_VERSAO.${NORMAL}\n"
