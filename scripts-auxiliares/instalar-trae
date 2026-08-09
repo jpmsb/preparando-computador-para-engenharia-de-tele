@@ -5,12 +5,23 @@ export VERMELHO="\033[1;31m"
 export AMARELO="\033[1;33m"
 export NORMAL="\033[0m"
 
-export URL_BASE='https://api-us-east.trae.ai/icube/api/v1/native/version/trae/latest'
-export URL_ARQUIVO=$(curl -sL $URL_BASE | grep -oP 'ai-sg.*"x64\.rpm":"\K[^"]+')
-export ULTIMA_VERSAO=$(echo $URL_ARQUIVO | grep -oP '(?<=releases/stable/)\d+\.\d+\.\d+')
+export URL_BASE='https://api.trae.ai/icube/api/v1/native/version/trae/latest'
+# Preferir CDN US; se indisponível, usar SG (internacional). Evitar .com.cn (China).
+export RESPOSTA_API=$(curl -sL --fail "$URL_BASE") || RESPOSTA_API=""
+export URL_ARQUIVO=$(echo "$RESPOSTA_API" | grep -oP 'https://lf-cdn\.trae\.ai/obj/trae-ai-us/[^"]+/Trae-linux-x64\.rpm' | head -1)
+if [ -z "$URL_ARQUIVO" ]; then
+    export URL_ARQUIVO=$(echo "$RESPOSTA_API" | grep -oP 'https://lf-cdn\.trae\.ai/obj/trae-ai-sg/[^"]+/Trae-linux-x64\.rpm' | head -1)
+fi
+export ULTIMA_VERSAO=$(echo "$URL_ARQUIVO" | grep -oP '(?<=releases/stable/)\d+\.\d+\.\d+')
 export NOME="TRAE"
 export BINARIO="trae"
 export DIR_INSTALACAO="/usr/share/trae"
+
+if [ -z "$URL_ARQUIVO" ]; then
+    echo -e "\n${VERMELHO}Não foi possível obter o link de download do $NOME.${NORMAL}"
+    echo -e "${VERMELHO}Pode ser um problema de conexão ou a API $URL_BASE mudou de estrutura.${NORMAL}\n"
+    exit 1
+fi
 
 if [ $(command -v $BINARIO) ]; then
     VERSAO_INSTALADA=$(grep -oP '"appVersion":"\K[^"]+' $DIR_INSTALACAO/manifest.json)
