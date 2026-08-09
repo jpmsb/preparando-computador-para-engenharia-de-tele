@@ -4,8 +4,6 @@ O Antigravity é a plataforma de desenvolvimento agêntica do Google. Ela inclui
 
 ### Tabela de conteúdos
 
-- [Antigravity](#antigravity)
-    - [Tabela de conteúdos](#tabela-de-conteúdos)
   - [Instalação e atualização](#instalação-e-atualização)
     - [Antigravity](#antigravity-1)
     - [Antigravity IDE](#antigravity-ide)
