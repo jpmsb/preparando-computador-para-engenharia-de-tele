@@ -20,6 +20,7 @@ Quando se inicia em um curso de tecnologia, nem sempre as ferramentas que serão
     - [Atualização do sistema](#atualiza%C3%A7%C3%A3o-do-sistema)
 - [Guias para instalação e uso de aplicações](#guias-para-instala%C3%A7%C3%A3o-e-uso-de-aplica%C3%A7%C3%B5es)
     - [Avrdude](guias-de-aplicacoes/Avrdude.md)
+    - [Antigravity](guias-de-aplicacoes/Antigravity.md)
     - [CLion](guias-de-aplicacoes/CLion.md)
     - [Compilador C++ para AVR](guias-de-aplicacoes/Compilador-para-AVR.md)
     - [Cursor](guias-de-aplicacoes/Cursor.md)
@@ -293,6 +294,7 @@ basta tentar novamente dentro de alguns dias. Isso ocorre por conta de alguns re
 Abaixo estão listados guias onde será explicado como instalar algumas aplicações utilizadas ao longo do curso, além de ferramentas adicionais. O objetivo é descomplicar o processo de deixar essas ferramentas preparadas para uso.
 
 - [Avrdude](guias-de-aplicacoes/Avrdude.md)
+- [Antigravity](guias-de-aplicacoes/Antigravity.md)
 - [CLion](guias-de-aplicacoes/CLion.md)
 - [Compilador para AVR](guias-de-aplicacoes/Compilador-para-AVR.md)
 - [Cursor](guias-de-aplicacoes/Cursor.md)
