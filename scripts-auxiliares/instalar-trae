@@ -6,11 +6,10 @@ export AMARELO="\033[1;33m"
 export NORMAL="\033[0m"
 
 export URL_BASE='https://api.trae.ai/icube/api/v1/native/version/trae/latest'
-# Preferir CDN US; se indisponível, usar SG (internacional). Evitar .com.cn (China).
 export RESPOSTA_API=$(curl -sL --fail "$URL_BASE") || RESPOSTA_API=""
-export URL_ARQUIVO=$(echo "$RESPOSTA_API" | grep -oP 'https://lf-cdn\.trae\.ai/obj/trae-ai-us/[^"]+/Trae-linux-x64\.rpm' | head -1)
+export URL_ARQUIVO=$(echo "$RESPOSTA_API" | grep -oP 'https://lf-cdn\.trae\.ai/obj/trae-ai-us/[^"]+-linux-x64\.rpm' | head -1)
 if [ -z "$URL_ARQUIVO" ]; then
-    export URL_ARQUIVO=$(echo "$RESPOSTA_API" | grep -oP 'https://lf-cdn\.trae\.ai/obj/trae-ai-sg/[^"]+/Trae-linux-x64\.rpm' | head -1)
+    export URL_ARQUIVO=$(echo "$RESPOSTA_API" | grep -oP 'https://lf-cdn\.trae\.ai/obj/trae-ai-sg/[^"]+-linux-x64\.rpm' | head -1)
 fi
 export ULTIMA_VERSAO=$(echo "$URL_ARQUIVO" | grep -oP '(?<=releases/stable/)\d+\.\d+\.\d+')
 export NOME="TRAE"
