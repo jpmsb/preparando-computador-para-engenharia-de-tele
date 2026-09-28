@@ -225,14 +225,27 @@ rotulo_desktop(){
 }
 
 calcula_tamanho_swap_gib(){
-    local livre_bytes livre_gib
+    local livre_bytes livre_gib mem_kb ram_gib alvo_gib max_disco_gib
+    mem_kb=$(awk '/^MemTotal:/ {print $2}' /proc/meminfo)
+    # Arredonda a RAM para cima em GiB e depois para o próximo múltiplo de 8 (ex.: 12 → 16).
+    ram_gib=$(( (mem_kb + 1024 * 1024 - 1) / (1024 * 1024) ))
+    (( ram_gib < 1 )) && ram_gib=1
+    alvo_gib=$(( ((ram_gib + 7) / 8) * 8 ))
+    (( alvo_gib < 8 )) && alvo_gib=8
+
     livre_bytes=$(df -B1 --output=avail "$1" | tail -n1 | tr -d ' ')
     livre_gib=$(( livre_bytes / 1024 / 1024 / 1024 ))
-    if (( livre_gib < 16 )); then
+    # Teto pelo disco: após criar o swap, devem sobrar ≥ 8 GiB livres.
+    max_disco_gib=$(( ((livre_gib - 8) / 8) * 8 ))
+    if (( max_disco_gib < 8 )); then
         echo 0
         return
     fi
-    echo $(( ((livre_gib - 8) / 8) * 8 ))
+    if (( alvo_gib > max_disco_gib )); then
+        echo "$max_disco_gib"
+    else
+        echo "$alvo_gib"
+    fi
 }
 
 cria_arquivo_swap(){
@@ -241,11 +254,11 @@ cria_arquivo_swap(){
 
     tamanho_gib=$(calcula_tamanho_swap_gib "$destino_local")
     if [[ "$tamanho_gib" -eq 0 ]]; then
-        echo -e "\nEspaço insuficiente para criar /arquivo_swap (é preciso ≥ 16 GiB livres, mantendo 8 GiB de margem). Prosseguindo sem swap.\n"
+        echo -e "\nEspaço insuficiente para criar /arquivo_swap (é preciso o múltiplo de 8 GiB da RAM + 8 GiB de margem). Prosseguindo sem swap.\n"
         return 0
     fi
 
-    echo -e "\n${verde}Criando /arquivo_swap (${tamanho_gib} GiB)...${normal}\n"
+    echo -e "\n${verde}Criando /arquivo_swap (${tamanho_gib} GiB, com base na RAM arredondada para múltiplo de 8)...${normal}\n"
     if ! fallocate -l "${tamanho_gib}G" "$destino_local/arquivo_swap" 2>/dev/null; then
         dd if=/dev/zero of="$destino_local/arquivo_swap" bs=1G count="$tamanho_gib" status=progress
     fi
