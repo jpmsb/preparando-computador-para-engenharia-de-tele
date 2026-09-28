@@ -224,6 +224,68 @@ rotulo_desktop(){
     esac
 }
 
+calcula_tamanho_swap_gib(){
+    local livre_bytes livre_gib
+    livre_bytes=$(df -B1 --output=avail "$1" | tail -n1 | tr -d ' ')
+    livre_gib=$(( livre_bytes / 1024 / 1024 / 1024 ))
+    if (( livre_gib < 16 )); then
+        echo 0
+        return
+    fi
+    echo $(( ((livre_gib - 8) / 8) * 8 ))
+}
+
+cria_arquivo_swap(){
+    local destino_local="$1"
+    local tamanho_gib
+
+    tamanho_gib=$(calcula_tamanho_swap_gib "$destino_local")
+    if [[ "$tamanho_gib" -eq 0 ]]; then
+        echo -e "\nEspaço insuficiente para criar /arquivo_swap (é preciso ≥ 16 GiB livres, mantendo 8 GiB de margem). Prosseguindo sem swap.\n"
+        return 0
+    fi
+
+    echo -e "\n${verde}Criando /arquivo_swap (${tamanho_gib} GiB)...${normal}\n"
+    if ! fallocate -l "${tamanho_gib}G" "$destino_local/arquivo_swap" 2>/dev/null; then
+        dd if=/dev/zero of="$destino_local/arquivo_swap" bs=1G count="$tamanho_gib" status=progress
+    fi
+    chmod 600 "$destino_local/arquivo_swap"
+    mkswap "$destino_local/arquivo_swap"
+    if ! grep -qE '^[[:space:]]*/arquivo_swap[[:space:]]' "$destino_local/etc/fstab"; then
+        echo '/arquivo_swap none swap defaults,pri=100 0 0' >> "$destino_local/etc/fstab"
+    fi
+}
+
+configura_oomd_memoria(){
+    local destino_local="$1"
+
+    echo -e "\n${verde}Configurando systemd-oomd e proteção de memória...${normal}\n"
+
+    mkdir -p "$destino_local/etc/systemd/system/user.slice.d"
+    mkdir -p "$destino_local/etc/systemd/system/app.slice.d"
+    mkdir -p "$destino_local/etc/systemd/system/multi-user.target.wants"
+    mkdir -p "$destino_local/etc/systemd/system/sockets.target.wants"
+    mkdir -p "$destino_local/etc/sysctl.d"
+
+    cat > "$destino_local/etc/systemd/system/user.slice.d/10-oomd.conf" <<'EOF'
+[Slice]
+ManagedOOMMemoryPressure=kill
+ManagedOOMMemoryPressureLimit=50%
+EOF
+
+    cat > "$destino_local/etc/systemd/system/app.slice.d/10-oomd.conf" <<'EOF'
+[Slice]
+ManagedOOMMemoryPressure=kill
+EOF
+
+    echo 'vm.swappiness = 60' > "$destino_local/etc/sysctl.d/vm.swappiness.conf"
+
+    rm -f "$destino_local/etc/systemd/system/multi-user.target.wants/earlyoom.service"
+    chroot "$destino_local" /usr/bin/ln -sf /usr/lib/systemd/system/systemd-oomd.service /etc/systemd/system/multi-user.target.wants/systemd-oomd.service
+    chroot "$destino_local" /usr/bin/ln -sf /usr/lib/systemd/system/systemd-oomd.socket /etc/systemd/system/sockets.target.wants/systemd-oomd.socket
+}
+
+
 mensagem_erro_argumento_ignorado(){
     argumento="$1"
 
@@ -1091,6 +1153,15 @@ else
     echo "UUID=$(/usr/bin/lsblk -f -no UUID "$particao_raiz") / $tipo_particao_raiz defaults 0 0" > $destino/etc/fstab
 fi
 
+### Criando arquivo de swap automático ###
+cria_arquivo_swap "$destino"
+
+### Garantindo systemd-oomd e proteção de memória ###
+comando_oomd="zypper -n --no-refresh --ignore-unknown --root $destino install -y --download-in-advance systemd-experimental"
+tentar "$comando_oomd" $tentivas_maximas
+zypper -n --root $destino remove -y earlyoom >/dev/null 2>&1 || true
+configura_oomd_memoria "$destino"
+
 ### Instalação do grub (UEFI ou BIOS) ###
 comando_1="zypper -n --root $destino refresh -f -r \"repo-oss\""
 
@@ -1110,7 +1181,7 @@ else
     chroot $destino /usr/sbin/grub2-install $dispositivo_boot
 fi
 
-sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT=/s/GRUB_CMDLINE_LINUX_DEFAULT=".*"/GRUB_CMDLINE_LINUX_DEFAULT="quiet splash security=selinux selinux=1 loglevel=3 nosimplefb=1 kvm.enable_virt_at_load=0"/' $destino/etc/default/grub
+sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT=/s/GRUB_CMDLINE_LINUX_DEFAULT=".*"/GRUB_CMDLINE_LINUX_DEFAULT="quiet splash security=selinux selinux=1 loglevel=3 nosimplefb=1 kvm.enable_virt_at_load=0 zswap.enabled=1 zswap.compressor=zstd zswap.max_pool_percent=10 psi=1"/' $destino/etc/default/grub
 sed -i 's/.*GRUB_TERMINAL.*/GRUB_TERMINAL=gfxterm/' $destino/etc/default/grub
 sed -i 's/.*GRUB_GFXMODE.*/GRUB_GFXMODE=auto/' $destino/etc/default/grub
 echo "GRUB_DISABLE_OS_PROBER=\"false\"" >> $destino/etc/default/grub
