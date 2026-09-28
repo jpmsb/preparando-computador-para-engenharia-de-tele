@@ -1102,6 +1102,34 @@ criar_arquivo_kdeglobals(){
         'inactiveForeground=127,140,141'
 }
 
+normaliza_desktop(){
+    local d="${1,,}"
+    case "$d" in
+        kde|plasma) echo "kde" ;;
+        xfce) echo "xfce" ;;
+        *) return 1 ;;
+    esac
+}
+
+detecta_desktop_recomendado(){
+    local mem_kb
+    mem_kb=$(awk '/^MemTotal:/ {print $2}' /proc/meminfo)
+    # 6 GiB = 6 * 1024 * 1024 KiB
+    if [[ "$mem_kb" -ge $((6 * 1024 * 1024)) ]]; then
+        echo "kde"
+    else
+        echo "xfce"
+    fi
+}
+
+rotulo_desktop(){
+    case "$1" in
+        kde) echo "KDE Plasma" ;;
+        xfce) echo "XFCE" ;;
+        *) echo "$1" ;;
+    esac
+}
+
 ajuda(){
     echo -e "\nSintaxe: ./$0 [opções]"
     echo -e "\nOpções:"
@@ -1112,11 +1140,13 @@ ajuda(){
     echo -e "  -s, --senha <senha>          Senha para o novo usuário"
     echo -e "  -n, --nome-completo <nome>   Nome completo para o novo usuário (ex.: João Pedro)"
     echo -e "  -H, --hostname <nome>        Nome do computador (não pode conter espaços) (ex.: meupc)"
+    echo -e "  -d, --desktop <kde|xfce>     Ambiente gráfico (kde/plasma ou xfce). Se omitido, recomenda"
+    echo -e "                               conforme a RAM (≥ 6 GiB → KDE Plasma)"
     echo -e "  -l, --laptop <s|n>           Especifica se a instalação será realizada em um portátil. Se nenhum"
     echo -e "                               valor for informado, será assumido que sim"
     echo -e "  -h, --help, -a, --ajuda      Exibe essa mensagem de ajuda"
     echo -e "\nExemplo de uso:"
-    echo -e "  ./$0 -r sda2 -b sda1 -S senha_root -u joao -s senha_usuario -n \"João Pedro\" -H meupc -l s"
+    echo -e "  ./$0 -r sda2 -b sda1 -S senha_root -u joao -s senha_usuario -n \"João Pedro\" -H meupc -d kde -l s"
 }
 
 mensagem_erro_argumento_ignorado(){
@@ -1408,6 +1438,18 @@ while [[ $# -gt 0 ]]; do
             fi
             shift
             ;;
+        -d|--desktop)
+            if [[ "$2" == -* ]] || [[ -z "$2" ]]; then
+                mensagem_erro_argumento_ignorado $argumento
+            else
+                desktop="$(normaliza_desktop "$2")" || {
+                    mensagem_erro_valor_invalido "$argumento" "$2"
+                    unset desktop
+                }
+                shift
+            fi
+            shift
+            ;;
         -h|--help|-a|--ajuda)
             ajuda
             exit 0
@@ -1480,6 +1522,8 @@ if echo "$gpu_info" | grep -qi 'NVIDIA'; then
     instalar_nvidia="Sim"
 fi
 
+### Detecção de RAM e ambiente gráfico recomendado ###
+de_recomendado="$(detecta_desktop_recomendado)"
 
 ### Interação com o usuário para coletar os dados iniciais ###
 # ajuda
@@ -1652,6 +1696,46 @@ else
     printf "$normal\n"
 fi
 
+if [ -z "$desktop" ]; then
+    echo ""
+    echo "Qual ambiente gráfico você deseja?"
+    echo ""
+    if [[ "$de_recomendado" == "kde" ]]; then
+        echo "1) KDE Plasma (Recomendado)"
+        echo "2) XFCE"
+        opcao_1="kde"
+        opcao_2="xfce"
+        rotulo_padrao="KDE Plasma"
+    else
+        echo "1) XFCE (Recomendado)"
+        echo "2) KDE Plasma"
+        opcao_1="xfce"
+        opcao_2="kde"
+        rotulo_padrao="XFCE"
+    fi
+    echo ""
+    while [[ -z "$desktop" ]]; do
+        read -p "Escolha o ambiente gráfico [1/2] (padrão: 1 - $rotulo_padrao): " escolha_de
+        [[ -z "$escolha_de" ]] && escolha_de="1"
+        case "$escolha_de" in
+            1) desktop="$opcao_1" ;;
+            2) desktop="$opcao_2" ;;
+            kde|plasma|KDE|Plasma) desktop="kde" ;;
+            xfce|XFCE) desktop="xfce" ;;
+            *)
+                printf "$vermelho"
+                echo -e "Opção inválida. Informe 1 ($(rotulo_desktop "$opcao_1")) ou 2 ($(rotulo_desktop "$opcao_2"))."
+                printf "$normal"
+                ;;
+        esac
+    done
+else
+    printf "Ambiente gráfico: "
+    printf "$verde"
+    printf "%s" "$(rotulo_desktop "$desktop")"
+    printf "$normal\n"
+fi
+
 echo -e "\nInformações coletadas:"
 printf " - Partição onde o sistema será instalado: "
 printf "$verde"
@@ -1684,6 +1768,11 @@ printf "$normal\n"
 printf " - Nome do computador: "
 printf "$verde"
 printf "$nome_computador"
+printf "$normal\n"
+
+printf " - Ambiente gráfico: "
+printf "$verde"
+printf "%s" "$(rotulo_desktop "$desktop")"
 printf "$normal\n"
 
 printf " - Suporte para placas de vídeo da NVIDIA: "
@@ -1907,15 +1996,16 @@ package_update_indicator_url="$leap_url/x86_64/$package_update_indicator_nome"
 package_update_indicator_lang_nome=$(curl -sL "$leap_url/noarch" | grep -oP 'package-update-indicator-lang-[^"]+\.rpm' | sort -V | tail -n1)
 package_update_indicator_lang_url="$leap_url/noarch/$package_update_indicator_lang_nome"
 
-pacotes_base="kernel-default kernel-default-devel install-initrd-openSUSE NetworkManager-lang htop nload pipewire-lang pipewire-pulseaudio pipewire-alsa pipewire-aptx pipewire-module-x11-0_3 flatpak git ffmpeg-7 libvulkan1 unzip zip 7zip bzip2 unrar fish yt-dlp tealdeer-fish-completion tealdeer yt-dlp btop NetworkManager-bluetooth kernel-firmware-all yast2-control-center yast2-sudo yast2-trans-pt_BR yast2-sysconfig yast2-update yast2-services-manager yast2-security yast2-online-update yast2-online-update-configuration yast2-online-update-frontend yast2-installation xkeyboard-config-lang wget-lang glibc-lang glib-networking-lang glib2-lang chrony dejavu-fonts mkfontscale terminus-bitmap-fonts firewalld-lang plymouth-theme-opensuse-beat yast2-ntp-client tree fastfetch libvirt avahi sensors cnf-locale btop rpmrebuild gcc-c++ gdb gdbm-lang fuse-overlayfs bat bat-extras bat-fish-completion man-pages-pt_BR make-lang accountsservice-lang dialog-lang net-tools-lang psmisc-lang plocate findutils-lang exo-lang diffutils-lang cryptsetup-lang cpio-lang coreutils-lang bison-lang udisks2-lang ntfsprogs-extra libfsntfs-tools wireless-regdb syslog-ng android-tools android-udev-rules earlyoom net-tools-deprecated v4l2loopback-utils v4l2loopback-kmp-default v4l2loopback-autoload whois nmap tcpdump netavark ncdu kexec-tools python313-Glances rclone opi libguestfs libguestfs-rsync libguestfs0 libguestfs-rescue update-bootloader-rpm-macros patterns-base-bootloader fwupd fwupd-lang susepaste libfsntfs1 libfsntfs-tools nvtop duf libnvme-mi1 libnvme1 nvme-cli lsd python313-pipx $pacotes_amd_cpu $pacotes_intel_cpu system-group-wheel sudo-policy-wheel-auth-self system-user-mail sof-firmware pv at sudo-policy-sudo-auth-self sudo-policy-wheel-auth-self system-group-sudo sshfs xf86-video-mach64 xf86-video-r128 biosdevname libxcb-dri2-0 cpufetch byobu tuned-utils kernel-longterm kernel-longterm-devel v4l2loopback-kmp-longterm bsdtar checkpolicy policycoreutils-devel selinux-policy-minimum"
+pacotes_base="kernel-default kernel-default-devel install-initrd-openSUSE NetworkManager-lang htop nload pipewire-lang pipewire-pulseaudio pipewire-alsa pipewire-aptx pipewire-module-x11-0_3 flatpak git ffmpeg-7 libvulkan1 unzip zip 7zip bzip2 unrar fish yt-dlp tealdeer-fish-completion tealdeer yt-dlp btop NetworkManager-bluetooth kernel-firmware-all yast2-control-center yast2-sudo yast2-trans-pt_BR yast2-sysconfig yast2-update yast2-services-manager yast2-security yast2-online-update yast2-online-update-configuration yast2-online-update-frontend yast2-installation xkeyboard-config-lang wget-lang glibc-lang glib-networking-lang glib2-lang chrony dejavu-fonts mkfontscale terminus-bitmap-fonts firewalld-lang plymouth-theme-opensuse-beat yast2-ntp-client tree fastfetch libvirt avahi sensors cnf-locale btop rpmrebuild gcc-c++ gdb gdbm-lang fuse-overlayfs bat bat-extras bat-fish-completion man-pages-pt_BR make-lang accountsservice-lang dialog-lang net-tools-lang psmisc-lang plocate findutils-lang exo-lang diffutils-lang cryptsetup-lang cpio-lang coreutils-lang bison-lang udisks2-lang ntfsprogs-extra libfsntfs-tools wireless-regdb syslog-ng android-tools android-udev-rules earlyoom net-tools-deprecated v4l2loopback-utils v4l2loopback-kmp-default v4l2loopback-autoload whois nmap tcpdump netavark ncdu kexec-tools python313-Glances rclone opi libguestfs libguestfs-rsync libguestfs0 libguestfs-rescue update-bootloader-rpm-macros patterns-base-bootloader fwupd fwupd-lang susepaste libfsntfs1 libfsntfs-tools nvtop duf libnvme-mi1 libnvme1 nvme-cli lsd python313-pipx $pacotes_amd_cpu $pacotes_intel_cpu system-group-wheel sudo-policy-wheel-auth-self system-user-mail sof-firmware pv at sudo-policy-sudo-auth-self sudo-policy-wheel-auth-self system-group-sudo sshfs xf86-video-mach64 xf86-video-r128 biosdevname libxcb-dri2-0 cpufetch byobu tuned-utils kernel-longterm kernel-longterm-devel v4l2loopback-kmp-longterm bsdtar checkpolicy policycoreutils-devel selinux-policy-targeted"
 
-componentes_graficos="xorg-x11-server-extra xorg-x11-driver-video xorg-x11-driver-input xinput xf86-input-joystick xorg-x11-fonts-core lightdm-lang lightdm-gtk-greeter-lang lightdm-gtk-greeter-settings-lang xscreensaver-data-extra gstreamer-plugins-ugly-codecs gstreamer-plugins-bad-codecs $libavcodec metatheme-adapta-common gtk3-metatheme-adapta gtk4-metatheme-adapta blueman-lang bluez NetworkManager-applet NetworkManager-connection-editor NetworkManager-connection-editor-lang polkit-gnome-lang libgnomesu0 xdg-desktop-portal-gtk-lang xdg-desktop-portal-lang xdg-terminal-exec yast2-theme-breeze gvfs-lang tumbler tumbler-lang tumbler-webp-thumbnailer sox libva-utils xclip xclipboard libgnomesu-lang fontconfig-lang gtk3-lang gsettings-desktop-schemas-lang gstreamer-lang gstreamer-plugins-bad-lang gstreamer-plugins-base-lang gstreamer-plugins-ugly-lang upower-lang zenity-lang gdk-pixbuf-lang colord-lang firewall-config xkill mugshot yast2-usbauth yast2-update-FACTORY yast2-testsuite yast2-multipath yast2-devtools autoyast2 yast2-installation-control yast2-configuration-management yast2-support patterns-yast-yast2_desktop yast2-tune yast2-kdump yast2-journal libdvdcss2 qsynth-lang gstreamer-plugins-bad-fluidsynth fluidsynth $pacotes_amd_gpu $pacotes_intel_gpu simplescreenrecorder google-noto-sans-cjk-fonts simple-scan-lang libgtkglext-x11-1_0-0 xdotool PackageKit-lang gnome-packagekit-lang gnome-packagekit-extras $package_update_indicator_url $package_update_indicator_lang_url firewall-applet firewall-config xhost susepaste-screenshot libqt5-qtimageformats distribution-logos-openSUSE-icons distribution-logos-openSUSE wallpapers-openSUSE-extra qpwgraph gdk-pixbuf-loader-libavif gdk-pixbuf-loader-libavif raw-thumbnailer jxl-thumbnailer rsvg-thumbnailer gdk-pixbuf-loader-rsvg xev $tema_breeze spice-vdagent dbus-1-daemon tuned-gtk texlive-tex-gyre-fonts"
+componentes_graficos="xorg-x11-server-extra xorg-x11-driver-video xorg-x11-driver-input xinput xf86-input-joystick xorg-x11-fonts-core xscreensaver-data-extra gstreamer-plugins-ugly-codecs gstreamer-plugins-bad-codecs $libavcodec metatheme-adapta-common gtk3-metatheme-adapta gtk4-metatheme-adapta blueman-lang bluez NetworkManager-applet NetworkManager-connection-editor NetworkManager-connection-editor-lang polkit-gnome-lang libgnomesu0 xdg-desktop-portal-gtk-lang xdg-desktop-portal-lang xdg-terminal-exec yast2-theme-breeze gvfs-lang tumbler tumbler-lang tumbler-webp-thumbnailer sox libva-utils xclip xclipboard libgnomesu-lang fontconfig-lang gtk3-lang gsettings-desktop-schemas-lang gstreamer-lang gstreamer-plugins-bad-lang gstreamer-plugins-base-lang gstreamer-plugins-ugly-lang upower-lang zenity-lang gdk-pixbuf-lang colord-lang firewall-config xkill mugshot yast2-usbauth yast2-update-FACTORY yast2-testsuite yast2-multipath yast2-devtools autoyast2 yast2-installation-control yast2-configuration-management yast2-support patterns-yast-yast2_desktop yast2-tune yast2-kdump yast2-journal libdvdcss2 qsynth-lang gstreamer-plugins-bad-fluidsynth fluidsynth $pacotes_amd_gpu $pacotes_intel_gpu simplescreenrecorder google-noto-sans-cjk-fonts simple-scan-lang libgtkglext-x11-1_0-0 xdotool PackageKit-lang gnome-packagekit-lang gnome-packagekit-extras $package_update_indicator_url $package_update_indicator_lang_url firewall-applet firewall-config xhost susepaste-screenshot libqt5-qtimageformats distribution-logos-openSUSE-icons distribution-logos-openSUSE wallpapers-openSUSE-extra qpwgraph gdk-pixbuf-loader-libavif gdk-pixbuf-loader-libavif raw-thumbnailer jxl-thumbnailer rsvg-thumbnailer gdk-pixbuf-loader-rsvg xev $tema_breeze spice-vdagent dbus-1-daemon tuned-gtk texlive-tex-gyre-fonts"
 
-ambiente_XFCE="xfce4-panel-lang xfce4-panel-profiles xfce4-panel-restore-defaults xfce4-power-manager-lang xfce4-pulseaudio-plugin-lang pavucontrol-lang xfce4-screensaver xfce4-screenshooter-lang xfce4-session-lang xfce4-settings-lang xfce4-terminal-lang xfce4-datetime-plugin-lang xfce4-genmon-plugin-lang xfce4-kbdleds-plugin-lang xfce4-notifyd-lang xfce4-panel-lang xfce4-pulseaudio-plugin-lang xfce4-systemload-plugin-lang xfce4-notifyd-theme-adapta xfwm4-lang xfwm4-theme-adapta thunar-lang thunar-sendto-blueman thunar-media-tags-plugin-lang thunar-shares-plugin-lang thunar-volman-branding-openSUSE thunar-volman-lang thunar-archive-plugin-lang thunar-font-manager xfdesktop-lang xfce4-settings-color xfce4-sensors-plugin-lang xfce4-battery-plugin-lang xfce4-appfinder-lang xfce4-xkb-plugin-lang xfce4-weather-plugin-lang xfce4-docklike-plugin xfce4-whiskermenu-plugin-lang xfce4-panel-plugin-indicator-lang xfce4-power-manager-plugin xfce4-power-manager-branding-openSUSE ristretto-lang nomacs-lang"
+ambiente_XFCE="lightdm-lang lightdm-gtk-greeter-lang lightdm-gtk-greeter-settings-lang xfce4-panel-lang xfce4-panel-profiles xfce4-panel-restore-defaults xfce4-power-manager-lang xfce4-pulseaudio-plugin-lang pavucontrol-lang xfce4-screensaver xfce4-screenshooter-lang xfce4-session-lang xfce4-settings-lang xfce4-terminal-lang xfce4-datetime-plugin-lang xfce4-genmon-plugin-lang xfce4-kbdleds-plugin-lang xfce4-notifyd-lang xfce4-panel-lang xfce4-pulseaudio-plugin-lang xfce4-systemload-plugin-lang xfce4-notifyd-theme-adapta xfwm4-lang xfwm4-theme-adapta thunar-lang thunar-sendto-blueman thunar-media-tags-plugin-lang thunar-shares-plugin-lang thunar-volman-branding-openSUSE thunar-volman-lang thunar-archive-plugin-lang thunar-font-manager xfdesktop-lang xfce4-settings-color xfce4-sensors-plugin-lang xfce4-battery-plugin-lang xfce4-appfinder-lang xfce4-xkb-plugin-lang xfce4-weather-plugin-lang xfce4-docklike-plugin xfce4-whiskermenu-plugin-lang xfce4-panel-plugin-indicator-lang xfce4-power-manager-plugin xfce4-power-manager-branding-openSUSE ristretto-lang nomacs-lang"
 
 ferramentas_extras="myspell-dictionaries myspell-en myspell-en_US myspell-lightproof-en myspell-lightproof-pt_BR myspell-pt_BR okular-lang libKF6Archive6-lang vlc-qt vlc vlc-lang vlc-codec-gstreamer vlc-codecs gnome-calculator-lang kcolorchooser-lang gnome-disk-utility-lang libvirt-daemon-qemu qemu-linux-user qemu-linux-user libvirt-daemon-qemu virt-manager qt5ct kolourpaint-lang libqt5-qtxmlpatterns-imports libQt5WebChannel5-imports gparted-lang engrampa-lang libreoffice libreoffice-branding-openSUSE libreoffice-l10n-pt_BR libreoffice-l10n-en libreoffice-branding-openSUSE libreoffice-calc libreoffice-draw libreoffice-filters-optional libreoffice-gnome libreoffice-gtk3 libreoffice-icon-themes libreoffice-impress libreoffice-l10n-en libreoffice-l10n-pt_BR libreoffice-mailmerge libreoffice-math libreoffice-pyuno libreoffice-share-linker libreoffice-writer MozillaFirefox MozillaFirefox-branding-openSUSE MozillaFirefox-translations-common MozillaFirefox-translations-other transmission-gtk-lang baobab-lang code gearlever-lang qdirstat qt6ct pluma-lang"
 
-ambiente_de_trabalho="$ambiente_XFCE"
+# Caso o desktop seja XFCE, define o conjunto de pacotes deste ambiente de trabalho
+[[ "$desktop" == "xfce" ]] && ambiente_de_trabalho="$ambiente_XFCE" || ambiente_de_trabalho=""
 pacotes="$pacotes_base $componentes_graficos $ambiente_de_trabalho $ferramentas_extras"
 
 rm -f "$arquivo_sinalizador"
@@ -1924,9 +2014,18 @@ valida_pacotes_visualizado "Validando os pacotes a serem instalados. Por favor, 
 comando_1="zypper -n --root $destino --gpg-auto-import-keys refresh -f"
 comando_2="zypper -n --no-refresh --root $destino dist-upgrade -y --download-in-advance --allow-vendor-change --no-recommends --auto-agree-with-licenses"
 comando_3="zypper -n --no-refresh --ignore-unknown --root $destino install -y --allow-vendor-change --download-in-advance --auto-agree-with-licenses $pacotes_validados"
-comando_4="zypper -n --no-refresh --ignore-unknown --root $destino install -y --allow-vendor-change --download-in-advance --auto-agree-with-licenses -t pattern selinux fonts x11_yast x11"
 
-tentar "$comando_1 ; $comando_2 & $comando_3 && $comando_4" $tentivas_maximas
+padroes="selinux fonts x11_yast x11"
+[[ "$desktop" == "kde" ]] && padroes="$padroes kde_plasma"
+
+comando_4="zypper -n --no-refresh --ignore-unknown --root $destino install -y --allow-vendor-change --download-in-advance --auto-agree-with-licenses -t pattern $padroes"
+comandos="$comando_1 ; $comando_2 & $comando_3 && $comando_4"
+
+if [[ "$desktop" == "kde" ]]; then
+    comandos+=" && zypper -n --no-refresh --ignore-unknown --root $destino install -y --allow-vendor-change --download-in-advance --auto-agree-with-licenses spectacle tesseract-ocr-traineddata-por"
+fi
+
+tentar "$comandos" $tentivas_maximas
 
 # Remover os pacotes package-update-indicator e package-update-indicator-lang
 # da base RPM para que não sejam desinstalados por acidente
@@ -2098,14 +2197,17 @@ echo -e "\nDesabilitando a política de nomes de interface de rede\n"
 chroot $destino /usr/bin/ln -s /dev/null /etc/systemd/network/99-default.link
 
 ### Garantindo o início do nm-applet quando o shell padrão não for o bash ###
-cp $destino/usr/share/applications/nm-applet.desktop $destino/etc/xdg/autostart/nm-applet.desktop
+if [[ "$desktop" == "xfce" ]]; then
+    cp $destino/usr/share/applications/nm-applet.desktop $destino/etc/xdg/autostart/nm-applet.desktop
+fi
 
 ### Desabilitando o início automático do applet do FirewallD ###
 echo '[Desktop Entry]
 Hidden=true' > $destino/etc/xdg/autostart/firewall-applet.desktop
 
 ### Desligando o beep do XFCE ###
-echo '[Desktop Entry]
+if [[ "$desktop" == "xfce" ]]; then
+    echo '[Desktop Entry]
 Type=Application
 Encoding=UTF-8
 Name=Bell off
@@ -2113,6 +2215,7 @@ Comment=Desliga o beep do XFCE
 Exec=/usr/bin/xset b off
 Icon=
 Terminal=False' > $destino/etc/xdg/autostart/bell-off.desktop
+fi
 
 ### Permitindo conexões ao servidor X ###
 echo '[Desktop Entry]
@@ -2135,7 +2238,9 @@ echo "$nome_computador" > $destino/etc/hostname
 
 ### Ajustando idioma e fuso ###
 echo "LANG=pt_BR.utf8" > $destino/etc/environment
-echo "QT_QPA_PLATFORMTHEME=qt6ct" >> $destino/etc/environment
+if [[ "$desktop" == "xfce" ]]; then
+    echo "QT_QPA_PLATFORMTHEME=qt6ct" >> $destino/etc/environment
+fi
 sed 's/INSTALLED_LANGUAGES=""/INSTALLED_LANGUAGES="pt_BR"/' -i $destino/etc/sysconfig/language
 sed 's/ROOT_USES_LANG="ctype"/ROOT_USES_LANG="yes"/' -i $destino/etc/sysconfig/language
 echo "LANG=pt_BR.UTF-8" > $destino/etc/locale.conf
@@ -2156,8 +2261,9 @@ FONT=ter-v22b
 FONT_MAP=
 FONT_UNIMAP=" > $destino/etc/vconsole.conf
 
-### Ajustando o tema do gerenciador de login ###
-echo "[greeter]
+if [[ "$desktop" == "xfce" ]]; then
+    ### Ajustando o tema do gerenciador de login (LightDM) ###
+    echo "[greeter]
 background = /usr/share/wallpapers/openSUSEdefault/contents/images/default-dark.png
 user-background = false
 theme-name = Adapta-LightGreen-Nokto
@@ -2168,11 +2274,27 @@ clock-format = %a, %T
 screensaver-timeout = 2
 xft-antialias = true" > $destino/etc/lightdm/lightdm-gtk-greeter.conf
 
+    ### Ajustando permissão para o LightDM funcionar ###
+    chroot $destino /usr/bin/chown -R lightdm: /var/lib/lightdm
+
+    if [ -f "$destino/etc/sysconfig/displaymanager" ]; then
+        sed -i 's/^DISPLAYMANAGER=.*/DISPLAYMANAGER="lightdm"/' $destino/etc/sysconfig/displaymanager
+    else
+        echo 'DISPLAYMANAGER="lightdm"' > $destino/etc/sysconfig/displaymanager
+    fi
+    chroot $destino /usr/bin/ln -sf /usr/lib/systemd/system/lightdm.service /etc/systemd/system/display-manager.service
+else
+    ### Configurando o SDDM como gerenciador de login (KDE Plasma) ###
+    if [ -f "$destino/etc/sysconfig/displaymanager" ]; then
+        sed -i 's/^DISPLAYMANAGER=.*/DISPLAYMANAGER="sddm"/' $destino/etc/sysconfig/displaymanager
+    else
+        echo 'DISPLAYMANAGER="sddm"' > $destino/etc/sysconfig/displaymanager
+    fi
+    chroot $destino /usr/bin/ln -sf /usr/lib/systemd/system/sddm.service /etc/systemd/system/display-manager.service
+fi
+
 ### Habilitando cores para algumas aplicações de linha de comando ###
 echo 'CLICOLOR=1' >> $destino/etc/environment
-
-### Ajustando permissão para o LightDM funcionar ###
-chroot $destino /usr/bin/chown -R lightdm: /var/lib/lightdm
 
 ### Adicionando repositório do Flathub ###
 chroot $destino /usr/bin/flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
@@ -2181,7 +2303,11 @@ chroot $destino /usr/bin/flatpak remote-add --if-not-exists flathub https://flat
 zypper -n --root $destino clean
 
 ### Removendo pacotes desnecessários ###
-zypper -n --root $destino remove -y --clean-deps java-11-openjdk java-11-openjdk-headless javapackages-filesystem javapackages-tools busybox-ed hddtemp openssh-askpass xf86-input-keyboard postfix konsole konsole-part git-gui
+pacotes_remover="java-11-openjdk java-11-openjdk-headless javapackages-filesystem javapackages-tools busybox-ed hddtemp openssh-askpass xf86-input-keyboard postfix git-gui"
+
+[[ "$desktop" != "kde" ]] && pacotes_remover="$pacotes_remover konsole konsole-part"
+
+zypper -n --root $destino remove -y --clean-deps $pacotes_remover
 
 ### Garantindo que as bibliotecas gráficas vêm do Packman ###
 echo -e "\nAtualizando pacotes\n"
@@ -2314,7 +2440,8 @@ echo '[UiSettings]
 ColorScheme=Chameleon Breeze Darker' > $destino/etc/skel/.config/okularrc
 
 ### Definindo configurações para o xfce4-terminal ###
-echo '<?xml version="1.0" encoding="UTF-8"?>
+if [[ "$desktop" == "xfce" ]]; then
+    echo '<?xml version="1.0" encoding="UTF-8"?>
 
 <channel name="xfce4-terminal" version="1.0">
   <property name="color-palette" type="string" value="rgb(0,0,0);rgb(170,0,0);rgb(0,170,0);rgb(246,211,45);rgb(62,125,205);rgb(170,0,170);rgb(0,170,170);rgb(170,170,170);rgb(85,85,85);rgb(255,85,85);rgb(85,255,85);rgb(255,255,85);rgb(85,85,255);rgb(255,85,255);rgb(85,255,255);rgb(255,255,255)"/>
@@ -2323,6 +2450,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>
   <property name="run-custom-command" type="bool" value="true"/>
   <property name="custom-command" type="string" value="/usr/bin/fish"/>
 </channel>' > $destino/etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xfce4-terminal.xml
+fi
 
 ### Instalando o pacote de ícones Tela (modo standard) ###
 echo -e "\nInstalando o tema de ícones Tela\n"
@@ -2426,6 +2554,21 @@ chroot $destino /usr/bin/firewall-offline-cmd --set-default-zone=trusted
 sed -i 's/FirewallBackend=nftables/FirewallBackend=iptables/' $destino/etc/firewalld/firewalld.conf
 
 ### Engatilha a rotulagem do SELinux ###
+if [ -f "$destino/etc/selinux/config" ]; then
+    sed -i 's/^SELINUXTYPE=.*/SELINUXTYPE=targeted/' "$destino/etc/selinux/config"
+fi
+if [ ! -f "$destino/etc/selinux/targeted/contexts/files/file_contexts" ]; then
+    echo -e "\n${verde}Reinstalando política SELinux (file_contexts ausente)...${normal}\n"
+    comando_selinux="zypper -n --root $destino install -y --force --allow-vendor-change --download-in-advance --auto-agree-with-licenses selinux-policy-targeted"
+    tentar "$comando_selinux" $tentivas_maximas
+fi
+if [ ! -f "$destino/etc/selinux/targeted/contexts/files/file_contexts" ]; then
+    printf "$vermelho"
+    echo -e "\nFalha: política SELinux incompleta (file_contexts ausente). Abortando para evitar sistema inutilizável no boot.\n"
+    printf "$normal"
+    desmontar_tudo $destino
+    exit 1
+fi
 touch $destino/.autorelabel
 
 ### Desmontando diretórios ###

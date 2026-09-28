@@ -186,12 +186,42 @@ ajuda(){
     echo -e "  -s, --senha <senha>          Senha para o novo usuário"
     echo -e "  -n, --nome-completo <nome>   Nome completo para o novo usuário (ex.: João Pedro)"
     echo -e "  -H, --hostname <nome>        Nome do computador (não pode conter espaços) (ex.: meupc)"
+    echo -e "  -d, --desktop <kde|xfce>     Ambiente gráfico (kde/plasma ou xfce). Se omitido, recomenda"
+    echo -e "                               conforme a RAM (≥ 6 GiB → KDE Plasma)"
     echo -e "  -l, --laptop <s|n>           Especifica se a instalação será realizada em um portátil. Se nenhum"
     echo -e "                               valor for informado, será assumido que sim"
     echo -e "  -t, --tag <tag>              Tag do repositório a ser utilizado (opcional)"
     echo -e "  -h, --help, -a, --ajuda      Exibe essa mensagem de ajuda"
     echo -e "\nExemplo de uso:"
-    echo -e "  ./$0 -r sda2 -b sda1 -S senha_root -u joao -s senha_usuario -n \"João Pedro\" -H meupc -l s"
+    echo -e "  ./$0 -r sda2 -b sda1 -S senha_root -u joao -s senha_usuario -n \"João Pedro\" -H meupc -d kde -l s"
+}
+
+normaliza_desktop(){
+    local d="${1,,}"
+    case "$d" in
+        kde|plasma) echo "kde" ;;
+        xfce) echo "xfce" ;;
+        *) return 1 ;;
+    esac
+}
+
+detecta_desktop_recomendado(){
+    local mem_kb
+    mem_kb=$(awk '/^MemTotal:/ {print $2}' /proc/meminfo)
+    # 6 GiB = 6 * 1024 * 1024 KiB
+    if [[ "$mem_kb" -ge $((6 * 1024 * 1024)) ]]; then
+        echo "kde"
+    else
+        echo "xfce"
+    fi
+}
+
+rotulo_desktop(){
+    case "$1" in
+        kde) echo "KDE Plasma" ;;
+        xfce) echo "XFCE" ;;
+        *) echo "$1" ;;
+    esac
 }
 
 mensagem_erro_argumento_ignorado(){
@@ -497,6 +527,18 @@ while [[ $# -gt 0 ]]; do
             fi
             shift
             ;;
+        -d|--desktop)
+            if [[ "$2" == -* ]] || [[ -z "$2" ]]; then
+                mensagem_erro_argumento_ignorado $argumento
+            else
+                desktop="$(normaliza_desktop "$2")" || {
+                    mensagem_erro_valor_invalido "$argumento" "$2"
+                    unset desktop
+                }
+                shift
+            fi
+            shift
+            ;;
         -t|--tag)
             if [[ "$2" == -* ]] || [[ -z "$2" ]]; then
                 mensagem_erro_argumento_ignorado $argumento
@@ -578,6 +620,8 @@ if echo "$gpu_info" | grep -qi 'NVIDIA'; then
     instalar_nvidia="Sim"
 fi
 
+### Detecção de RAM e ambiente gráfico recomendado ###
+de_recomendado="$(detecta_desktop_recomendado)"
 
 ### Interação com o usuário para coletar os dados iniciais ###
 # ajuda
@@ -750,6 +794,46 @@ else
     printf "$normal\n"
 fi
 
+if [ -z "$desktop" ]; then
+    echo ""
+    echo "Qual ambiente gráfico você deseja?"
+    echo ""
+    if [[ "$de_recomendado" == "kde" ]]; then
+        echo "1) KDE Plasma (Recomendado)"
+        echo "2) XFCE"
+        opcao_1="kde"
+        opcao_2="xfce"
+        rotulo_padrao="KDE Plasma"
+    else
+        echo "1) XFCE (Recomendado)"
+        echo "2) KDE Plasma"
+        opcao_1="xfce"
+        opcao_2="kde"
+        rotulo_padrao="XFCE"
+    fi
+    echo ""
+    while [[ -z "$desktop" ]]; do
+        read -p "Escolha o ambiente gráfico [1/2] (padrão: 1 - $rotulo_padrao): " escolha_de
+        [[ -z "$escolha_de" ]] && escolha_de="1"
+        case "$escolha_de" in
+            1) desktop="$opcao_1" ;;
+            2) desktop="$opcao_2" ;;
+            kde|plasma|KDE|Plasma) desktop="kde" ;;
+            xfce|XFCE) desktop="xfce" ;;
+            *)
+                printf "$vermelho"
+                echo -e "Opção inválida. Informe 1 ($(rotulo_desktop "$opcao_1")) ou 2 ($(rotulo_desktop "$opcao_2"))."
+                printf "$normal"
+                ;;
+        esac
+    done
+else
+    printf "Ambiente gráfico: "
+    printf "$verde"
+    printf "%s" "$(rotulo_desktop "$desktop")"
+    printf "$normal\n"
+fi
+
 echo -e "\nInformações coletadas:"
 printf " - Partição onde o sistema será instalado: "
 printf "$verde"
@@ -782,6 +866,11 @@ printf "$normal\n"
 printf " - Nome do computador: "
 printf "$verde"
 printf "$nome_computador"
+printf "$normal\n"
+
+printf " - Ambiente gráfico: "
+printf "$verde"
+printf "%s" "$(rotulo_desktop "$desktop")"
 printf "$normal\n"
 
 printf " - Suporte para placas de vídeo da NVIDIA: "
@@ -942,6 +1031,44 @@ comando_1="zypper -n --root $destino --gpg-auto-import-keys refresh -f ;"
 comando_3="zypper -n --no-refresh --ignore-unknown --root $destino install -y --download-in-advance $pacotes_amd_cpu $pacotes_intel_cpu $pacotes_amd_gpu $pacotes_intel_gpu"
 
 tentar "$comando_1 $comando_2 $comando_3" $tentivas_maximas
+
+### Instalação do KDE Plasma sob demanda ###
+if [[ "$desktop" == "kde" ]]; then
+    echo -e "\n${verde}Instalando KDE Plasma...${normal}\n"
+
+    comando_kde="zypper -n --no-refresh --ignore-unknown --root $destino install -y --allow-vendor-change --download-in-advance --auto-agree-with-licenses -t pattern kde_plasma"
+    comando_spectacle="zypper -n --no-refresh --ignore-unknown --root $destino install -y --allow-vendor-change --download-in-advance --auto-agree-with-licenses spectacle tesseract-ocr-traineddata-por"
+    tentar "$comando_kde && $comando_spectacle" $tentivas_maximas
+
+    if [ -f "$destino/etc/sysconfig/displaymanager" ]; then
+        sed -i 's/^DISPLAYMANAGER=.*/DISPLAYMANAGER="sddm"/' $destino/etc/sysconfig/displaymanager
+    else
+        echo 'DISPLAYMANAGER="sddm"' > $destino/etc/sysconfig/displaymanager
+    fi
+    chroot $destino /usr/bin/ln -sf /usr/lib/systemd/system/sddm.service /etc/systemd/system/display-manager.service
+    # qt6ct interfere no Plasma; remover se veio na raiz XFCE
+    sed -i '/^QT_QPA_PLATFORMTHEME=/d' $destino/etc/environment
+fi
+
+### Garantindo política SELinux completa ###
+# O dist-upgrade, e extras, sob --root pode deixar SELINUXTYPE=targeted
+# sem os arquivos da política, o systemd trava no boot com o erro "Failed to load SELinux policy".
+echo -e "\n${verde}Garantindo política SELinux...${normal}\n"
+comando_selinux_1="zypper -n --root $destino refresh -f -r \"repo-oss\""
+comando_selinux_2="zypper -n --no-refresh --ignore-unknown --root $destino install -y --force --allow-vendor-change --download-in-advance --auto-agree-with-licenses selinux-policy-targeted"
+tentar "$comando_selinux_1 ; $comando_selinux_2" $tentivas_maximas
+
+if [ -f "$destino/etc/selinux/config" ]; then
+    sed -i 's/^SELINUXTYPE=.*/SELINUXTYPE=targeted/' "$destino/etc/selinux/config"
+fi
+
+if [ ! -f "$destino/etc/selinux/targeted/contexts/files/file_contexts" ]; then
+    printf "$vermelho"
+    echo -e "\nFalha: política SELinux incompleta (file_contexts ausente). Abortando para evitar sistema inutilizável no boot.\n"
+    printf "$normal"
+    desmontar_tudo $destino
+    exit 1
+fi
 
 ### Removendo links simbólicos de UUIDs antigos ###
 UUIDs="$(lsblk -rno UUID | grep -v '^$')"
