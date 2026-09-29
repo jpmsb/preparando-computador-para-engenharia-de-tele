@@ -181,6 +181,7 @@ Abaixo, é explicado o significado de algumas perguntas:
  - **Partição onde o sistema será instalado [ex.: sda2]:**: você deve informar a partição onde o Tumbleweed será instalado. Recomenda-se pelo 200 GB de espaço caso você esteja no começo do curso. Além disso, a partição deve estar formatada como EXT4 ou BTRFS;
  - **Partição de inicialização EFI [ex.: sda1]:**: você deve informar a partição EFI, que é onde o *bootloader* será instalado;
  - **Nome do computador:**: não pode conter espaços e identificará o seu computador na rede. No exemplo da imagem acima, o nome do computador é `um-teste`;
+ - **Ambiente gráfico (KDE Plasma ou XFCE):** o *script* recomenda conforme a quantidade de memória RAM do computador. Com 6 GB ou mais, recomenda-se o KDE Plasma;
  - **A instalação será realizada em um notebook? [S/N]**: caso você esteja instalando em um notebook, digite "S" e confirme com "Enter".
 
 Após confirmar que os dados estão corretos, digite "S" e confirme com "Enter". Basta esperar a rotina finalizar o processo de instalação que, dependendo do tipo escolhido (rápida ou customizável), pode levar em torno de 10 a 60 minutos, sendo que esse tempo pode variar de acordo com a velocidade de *download* da sua Internet, velocidade do seu processador, ou se você utiliza HD ou SSD como armazenamento. É preciso manter a conexão com a internet ativa durante todo o processo.
@@ -217,9 +218,9 @@ Após inserir suas credenciais, você será direcionado à área de trabalho do 
 
 ![](imagens/opensuse_tumbleweed_area_de_trabalho.png)
 
-A interface gráfica escolhida é o XFCE, que é uma interface leve e muito customizável. Você pode personalizar a interface gráfica conforme a sua preferência.
+A interface gráfica pode ser **KDE Plasma** ou **XFCE**, conforme a escolha feita na instalação. Com 6 GB ou mais de memória RAM, o *script* recomenda o KDE Plasma. Você pode personalizar a interface gráfica conforme a sua preferência.
 
-Caso queira, também é possível instalar outras interfaces gráficas, como KDE, GNOME, entre outras.
+Caso tenha instalado o XFCE e queira experimentar outro ambiente depois, também é possível instalar outras interfaces gráficas, como KDE, GNOME, entre outras.
 
 ##### Instalação do GNOME
 
@@ -231,21 +232,16 @@ sudo zypper install -t pattern gnome
 
 Após a instalação, reinicie o sistema. Você verá que a tela de login estará diferente. O gestor de login que é instalado nesse processo é o GDM.
 
-##### Instalação do KDE
+##### Instalação do KDE, caso tenha instalado o XFCE
 
-O KDE (chamado de Plasma) é outra interface que é muito popular e é mais customizável que o GNOME. Além disso, é mais familiar ao Windows. Para instalar o KDE Plasma, basta executar o comando:
+Se a instalação foi feita com XFCE e você quiser adicionar o KDE Plasma depois, execute:
 
 ```bash
 sudo zypper install -t pattern kde_plasma
-```
-
-Em seguida, instale a ferramenta de captura de tela Spectacle:
-
-```bash
 sudo zypper install spectacle
 ```
 
-Após a instalação, reinicie o sistema. Você verá que a tela de login estará diferente. O gestor de login que é instalado nesse processo é o SDDM.
+Após a instalação, reinicie o sistema. Você verá que a tela de login estará diferente. O gestor de login do Plasma é o SDDM.
 
 ## Informações extras
 
@@ -271,13 +267,13 @@ ou
 sudo zypper dup
 ```
 
-Porém, a forma recomendada é utilizar o script [`atualizar-sistema`](scripts-auxiliares/atualizar-sistema), que facilita o processo e pode ser executado com o comando abaixo:
+Porém, a forma recomendada é utilizar o comando `atualizar-sistema` (fornecido pelo [update-manager](https://github.com/jpmsb/update-manager)), que facilita o processo:
 
 ```bash
 atualizar-sistema
 ```
 
-Você **não** precisará executar o comando de atualização manualmente. Assim que houver atualizações disponíveis, o sistema irá notificá-lo. O símbolo que indica que há atualizações disponíveis é um ícone de seta para cima, localizado no canto inferior direito da tela, conforme ilustrado abaixo:
+Você **não** precisará executar o comando de atualização manualmente. Assim que houver atualizações disponíveis, o sistema irá notificá-lo por meio do `update-viewer`. O símbolo que indica que há atualizações disponíveis é um ícone de seta para cima, localizado no canto inferior direito da tela, conforme ilustrado abaixo:
 
 ![](imagens/opensuse_tumbleweed_atualizar.png)
 
