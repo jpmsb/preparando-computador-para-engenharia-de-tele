@@ -850,7 +850,7 @@ criar_esquema_chameleon_breeze_darker(){
         '[Colors:Button]'                    \
         'BackgroundAlternate=20,25,31'       \
         'BackgroundNormal=20,25,31'          \
-        'DecorationFocus=0,76,90'            \
+        'DecorationFocus=0,164,137'            \
         'DecorationHover=0,164,137'          \
         'ForegroundActive=222,222,222'       \
         'ForegroundInactive=190,207,210'     \
@@ -864,7 +864,7 @@ criar_esquema_chameleon_breeze_darker(){
         '[Colors:Complementary]'             \
         'BackgroundAlternate=20,25,31'       \
         'BackgroundNormal=22,27,34'          \
-        'DecorationFocus=0,76,90'            \
+        'DecorationFocus=0,164,137'            \
         'DecorationHover=44,120,107'         \
         'ForegroundActive=214,214,214'       \
         'ForegroundInactive=163,183,188'     \
@@ -875,23 +875,23 @@ criar_esquema_chameleon_breeze_darker(){
         'ForegroundVisited=61,174,233'       \
         ''                                   \
         '[Colors:Selection]'                 \
-        'BackgroundAlternate=20,25,31'       \
-        'BackgroundNormal=0,164,137'         \
-        'DecorationFocus=0,76,90'            \
+        'BackgroundAlternate=8,123,105'       \
+        'BackgroundNormal=8,123,105'         \
+        'DecorationFocus=0,164,137'            \
         'DecorationHover=0,164,137'          \
-        'ForegroundActive=190,207,210'       \
-        'ForegroundInactive=60,174,230'      \
-        'ForegroundLink=0,170,127'           \
-        'ForegroundNegative=255,85,127'      \
-        'ForegroundNeutral=0,129,149'        \
-        'ForegroundNormal=252,252,252'       \
-        'ForegroundPositive=0,164,137'       \
-        'ForegroundVisited=191,210,211'      \
+        'ForegroundActive=0,164,137'       \
+        'ForegroundInactive=255,255,255'      \
+        'ForegroundLink=0,164,137'           \
+        'ForegroundNegative=176,55,69'      \
+        'ForegroundNeutral=198,92,0'        \
+        'ForegroundNormal=255,255,255'       \
+        'ForegroundPositive=23,104,57'       \
+        'ForegroundVisited=155,89,182'      \
         ''                                   \
         '[Colors:Tooltip]'                   \
         'BackgroundAlternate=20,25,31'       \
         'BackgroundNormal=25,32,40'          \
-        'DecorationFocus=0,76,90'            \
+        'DecorationFocus=0,164,137'            \
         'DecorationHover=0,164,137'          \
         'ForegroundActive=249,183,183'       \
         'ForegroundInactive=190,207,210'     \
@@ -905,7 +905,7 @@ criar_esquema_chameleon_breeze_darker(){
         '[Colors:View]'                      \
         'BackgroundAlternate=20,25,31'       \
         'BackgroundNormal=20,25,31'          \
-        'DecorationFocus=0,76,90'            \
+        'DecorationFocus=0,164,137'            \
         'DecorationHover=0,164,137'          \
         'ForegroundActive=222,222,222'       \
         'ForegroundInactive=137,153,158'     \
@@ -919,7 +919,7 @@ criar_esquema_chameleon_breeze_darker(){
         '[Colors:Window]'                    \
         'BackgroundAlternate=20,25,31'       \
         'BackgroundNormal=20,25,31'          \
-        'DecorationFocus=0,76,90'            \
+        'DecorationFocus=0,164,137'            \
         'DecorationHover=0,164,137'          \
         'ForegroundActive=207,207,207'       \
         'ForegroundInactive=190,207,210'     \
@@ -975,7 +975,7 @@ criar_arquivo_kdeglobals(){
         '[Colors:Button]'                                                  \
         'BackgroundAlternate=20,25,31'                                     \
         'BackgroundNormal=20,25,31'                                        \
-        'DecorationFocus=0,76,90'                                          \
+        'DecorationFocus=0,164,137'                                          \
         'DecorationHover=0,164,137'                                        \
         'ForegroundActive=222,222,222'                                     \
         'ForegroundInactive=190,207,210'                                   \
@@ -989,7 +989,7 @@ criar_arquivo_kdeglobals(){
         '[Colors:Complementary]'                                           \
         'BackgroundAlternate=20,25,31'                                     \
         'BackgroundNormal=22,27,34'                                        \
-        'DecorationFocus=0,76,90'                                          \
+        'DecorationFocus=0,164,137'                                          \
         'DecorationHover=44,120,107'                                       \
         'ForegroundActive=214,214,214'                                     \
         'ForegroundInactive=163,183,188'                                   \
@@ -1000,23 +1000,23 @@ criar_arquivo_kdeglobals(){
         'ForegroundVisited=61,174,233'                                     \
         ''                                                                 \
         '[Colors:Selection]'                                               \
-        'BackgroundAlternate=20,25,31'                                     \
-        'BackgroundNormal=0,164,137'                                       \
-        'DecorationFocus=0,76,90'                                          \
+        'BackgroundAlternate=8,123,105'                                     \
+        'BackgroundNormal=8,123,105'                                       \
+        'DecorationFocus=0,164,137'                                          \
         'DecorationHover=0,164,137'                                        \
-        'ForegroundActive=190,207,210'                                     \
-        'ForegroundInactive=60,174,230'                                    \
-        'ForegroundLink=0,170,127'                                         \
-        'ForegroundNegative=255,85,127'                                    \
-        'ForegroundNeutral=0,129,149'                                      \
-        'ForegroundNormal=252,252,252'                                     \
-        'ForegroundPositive=0,164,137'                                     \
-        'ForegroundVisited=191,210,211'                                    \
+        'ForegroundActive=0,164,137'                                     \
+        'ForegroundInactive=255,255,255'                                    \
+        'ForegroundLink=0,164,137'                                         \
+        'ForegroundNegative=176,55,69'                                    \
+        'ForegroundNeutral=198,92,0'                                      \
+        'ForegroundNormal=255,255,255'                                     \
+        'ForegroundPositive=23,104,57'                                     \
+        'ForegroundVisited=155,89,182'                                    \
         ''                                                                 \
         '[Colors:Tooltip]'                                                 \
         'BackgroundAlternate=20,25,31'                                     \
         'BackgroundNormal=25,32,40'                                        \
-        'DecorationFocus=0,76,90'                                          \
+        'DecorationFocus=0,164,137'                                          \
         'DecorationHover=0,164,137'                                        \
         'ForegroundActive=249,183,183'                                     \
         'ForegroundInactive=190,207,210'                                   \
@@ -1030,7 +1030,7 @@ criar_arquivo_kdeglobals(){
         '[Colors:View]'                                                    \
         'BackgroundAlternate=20,25,31'                                     \
         'BackgroundNormal=20,25,31'                                        \
-        'DecorationFocus=0,76,90'                                          \
+        'DecorationFocus=0,164,137'                                          \
         'DecorationHover=0,164,137'                                        \
         'ForegroundActive=222,222,222'                                     \
         'ForegroundInactive=137,153,158'                                   \
@@ -1044,7 +1044,7 @@ criar_arquivo_kdeglobals(){
         '[Colors:Window]'                                                  \
         'BackgroundAlternate=20,25,31'                                     \
         'BackgroundNormal=20,25,31'                                        \
-        'DecorationFocus=0,76,90'                                          \
+        'DecorationFocus=0,164,137'                                          \
         'DecorationHover=0,164,137'                                        \
         'ForegroundActive=207,207,207'                                     \
         'ForegroundInactive=190,207,210'                                   \
