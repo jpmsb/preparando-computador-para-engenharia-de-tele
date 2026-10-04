@@ -1056,7 +1056,7 @@ criar_arquivo_kdeglobals(){
         'ForegroundVisited=127,140,141'                                    \
         ''                                                                 \
         '[General]'                                                        \
-        'ColorSchemeHash=5508310af4509d3957ba12a0ade6f18efa27fbf5'         \
+        'ColorSchemeHash=9b35fb2a46e2de4b8d562f5986973f113d96ff3c'         \
         'LastUsedCustomAccentColor=233,58,154'                             \
         'XftHintStyle=hintslight'                                          \
         'XftSubPixel=rgb'                                                  \
@@ -2459,6 +2459,16 @@ else
 fi
 
 tar -xf $tema_chameleon_breeze_darker_tar_xz -C $destino/usr/share/themes
+
+### Normalizando fundos do GTK Chameleon Breeze Darker (#2a2e32 -> #14191f) ###
+for gtkcss in \
+  "$destino/usr/share/themes/Chameleon-Breeze-Darker/gtk-3.0/gtk.css" \
+  "$destino/usr/share/themes/Chameleon-Breeze-Darker/gtk-4.0/gtk.css"
+do
+  if [ -f "$gtkcss" ]; then
+    sed -i 's/#2a2e32/#14191f/g; s/#1b1e20/#14191f/g' "$gtkcss"
+  fi
+done
 
 ### Criando tema de cores para o Qt5ct e Qt6ct ###
 echo '[ColorScheme]
