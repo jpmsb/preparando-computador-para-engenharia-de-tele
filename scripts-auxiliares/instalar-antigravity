@@ -10,10 +10,18 @@ export BINARIO="antigravity"
 export DIR_INSTALACAO_BASE="/opt"
 export DIR_INSTALACAO="$DIR_INSTALACAO_BASE/$NOME"
 export URL_PAGINA="https://antigravity.google/download"
-export URL_ARQUIVO=$(curl -sL --compressed "$URL_PAGINA" | grep -oE 'https://[^"]*antigravity-hub/[^"]*/linux-x64/Antigravity\.tar\.gz' | head -1)
-export ULTIMA_VERSAO=$(echo "$URL_ARQUIVO" | awk -F'antigravity-hub/' '{print $2}' | awk -F'[-/]' '{print $1}')
+export URL_BASE_DOWNLOAD="https://storage.googleapis.com/antigravity-public/antigravity-hub"
 
-if [ -z "$URL_ARQUIVO" ]; then
+# A página embute a URL da API de releases no JS; a versão mais recente vem de lá.
+RESPOSTA_RELEASES=$(curl -sL "$(
+    curl -sL --compressed "$URL_PAGINA" |
+        grep -oE 'https://antigravity-hub-auto-updater-[0-9]+\.[a-z0-9-]+\.run\.app/releases' |
+        head -1
+)")
+export ULTIMA_VERSAO=$(echo "$RESPOSTA_RELEASES" | grep -oP '"version"\s*:\s*"\K[^"]+' | head -1)
+export URL_ARQUIVO="$URL_BASE_DOWNLOAD/$ULTIMA_VERSAO-$(echo "$RESPOSTA_RELEASES" | grep -oP '"execution_id"\s*:\s*"\K[^"]+' | head -1)/linux-x64/Antigravity.tar.gz"
+
+if [ -z "$ULTIMA_VERSAO" ] || [[ ! "$URL_ARQUIVO" =~ /[0-9]+\.[0-9]+\.[0-9]+-[0-9]+/ ]]; then
     echo -e "\n${VERMELHO}Não foi possível obter o link de download do $NOME.${NORMAL}"
     echo -e "${VERMELHO}Pode ser um problema de conexão ou a página $URL_PAGINA mudou de estrutura.${NORMAL}\n"
     exit 1
