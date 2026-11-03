@@ -222,7 +222,7 @@ A interface gráfica pode ser **KDE Plasma** ou **XFCE**, conforme a escolha fei
 
 Caso tenha instalado o XFCE e queira experimentar outro ambiente depois, também é possível instalar outras interfaces gráficas, como KDE, GNOME, entre outras.
 
-##### Instalação do GNOME
+#### Instalação do GNOME
 
 O GNOME é uma interface gráfica muito popular e utilizada em várias distribuições Linux, incluindo o famoso Ubuntu. Para instalar o GNOME, basta executar o comando:
 
@@ -232,7 +232,7 @@ sudo zypper install -t pattern gnome
 
 Após a instalação, reinicie o sistema. Você verá que a tela de login estará diferente. O gestor de login que é instalado nesse processo é o GDM.
 
-##### Instalação do KDE, caso tenha instalado o XFCE
+#### Instalação do KDE, caso tenha instalado o XFCE
 
 Se a instalação foi feita com XFCE e você quiser adicionar o KDE Plasma depois, execute:
 
