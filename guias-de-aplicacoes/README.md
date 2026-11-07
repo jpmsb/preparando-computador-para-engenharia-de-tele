@@ -6,7 +6,7 @@ Em cada um dos itens abaixo, estão os guias de instalação e uso das aplicaç�
 - [Avrdude](Avrdude.md)
 - [Antigravity](Antigravity.md)
 - [CLion](CLion.md)
-- [Claude](Claude.md)
+- [Claude Desktop](Claude.md)
 - [Cursor](Cursor.md)
 - [Compilador para AVR](Compilador-para-AVR.md)
 - [DataGrip](DataGrip.md)
