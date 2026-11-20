@@ -239,7 +239,7 @@ Se a instalação foi feita com XFCE e você quiser adicionar o KDE Plasma depoi
 
 ```bash
 sudo zypper install -t pattern kde_plasma
-sudo zypper install spectacle
+sudo zypper install spectacle ark
 ```
 
 Após a instalação, reinicie o sistema. Você verá que a tela de login estará diferente. O gestor de login do Plasma é o SDDM.
