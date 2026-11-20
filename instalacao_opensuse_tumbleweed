@@ -2106,7 +2106,7 @@ comando_4="zypper -n --no-refresh --ignore-unknown --root $destino install -y --
 comandos="$comando_1 ; $comando_2 & $comando_3 && $comando_4"
 
 if [[ "$desktop" == "kde" ]]; then
-    comandos+=" && zypper -n --no-refresh --ignore-unknown --root $destino install -y --allow-vendor-change --download-in-advance --auto-agree-with-licenses spectacle tesseract-ocr-traineddata-por"
+    comandos+=" && zypper -n --no-refresh --ignore-unknown --root $destino install -y --allow-vendor-change --download-in-advance --auto-agree-with-licenses spectacle ark tesseract-ocr-traineddata-por"
 fi
 
 tentar "$comandos" $tentivas_maximas

@@ -1112,7 +1112,7 @@ if [[ "$desktop" == "kde" ]]; then
     echo -e "\n${verde}Instalando KDE Plasma...${normal}\n"
 
     comando_kde="zypper -n --no-refresh --ignore-unknown --root $destino install -y --allow-vendor-change --download-in-advance --auto-agree-with-licenses -t pattern kde_plasma"
-    comando_spectacle="zypper -n --no-refresh --ignore-unknown --root $destino install -y --allow-vendor-change --download-in-advance --auto-agree-with-licenses spectacle tesseract-ocr-traineddata-por"
+    comando_spectacle="zypper -n --no-refresh --ignore-unknown --root $destino install -y --allow-vendor-change --download-in-advance --auto-agree-with-licenses spectacle ark tesseract-ocr-traineddata-por"
     tentar "$comando_kde && $comando_spectacle" $tentivas_maximas
 
     if [ -f "$destino/etc/sysconfig/displaymanager" ]; then
